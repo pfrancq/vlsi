@@ -93,15 +93,15 @@ KVLSIHeuristicView::KVLSIHeuristicView(KDevVLSIDoc* pDoc,HeuristicType pType,QWi
 
 	switch(pType)
 	{
-		case BottomLeft:
+		case R::BottomLeft:
 			PlacementHeuristic = new RPlacementBottomLeft(pDoc->Objs.NbPtr,calcFree,useFree,Random,allOri);
 			break;
 
-		case Edge:
+		case R::Edge:
 			PlacementHeuristic = new RPlacementEdge(pDoc->Objs.NbPtr,calcFree,useFree,Random,allOri);
 			break;
 
-		case Center:
+		case R::Center:
 			PlacementHeuristic = new RPlacementCenter(pDoc->Objs.NbPtr,calcFree,useFree,Random,allOri);
 			break;
 	}
@@ -123,15 +123,15 @@ void KVLSIHeuristicView::setTitle(QString _title)
 
 	switch(type)
 	{
-		case BottomLeft:
+		case R::BottomLeft:
 			_title="Bottom-Left Heuristic: "+_title;
 			break;
 
-		case Edge:
+		case R::Edge:
 			_title="Edge Heuristic: "+_title;
 			break;
 
-		case Center:
+		case R::Center:
 			_title="Center Heuristic: "+_title;
 			break;
 	}
@@ -221,7 +221,7 @@ void KVLSIHeuristicView::NextStep(void)
 	}
 	catch(RPlacementHeuristicException& e)
     {
-		KMessageBox::error(this,e.Msg.Latin1());
+		KMessageBox::error(this,e.GetMsg());
 		draw->setChanged();
 		Stop=true;
     }

@@ -99,10 +99,10 @@ KVLSIGAView::KVLSIGAView(KDevVLSIDoc* pDoc,QWidget *parent, const char *name,int
 	}
 	catch(eGA& e)
 	{
-		KMessageBox::error(this,e.Msg.Latin1());
+		KMessageBox::error(this,e.GetMsg());
 		Instance=0;
 	}
-	catch(bad_alloc)
+	catch(std::bad_alloc)
 	{
 		KMessageBox::error(this,"Memory Problems");
 		Instance=0;
@@ -169,7 +169,7 @@ void KVLSIGAView::RunGA(void)
 		}
 		catch(eGA& e)
 		{
-			KMessageBox::error(this,e.Msg.Latin1());
+			KMessageBox::error(this,e.GetMsg());
 		}
 	}
 

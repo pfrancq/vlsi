@@ -48,9 +48,9 @@ using namespace R;
 
 //-----------------------------------------------------------------------------
 // include files for QtWidgets
-#include <rga/qgamonitor.h>
-#include <rga/qxmlcontainer.h>
-#include <rga2d/qdrawpolygons.h>
+#include <frontend/kde/qgamonitor.h>
+#include <frontend/kde/qxmlcontainer.h>
+#include <frontend/kde/qdrawpolygons.h>
 
 
 //-----------------------------------------------------------------------------

@@ -50,7 +50,7 @@ using namespace R;
 
 //-----------------------------------------------------------------------------
 // include files for Qt Widgets
-#include <rga2d/qdrawpolygons.h>
+#include <frontend/kde/qdrawpolygons.h>
 
 
 //-----------------------------------------------------------------------------

@@ -317,14 +317,23 @@ void KDevVLSIApp::openDocumentFile(const KURL& url)
 	}
 	else
 	{
-		// Open the file
-		if(!doc->openDocument(url))
+		try
 		{
-			KMessageBox::error (this,i18n("Could not open document !"), i18n("Error !"));
-			delete doc;
-			return;
+			// Open the file
+			if(!doc->openDocument(url))
+			{
+				KMessageBox::error (this,i18n("Could not open document !"), i18n("Error !"));
+				delete doc;
+				return;
+			}
+			fileOpenRecent->addURL(url);
 		}
-		fileOpenRecent->addURL(url);
+		catch(RIOException e)
+		{
+				KMessageBox::error(this,e.GetMsg(), i18n("Error !"));
+				delete doc;
+				return;
+		}
 	}
 
 	// create the window
@@ -697,7 +706,7 @@ void KDevVLSIApp::slotHeuristicBL(void)
 	if(m&&(m->getType()==Project))
 	{
 		KDevVLSIDoc* doc = m->getDocument();
-		KVLSIHeuristicView* w = new KVLSIHeuristicView(doc,BottomLeft,pWorkspace,0,WDestructiveClose);
+		KVLSIHeuristicView* w = new KVLSIHeuristicView(doc,R::BottomLeft,pWorkspace,0,WDestructiveClose);
 		w->installEventFilter(this);
 		doc->addView(w);
 		w->setIcon(kapp->miniIcon());
@@ -717,7 +726,7 @@ void KDevVLSIApp::slotHeuristicEdge(void)
 	if(m&&(m->getType()==Project))
 	{
 		KDevVLSIDoc* doc = m->getDocument();
-		KVLSIHeuristicView* w = new KVLSIHeuristicView(doc,Edge,pWorkspace,0,WDestructiveClose);
+		KVLSIHeuristicView* w = new KVLSIHeuristicView(doc,R::Edge,pWorkspace,0,WDestructiveClose);
 		w->installEventFilter(this);
 		doc->addView(w);
 		w->setIcon(kapp->miniIcon());
@@ -737,7 +746,7 @@ void KDevVLSIApp::slotHeuristicCenter(void)
 	if(m&&(m->getType()==Project))
 	{
 		KDevVLSIDoc* doc = m->getDocument();
-		KVLSIHeuristicView* w = new KVLSIHeuristicView(doc,Center,pWorkspace,0,WDestructiveClose);
+		KVLSIHeuristicView* w = new KVLSIHeuristicView(doc,R::Center,pWorkspace,0,WDestructiveClose);
 		w->installEventFilter(this);
 		doc->addView(w);
 		w->setIcon(kapp->miniIcon());

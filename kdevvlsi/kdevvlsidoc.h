@@ -178,7 +178,7 @@ public:
 	* Loads the document by filename and format and emits the updateViews()
 	* signal.
 	*/
-	bool openDocument(const KURL &url, const char *format=0);
+	bool openDocument(const KURL &url, const char *format=0)  throw(RIOException);
 
 	/**
 	* Saves the document under filename and format.

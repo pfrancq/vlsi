@@ -176,7 +176,7 @@ bool KDevVLSIDoc::newDocument(void)
 
 
 //-----------------------------------------------------------------------------
-bool KDevVLSIDoc::openDocument(const KURL &url, const char* /*format*/ /*=0*/)
+bool KDevVLSIDoc::openDocument(const KURL &url, const char* /*format*/ /*=0*/) throw(RIOException)
 {
 	QString tmpfile;
 	static char Tmp[300];
