@@ -44,9 +44,8 @@ using namespace std;
 
 //------------------------------------------------------------------------------
 RLibrary::RLibrary(const RString& name) throw(bad_alloc)
-	: Name(name),RealName(name)
+	: Name(name.ToUpper()),RealName(name)
 {
-	Name.StrUpr();
 	Cells=new RContainer<RCell,unsigned int,false,false>(20,10);
 }
 

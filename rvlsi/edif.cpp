@@ -83,7 +83,8 @@ REDIFTag::REDIFTag(unsigned int id,REDIFFile* Owner,char *(&Buffer),unsigned& Bu
 	TagName=Temp;
 //  TagName.StrUpr(Temp);
 	while((*ptr)==' ') (*(ptr--))=0;
-	TypeName.StrUpr(Temp);
+	TypeName=Temp;
+	TypeName=TypeName.ToUpper();
 
 	// Point to the next entity
 	while(MustIncBuffer(*Buffer)) Buffer++;
