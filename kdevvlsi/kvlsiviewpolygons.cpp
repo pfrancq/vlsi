@@ -46,6 +46,7 @@ KVLSIViewPolygons::KVLSIViewPolygons(const char* file,QWidget *parent, const cha
 	RPoint Limits(0,0),Origin(0,0);
 	RPolygon *p;
 
+	f.Open(Read);
 	f>>nbInfos;
 	infos=new RGeoInfo*[nbInfos];
 	for(i=nbInfos+1,info=infos;--i;info++)
@@ -61,7 +62,7 @@ KVLSIViewPolygons::KVLSIViewPolygons(const char* file,QWidget *parent, const cha
 			if(Y>Limits.Y) Limits.Y=Y;
 			p->InsertPtr(new RPoint(X,Y));
 		}
-		
+
 	}
 	draw=new QDrawPolygons(this);
 //	draw->setInfos(this);
