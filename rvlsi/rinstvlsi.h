@@ -6,7 +6,7 @@
 
 	Instance for VLSI placement GA - Header
 
-	Copyright 1999-2003 by the Université Libre de Bruxelles.
+	Copyright 1999-2003 by the Universitï¿½Libre de Bruxelles.
 
 	Authors:
 		Pascal Francq (pfrancq@ulb.ac.be).
@@ -38,7 +38,7 @@
 //------------------------------------------------------------------------------
 // include files for Rainbow
 #include <rvlsi/rgavlsi.h>
-#include <rga2d/rinst2d.h>
+#include <rga/rinst2d.h>
 
 
 //------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ public:
 	/**
 	* Construct the instance.
 	* @param max            Maximal number of generations.
-	* @param popsize        The size of the population.	
+	* @param popsize        The size of the population.
 	* @param prob           The problem.
 	* @param h              The type of heuristic to be used.
 	* @param debug          Debugger.

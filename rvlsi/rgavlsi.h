@@ -6,7 +6,7 @@
 
 	GA for VLSI placement - Header
 
-	Copyright 1999-2003 by the Université Libre de Bruxelles.
+	Copyright 1999-2003 by the Universitï¿½Libre de Bruxelles.
 
 	Authors:
 		Pascal Francq (pfrancq@ulb.ac.be).
@@ -38,7 +38,7 @@
 //------------------------------------------------------------------------------
 // include files for R Project
 #include <rga/rfitness.h>
-#include <rga2d/rga2d.h>
+#include <rga/rga2d.h>
 
 
 //------------------------------------------------------------------------------
