@@ -82,7 +82,6 @@ enum VLSIViewType{Nothing,Project,Heuristic,GA,Polygons};
 * window gets destroyed even if the installed eventFilter has set the event to
 * be ignored.	
 * @author Pascal Francq
-* @version $Revision$
 */
 class KDevVLSIView : public QWidget
 {
