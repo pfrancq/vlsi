@@ -38,6 +38,7 @@
 #include <rstd/rtextfile.h>
 #include <rvlsi/files.h>
 using namespace R;
+using namespace std;
 
 
 
@@ -80,31 +81,24 @@ RProject::RProject(void) throw(bad_alloc)
 bool RProject::LoadProject(void)
 {
 	RTextFile f(Name,Read);
-	char *Tmp;
-	char* ptr;
+	RString Tmp;
+	unsigned int pos;
 
 	// Read in the File
 	Tmp=f.GetLine();    // Dta File
-	ptr=strstr(Tmp,"=");
-	(*ptr)=0;
-	InputName=Tmp;
+	pos=Tmp.Find('=');
+	InputName=Tmp.Mid(0,pos);
 	Tmp=f.GetLine();    // Res File
-	ptr=strstr(Tmp,"=");
-	(*ptr)=0;
-	OutputName=Tmp;
+	pos=Tmp.Find('=');
+	OutputName=Tmp.Mid(0,pos);
 	while(!f.Eof()) // Read GDSII and EDIF2 Files
 	{
 		Tmp=f.GetLine();
-		ptr=strstr(Tmp,"=");
-		(*(ptr++))=0;
-		if(!strcmp(ptr,"GDSII"))
-		{
+		pos=Tmp.Find('=');
+		if(Tmp=="GDSII")
 			InsertFile(CreateFile(Tmp,"GDSII"));
-		}
-		if(!strcmp(ptr,"EDIF2"))
-		{
+		if(Tmp=="EDIF2")
 			InsertFile(CreateFile(Tmp,"EDIF2"));
-		}
 	}
 	return(true);
 }

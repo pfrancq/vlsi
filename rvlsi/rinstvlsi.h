@@ -91,7 +91,7 @@ public:
 	* @param h              The type of heuristic to be used.
 	* @param debug          Debugger.
 	*/
-	RInstVLSI(unsigned int max,unsigned int popsize,RProblem2D* prob,HeuristicType h,RDebug* debug=0) throw(bad_alloc);
+	RInstVLSI(unsigned int max,unsigned int popsize,RProblem2D* prob,HeuristicType h,RDebug* debug=0) throw(std::bad_alloc);
 
 	/**
 	* This function determines if the GA must be stopped. Actually, it is the case

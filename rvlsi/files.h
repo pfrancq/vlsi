@@ -114,8 +114,8 @@ public:
 	RString Name;
 	RString InputName,OutputName;
 
-	RProject(const RString &) throw(bad_alloc);
-	RProject(void) throw(bad_alloc);
+	RProject(const RString &) throw(std::bad_alloc);
+	RProject(void) throw(std::bad_alloc);
 	inline void InsertFile(RDataFile *file)
 	{
 		InsertPtr(file);

@@ -57,8 +57,8 @@ class RVLSIProject : public RProject
 {
 public:
 
-	RVLSIProject(const RString& name) throw(bad_alloc) : RProject(name) {}
-	RVLSIProject(void) throw(bad_alloc) : RProject() {}
+	RVLSIProject(const RString& name) throw(std::bad_alloc) : RProject(name) {}
+	RVLSIProject(void) throw(std::bad_alloc) : RProject() {}
 	virtual RDataFile* CreateFile(const RString& name,const RString& type)
 	{
 		if(type=="GDSII") return(new RGDSFile(name));

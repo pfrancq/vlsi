@@ -36,6 +36,7 @@
 //------------------------------------------------------------------------------
 #include <rvlsi/struct.h>
 using namespace R;
+using namespace std;
 
 
 

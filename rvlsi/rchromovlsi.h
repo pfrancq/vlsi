@@ -65,7 +65,7 @@ public:
 	* @param inst           The instance of the problem.
 	* @param id             The identificator of the chromosome.
 	*/
-	RChromoVLSI(RInstVLSI* inst,unsigned int id) throw(bad_alloc);
+	RChromoVLSI(RInstVLSI* inst,unsigned int id) throw(std::bad_alloc);
 
 	/**
 	* Evaluate the chromosome, by comparing the area of the boundary rectangle,

@@ -39,6 +39,7 @@
 #include <rvlsi/rinstvlsi.h>
 #include <rvlsi/rchromovlsi.h>
 using namespace R;
+using namespace std;
 
 
 

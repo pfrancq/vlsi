@@ -70,7 +70,7 @@ public:
 	RString RealName;
 	RContainer<RCell,unsigned int,false,false>* Cells;
 
-	RLibrary(const RString& name) throw(bad_alloc);
+	RLibrary(const RString& name) throw(std::bad_alloc);
 	int Compare(const RString& name) const { return(Name.Compare(name)); }
 	int Compare(const RLibrary* lib) const { return(Name.Compare(lib->Name)); }
 	void InsertCell(RCell*);
@@ -82,8 +82,8 @@ public:
 class RLibraries : public RContainer<RLibrary,unsigned int,true,true>
 {
 public:
-	RLibraries(void) throw(bad_alloc);
-	RLibrary* InsertLib(const RString &name) throw(bad_alloc)
+	RLibraries(void) throw(std::bad_alloc);
+	RLibrary* InsertLib(const RString &name) throw(std::bad_alloc)
 	{
 		return(GetInsertPtr<RString>(name));
 	}
@@ -99,7 +99,7 @@ public:
 	RCell* Owner;
 	char Dir;
 
-	RPort(const RString& name) throw(bad_alloc);
+	RPort(const RString& name) throw(std::bad_alloc);
 	int Compare(const RString& name) const { return(Name.Compare(name)); }
 	int Compare(const RPort* port) const { return(Name.Compare(port->Name)); }
 };
@@ -118,7 +118,7 @@ public:
 	RPolygons Polygons;
 	bool Abstract;
 
-	RCell(const RString &name) throw(bad_alloc);
+	RCell(const RString &name) throw(std::bad_alloc);
 	int Compare(const RString &name) const { return(Name.Compare(name)); }
 	int Compare(const RCell* cell) const { return(Name.Compare(cell->Name)); }
 	RPort* GetPort(const RString& name) const { return(Ports->GetInsertPtr<RString>(name)); }
@@ -139,7 +139,7 @@ class RCells : public RContainer<RCell,unsigned int,true,true>
 public:
 	RStructure* Struct;
 
-	RCells(RStructure* s) throw(bad_alloc);
+	RCells(RStructure* s) throw(std::bad_alloc);
 	RCell* GetCell(const RString& name) const { return(GetPtr<RString>(name)); }
 	RCell* InsertCell(const RString& name,RLibrary* lib)
 	{
@@ -163,7 +163,7 @@ public:
 	RContainer<RPortRef,unsigned int,true,true>* PortRefs;
 	RString Name;
 
-	RInstance(const RString& name) throw(bad_alloc) { Name=name; }
+	RInstance(const RString& name) throw(std::bad_alloc) { Name=name; }
 	int Compare(const RString& name) const { return(Name.Compare(name)); }
 	int Compare(const RInstance* inst) const { return(Name.Compare(inst->Name)); }
 };
