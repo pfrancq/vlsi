@@ -40,20 +40,6 @@ AC_ARG_WITH(r-libs,
 
 # ---- def function to check for a specific R library on the system
 AC_DEFUN(R_LIB_CHK,[
-	str="$1/lib$2.*"
-	R_LIB_DIR=""
-	for j in `echo $str`; do
-		if test -r $j; then
-		R_LIB_DIR=$1
-		break 2
-	fi
-	done
-])
-# --- end def function -----
-
-	
-# ---- def function to check for a specific R library on the system
-AC_DEFUN(RFRONTEND_LIB_CHK,[
 	str="$1/$2.*"
 	R_LIB_DIR=""
 	for j in `echo $str`; do
@@ -64,7 +50,7 @@ AC_DEFUN(RFRONTEND_LIB_CHK,[
 	done
 ])
 # --- end def function -----
-	
+
 	
 # ---- def function to check for a specific R includes on the system
 AC_DEFUN(R_INC_CHK,[
@@ -123,16 +109,16 @@ R_INC_CHK(rpromethee,rpromethee.h)
 R_INC_CHK(rstd,rcontainer.h)
 
 # ---- check the presence of the includes for all the R frontend libraries ----
-R_INC_CHK(frontend/kde,qgamonitor.h)
+R_INC_CHK(frontend/kde,rqt.h)
 
 # ---- check the presence of all R libraries
 for l in rdb rga rga2d rgga rmath rprg rpromethee rstd; do
 
 	#AC_MSG_CHECKING(for lib$l)
 	for i in $R_LIB_PATH ; do
-		R_LIB_CHK($i/$l,$l)  #check for local presence
-		R_LIB_CHK($i,$l)
-		R_LIB_CHK($i/r,$l)
+		R_LIB_CHK($i/$l,lib$l)  #check for local presence
+		R_LIB_CHK($i,lib$l)
+		R_LIB_CHK($i/r,lib$l)
 	done
 	AC_MSG_CHECKING(for lib$l)
 	if test -z "$R_LIB_DIR"; then
@@ -153,9 +139,9 @@ done
 # ---- check the presence of all frontend libraries ----
 # --------------------------------------------------------------
 for i in $R_LIB_PATH ; do
-	RFRONTEND_LIB_CHK($i/frontend/kde,libkde_r)
-	RFRONTEND_LIB_CHK($i,libkde_r)
-	RFRONTEND_LIB_CHK($i/r,libkde_r)
+	R_LIB_CHK($i/frontend/kde,libkde_r)
+	R_LIB_CHK($i,libkde_r)
+	R_LIB_CHK($i/r,libkde_r)
 done
 
 AC_MSG_CHECKING(for libkde_r)
