@@ -11,8 +11,8 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <version></version>
-    <description></description>
+    <version/>
+    <description/>
     <ignoreparts/>
   </general>
   <kdevautoproject>
@@ -27,7 +27,7 @@
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <envvars>
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
@@ -57,7 +57,7 @@
     </configurations>
     <run>
       <mainprogram>./kdevvlsi/kdevvlsi</mainprogram>
-      <programargs></programargs>
+      <programargs/>
       <terminal>false</terminal>
       <envvars/>
     </run>
@@ -112,8 +112,8 @@
   <kdevdebugger>
     <general>
       <dbgshell>libtool</dbgshell>
-      <programargs></programargs>
-      <gdbpath></gdbpath>
+      <programargs/>
+      <gdbpath/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -131,8 +131,8 @@
     <codecompletion/>
     <filetemplates>
       <choosefiles>false</choosefiles>
-      <interfaceURL></interfaceURL>
-      <implementationURL></implementationURL>
+      <interfaceURL/>
+      <implementationURL/>
       <interfacesuffix>.h</interfacesuffix>
       <implementationsuffix>.cpp</implementationsuffix>
       <lowercasefilenames>true</lowercasefilenames>
@@ -144,12 +144,12 @@
   </kdevclassview>
   <kdevcvs>
     <cvsoptions>-f</cvsoptions>
-    <commitoptions></commitoptions>
+    <commitoptions/>
     <updateoptions>-dP</updateoptions>
-    <addoptions></addoptions>
+    <addoptions/>
     <removeoptions>-f</removeoptions>
     <diffoptions>-u3 -p</diffoptions>
-    <logoptions></logoptions>
-    <rshoptions></rshoptions>
+    <logoptions/>
+    <rshoptions/>
   </kdevcvs>
 </kdevelop>

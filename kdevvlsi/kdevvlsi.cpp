@@ -530,7 +530,7 @@ void KDevVLSIApp::slotFileOpen(void)
 {
 	slotStatusMsg(i18n("Opening file..."));
 	KApplication::kApplication()->processEvents(1000);
-	KURL url=KFileDialog::getOpenURL("/home/pfrancq/data/projects/vlsi/data",i18n("*.pl2d|2D Placement files"), this, i18n("Open File..."));
+	KURL url=KFileDialog::getOpenURL("~",i18n("*.pl2d|2D Placement files"), this, i18n("Open File..."));
 	if(!url.isEmpty())
 	{
 		openDocumentFile(url);

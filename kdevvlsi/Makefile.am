@@ -3,16 +3,23 @@ bin_PROGRAMS = kdevvlsi
 
 ## INCLUDES were found outside kdevelop specific part
 
-kdevvlsi_SOURCES = kappoptions.ui kvlsiviewpolygons.cpp kvlsigaview.cpp qdrawpolygons.cpp kvlsiheuristicview.cpp kvlsiprjview.cpp kdevvlsiview.cpp kdevvlsidoc.cpp kdevvlsi.cpp main.cpp
-kdevvlsi_LDADD   = $(R_LIB)/rga2d/librga2d.la $(R_LIB)/rvlsi/librvlsi.la $(R_LIB)/rmath/librmath.la $(R_LIB)/rpromethee/librpromethee.la $(R_LIB)/rstd/librstd.la $(R_LIB)/rga/librga.la $(QTWIDGETS_LIB)/rga/libkde_rga.la $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
+kdevvlsi_SOURCES = kappoptions.ui kvlsiviewpolygons.cpp kvlsigaview.cpp \
+		 kvlsiheuristicview.cpp kvlsiprjview.cpp kdevvlsiview.cpp kdevvlsidoc.cpp \
+		 kdevvlsi.cpp main.cpp
+
+kdevvlsi_LDADD   = $(R_LIB)/rga2d/librga2d.la $(R_LIB)/rvlsi/librvlsi.la \
+		$(R_LIB)/rmath/librmath.la $(R_LIB)/rpromethee/librpromethee.la \
+		$(R_LIB)/rstd/librstd.la $(R_LIB)/rga/librga.la \
+		$(QTWIDGETS_LIB)/rga/libkde_rga.la $(QTWIDGETS_LIB)/rga2d/libkde_rga2d.la \
+		$(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
 
 SUBDIRS =
 
 EXTRA_DIST = main.cpp kdevvlsi.cpp kdevvlsi.h kdevvlsidoc.cpp kdevvlsidoc.h \
 		kdevvlsiview.cpp kdevvlsiview.h kdevvlsiui.rc kdevvlsi.desktop \
 		kdevvlsi.xpm mini-kdevvlsi.xpm kvlsiprjview.cpp kvlsiprjview.h \
-		kvlsiheuristicview.cpp kvlsiheuristicview.h qdrawpolygons.cpp qdrawpolygons.h \
-		kvlsigaview.cpp kvlsigaview.h kvlsiviewpolygons.cpp kvlsiviewpolygons.h kappoptions.ui
+		kvlsiheuristicview.cpp kvlsiheuristicview.h kvlsigaview.cpp \
+		kvlsigaview.h kvlsiviewpolygons.cpp kvlsiviewpolygons.h kappoptions.ui
 
 install-data-local:
 	$(mkinstalldirs) $(kde_appsdir)/Applications/

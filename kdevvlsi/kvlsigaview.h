@@ -50,11 +50,11 @@ using namespace R;
 // include files for QtWidgets
 #include <rga/qgamonitor.h>
 #include <rga/qxmlcontainer.h>
+#include <rga2d/qdrawpolygons.h>
 
 
 //-----------------------------------------------------------------------------
 // include files for current application
-#include "qdrawpolygons.h"
 #include "kdevvlsiview.h"
 
 

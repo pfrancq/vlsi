@@ -189,80 +189,6 @@
             </attribute>
             <widget class="QGroupBox">
                 <property name="name">
-                    <cstring>GroupBox10</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>5</y>
-                        <width>480</width>
-                        <height>95</height>
-                    </rect>
-                </property>
-                <property name="title">
-                    <string></string>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>TextLabel1_4</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>10</x>
-                            <y>20</y>
-                            <width>85</width>
-                            <height>16</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>Population size</string>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>TextLaba</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>10</x>
-                            <y>60</y>
-                            <width>60</width>
-                            <height>20</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>Heuristic</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>txtPopSize</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>105</x>
-                            <y>15</y>
-                            <width>40</width>
-                            <height>22</height>
-                        </rect>
-                    </property>
-                </widget>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>cbGAHeuristicType</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>60</x>
-                            <y>60</y>
-                            <width>120</width>
-                            <height>22</height>
-                        </rect>
-                    </property>
-                </widget>
-            </widget>
-            <widget class="QGroupBox">
-                <property name="name">
                     <cstring>GroupBox11</cstring>
                 </property>
                 <property name="geometry">
@@ -364,6 +290,95 @@
                     </property>
                     <property name="text">
                         <string>Step Mode</string>
+                    </property>
+                </widget>
+            </widget>
+            <widget class="QGroupBox">
+                <property name="name">
+                    <cstring>GroupBox10</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>5</y>
+                        <width>480</width>
+                        <height>95</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string></string>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>TextLabel1_4</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>10</x>
+                            <y>20</y>
+                            <width>85</width>
+                            <height>16</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>Population size</string>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>TextLaba</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>10</x>
+                            <y>60</y>
+                            <width>60</width>
+                            <height>20</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>Heuristic</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>txtPopSize</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>105</x>
+                            <y>15</y>
+                            <width>40</width>
+                            <height>22</height>
+                        </rect>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>Bottom-Left</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Edge</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Center</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>cbGAHeuristicType</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>70</x>
+                            <y>60</y>
+                            <width>140</width>
+                            <height>22</height>
+                        </rect>
                     </property>
                 </widget>
             </widget>
@@ -900,5 +915,30 @@
         <slot>reject()</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>txtPopSize</tabstop>
+    <tabstop>cbGAHeuristicType</tabstop>
+    <tabstop>txtMaxGen</tabstop>
+    <tabstop>txtStepGen</tabstop>
+    <tabstop>cbStep</tabstop>
+    <tabstop>cbAllOris</tabstop>
+    <tabstop>cbComputePoly</tabstop>
+    <tabstop>cbUsePoly</tabstop>
+    <tabstop>txtHeurAreaP</tabstop>
+    <tabstop>txtHeurAreaQ</tabstop>
+    <tabstop>txtHeurAreaW</tabstop>
+    <tabstop>txtHeurDistP</tabstop>
+    <tabstop>txtHeurDistQ</tabstop>
+    <tabstop>txtHeurDistW</tabstop>
+    <tabstop>txtSelectWeightP</tabstop>
+    <tabstop>txtSelectWeightQ</tabstop>
+    <tabstop>txtSelectWeightW</tabstop>
+    <tabstop>txtSelectDistP</tabstop>
+    <tabstop>txtSelectDistQ</tabstop>
+    <tabstop>txtSelectDistW</tabstop>
+    <tabstop>btnOK</tabstop>
+    <tabstop>btnCancel</tabstop>
+    <tabstop>TabWidget</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
