@@ -92,7 +92,7 @@ class KDevVLSIView : public QWidget
 {
 	Q_OBJECT
 
-	friend KDevVLSIDoc;
+	friend class KDevVLSIDoc;
 
 public:
 

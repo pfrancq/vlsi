@@ -57,7 +57,7 @@ KVLSIPrjView::KVLSIPrjView(KDevVLSIDoc* pDoc,QWidget *parent,const char *name,in
 void KVLSIPrjView::createPrj(void)
 {
 	char tmp[100];
-	QListViewItem *item,*item2,*item3,*item4,*item5;
+	QListViewItem *item=0,*item2=0,*item3=0,*item4=0,*item5=0;
 	RObj2D* obj;
 	RConnection *con;
 	RObj2DConnector* connector;
@@ -96,7 +96,8 @@ void KVLSIPrjView::createPrj(void)
 	{
 		obj=doc->Objs();
 		// Name of the object
-		item2 = new QListViewItem(item,item2,obj->Name());
+		sprintf(tmp,"%s (%u)",obj->Name(),obj->GetId());
+		item2 = new QListViewItem(item,item2,tmp);
 		item3=0;
 
 		// Vertices
@@ -115,6 +116,7 @@ void KVLSIPrjView::createPrj(void)
 		{
 			connector=obj->Connectors();
 			item4=new QListViewItem(item3,item4,connector->GetName());
+			item5=0;
 			for(unsigned int i=0;i<connector->NbPos;i++)
 			{
 				sprintf(tmp,"Pin at (%d,%d)",connector->Pos[i].X,connector->Pos[i].Y);

@@ -35,10 +35,12 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
+#include <rmath/rrect.h>
+#include <rga2d/robj2dcontainer.h>
 #include <rga2d/rplacementbottomleft.h>
 #include <rga2d/rplacementedge.h>
 #include <rga2d/rplacementcenter.h>
-using namespace RGA;
+using namespace R;
 
 
 //-----------------------------------------------------------------------------
@@ -74,20 +76,19 @@ KVLSIHeuristicView::KVLSIHeuristicView(KDevVLSIDoc* pDoc,HeuristicType pType,QWi
 	nbObjs = pDoc->Objs.NbPtr;
 	draw=new QDrawPolygons(pDoc,this);
 	draw->setNbInfos(nbObjs);
-	draw->setInfos(Tab);
+	draw->setInfos(this);
 	result=new QLabel(this);
 	grid=new RGrid(pDoc->Limits);
 
 	// Init the random generator
 	Random = new RRandomGood(12345);
 
-	
 	// Init the heuristic
 	calcFree=theApp->calcFree;
 	useFree=theApp->useFree;
 	allOri=theApp->allOri;
-	RPromCriterionParams HeurDist=theApp->HeurDist;
-	RPromCriterionParams HeurArea=theApp->HeurArea;
+	HeurDist=theApp->HeurDist;
+	HeurArea=theApp->HeurArea;
 	step=theApp->step;
 
 	switch(pType)
@@ -104,7 +105,7 @@ KVLSIHeuristicView::KVLSIHeuristicView(KDevVLSIDoc* pDoc,HeuristicType pType,QWi
 			PlacementHeuristic = new RPlacementCenter(pDoc->Objs.NbPtr,calcFree,useFree,Random,allOri);
 			break;
 	}
-	PlacementHeuristic->Init(pDoc,Tab,grid);
+	PlacementHeuristic->Init(pDoc,this,grid);
 	PlacementHeuristic->SetAreaParams(HeurArea);
 	PlacementHeuristic->SetDistParams(HeurDist);
 	free=PlacementHeuristic->GetFreePolygons();
@@ -135,7 +136,7 @@ void KVLSIHeuristicView::setTitle(QString _title)
 			break;
 	}
 	now=time((time_t *)0);
-  	l_time = localtime(&now);
+	l_time = localtime(&now);
 	sprintf(today," (%u-%u-%u %u:%u:%u)",l_time->tm_year+1900,l_time->tm_mon+1,l_time->tm_mday,l_time->tm_hour,l_time->tm_min,l_time->tm_sec);
 	setCaption(_title+today);
 }
@@ -153,11 +154,12 @@ void KVLSIHeuristicView::resizeEvent(QResizeEvent *)
 //-----------------------------------------------------------------------------
 void KVLSIHeuristicView::RunHeuristic(void)
 {
+	Stop=false;
 	// Run the heuristic
 	if(step)
 		NextStep();
 	else
-		while(!PlacementHeuristic->IsEnd())
+		while((!PlacementHeuristic->IsEnd())&&(!Stop))
 			NextStep();
 }
 
@@ -188,7 +190,8 @@ void KVLSIHeuristicView::NextStep(void)
 			ActLimits.Y=Rect.Height();
 			
 			// Construct Result Message
-			sprintf(Str,"ActLimits=(%u,%u)  -  Area=%u  -  Free(Calc=",ActLimits.X,ActLimits.Y,ActLimits.X*ActLimits.Y);
+			sprintf(Str,"ActLimits=(%u,%u)  -  Area=%u  -  Dist=%.1f  -  Free(Calc=",
+				ActLimits.X,ActLimits.Y,ActLimits.X*ActLimits.Y,PlacementHeuristic->GetDistances());
 			if(calcFree)
 			{
 				strcat(Str,"true,Use=");
@@ -220,6 +223,7 @@ void KVLSIHeuristicView::NextStep(void)
     {
 		KMessageBox::error(this,QString(e.Msg));
 		draw->setChanged();
+		Stop=true;
     }
 }
 
@@ -238,11 +242,16 @@ void KVLSIHeuristicView::RunToEnd(void)
 //-----------------------------------------------------------------------------
 void KVLSIHeuristicView::SelectObjects(void)
 {
-	RObj2DContainer* ptr=new RObj2DContainer(doc->Objs.NbPtr+1,doc->Objs.NbPtr);
+	RObj2DContainer* ptr=new RObj2DContainer(NbPtr+1,"Temporary Object",NbPtr);
 
 	memset(Selected,0,doc->Objs.NbPtr*sizeof(bool));
 	doc->Cons.SetParams(theApp->SelectDist,theApp->SelectWeight,Random);
 	GetSetInfos(ptr,grid,Selected);
+	for(unsigned int i=0;i<doc->Objs.NbPtr;i++)
+	{
+		if(Selected[i])
+			Tab[i]->SetSelect();
+	}
 	delete ptr;
 	draw->setChanged();
 }

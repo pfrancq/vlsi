@@ -41,16 +41,8 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rgeometry/rpoint.h>
-using namespace RGeometry2D;
-#include <rga2d/rga2d.h>
-#include <rga2d/rgeoinfo.h>
-#include <rga2d/rgeoinfos.h>
-#include <rga2d/rgrid.h>
-#include <rga2d/rplacementheuristic.h>
-#include <rvlsi/rgavlsi.h>
 #include <rga2d/rproblem2d.h>
-using namespace RGA;
+using namespace R;
 
 
 //-----------------------------------------------------------------------------
@@ -214,11 +206,11 @@ public slots:
 
 public:
 
-	friend KDevVLSIApp;
-	friend KDevVLSIView;
-	friend KVLSIPrjView;
-	friend KVLSIHeuristicView;
-	friend KVLSIGAView;	
+	friend class KDevVLSIApp;
+	friend class KDevVLSIView;
+	friend class KVLSIPrjView;
+	friend class KVLSIHeuristicView;
+	friend class KVLSIGAView;
 };
 
 

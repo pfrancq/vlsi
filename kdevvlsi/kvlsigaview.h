@@ -35,8 +35,9 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
+#include <rga/rgasignals.h>
 #include <rvlsi/rgavlsi.h>
-using namespace RGA;
+using namespace R;
 
 
 //-----------------------------------------------------------------------------
@@ -44,12 +45,17 @@ using namespace RGA;
 #include <qwidget.h>
 #include <qtabwidget.h>
 
+
+//-----------------------------------------------------------------------------
+// include files for QtWidgets
+#include <rga/qgamonitor.h>
+#include <rga/qxmlcontainer.h>
+
+
 //-----------------------------------------------------------------------------
 // include files for current application
 #include "qdrawpolygons.h"
 #include "kdevvlsiview.h"
-#include "qgamonitor.h"
-#include "qxmlcontainer.h"
 
 
 //-----------------------------------------------------------------------------

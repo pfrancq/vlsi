@@ -29,6 +29,13 @@
 
 
 //-----------------------------------------------------------------------------
+// include files for R Project
+#include <rvlsi/rinstvlsi.h>
+#include <rvlsi/rchromovlsi.h>
+using namespace R;
+
+
+//-----------------------------------------------------------------------------
 // include files for Qt/KDE
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -38,7 +45,6 @@
 // include files for current application
 #include "kvlsigaview.h"
 #include "kdevvlsidoc.h"
-
 
 
 //-----------------------------------------------------------------------------
@@ -64,7 +70,7 @@ KVLSIGAView::KVLSIGAView(KDevVLSIDoc* pDoc,QWidget *parent, const char *name,int
 	TabWidget->insertTab(StatSplitter,"Statistic");
 	StatSplitter->setGeometry(rect());
 	Monitor=new	QGAMonitor(StatSplitter);
-	Monitor->setHScale(theApp->GAMaxGen);
+	Monitor->setMaxGen(theApp->GAMaxGen);
 	connect(this,SIGNAL(signalSetGen(unsigned int,unsigned int,double)),Monitor,SLOT(slotSetGen(unsigned int,unsigned int,double)));
 	Debug=new QXMLContainer(StatSplitter);
 
@@ -85,7 +91,7 @@ KVLSIGAView::KVLSIGAView(KDevVLSIDoc* pDoc,QWidget *parent, const char *name,int
 	try
 	{
 		Gen=0;
-		Instance=new RInstVLSI(theApp->GAMaxGen,theApp->GAPopSize,pDoc,theApp->GAHeur);
+		Instance=new RInstVLSI(theApp->GAMaxGen,theApp->GAPopSize,pDoc,theApp->GAHeur,Debug);
 		Instance->AddReceiver(this);
 		Instance->Init();
 		Instance->SetAreaParams(theApp->HeurArea);
@@ -106,7 +112,6 @@ KVLSIGAView::KVLSIGAView(KDevVLSIDoc* pDoc,QWidget *parent, const char *name,int
 		KMessageBox::error(this,"Unknow Problem");
 		Instance=0;
 	}
-
 }
 
 
@@ -114,7 +119,7 @@ KVLSIGAView::KVLSIGAView(KDevVLSIDoc* pDoc,QWidget *parent, const char *name,int
 void KVLSIGAView::receiveGenSig(GenSig* sig)
 {
 	emit signalSetGen(sig->Gen,sig->BestGen,sig->Best->Fitness->Value);
-	Sol->setInfos(Instance->Chromosomes[CurId]->Tab);
+	Sol->setInfos(Instance->Chromosomes[CurId]);
 	Sol->setChanged();
 
 }
@@ -134,7 +139,7 @@ void KVLSIGAView::receiveBestSig(BestSig* sig)
 
 	sprintf(tmp,"Best Solution (Id=%u)",sig->Best->Id);
 	TabWidget->changeTab(Best,tmp);
-	Best->setInfos(sig->Best->Tab);
+	Best->setInfos(sig->Best);
 	Best->setChanged();
 }
 
@@ -160,6 +165,7 @@ void KVLSIGAView::RunGA(void)
 			Instance->Run();
 			if(Gen==theApp->GAMaxGen)
 				theApp->GAPause->setEnabled(false);
+			KMessageBox::information(this,"Done");
 		}
 		catch(eGA& e)
 		{
@@ -200,7 +206,7 @@ void KVLSIGAView::keyReleaseEvent(QKeyEvent* e)
 			if(CurId<Instance->PopSize-1) CurId++; else CurId=0;
 			sprintf(tmp,"Solution (%u/%u)",CurId,Instance->PopSize-1);
 			TabWidget->changeTab(Sol,tmp);
-			Sol->setInfos(Instance->Chromosomes[CurId]->Tab);
+			Sol->setInfos(Instance->Chromosomes[CurId]);
 			Sol->setChanged();
 			break;
 
@@ -208,7 +214,7 @@ void KVLSIGAView::keyReleaseEvent(QKeyEvent* e)
 			if(CurId>0) CurId--; else CurId=Instance->PopSize-1;
 			sprintf(tmp,"Solution (%u/%u)",CurId,Instance->PopSize-1);	
 			TabWidget->changeTab(Sol,tmp);
-			Sol->setInfos(Instance->Chromosomes[CurId]->Tab);
+			Sol->setInfos(Instance->Chromosomes[CurId]);
 			Sol->setChanged();
 			break;
 

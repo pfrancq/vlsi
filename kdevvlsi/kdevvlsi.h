@@ -38,13 +38,11 @@
 #include <config.h>
 #endif
 
-
 //-----------------------------------------------------------------------------
 // include files for R Project
 #include <rpromethee/rpromcriterion.h>
-using namespace RPromethee;
 #include <rga2d/rga2d.h>
-using namespace RGA;
+using namespace R;
 
 
 //-----------------------------------------------------------------------------
@@ -59,6 +57,7 @@ using namespace RGA;
 #include <kapp.h>
 #include <kmainwindow.h>
 #include <kaction.h>
+#include <kurl.h>
 
 
 //-----------------------------------------------------------------------------
@@ -233,12 +232,6 @@ protected:
 private slots:
 
 	/**
-	* Sets the main application window title each time the active MDI child
-	* window changes.
-	*/
-	void setWndTitle(QWidget*);
-
-	/**
 	* Clears the document in the actual view to reuse it as the new document.
 	*/
 	void slotFileNew(void);
@@ -408,6 +401,11 @@ private slots:
 	* Put all the window in cascade.
 	*/
 	void slotWindowCascade(void);
+
+	/**
+	* Called when a window is activated.
+	*/
+	void slotWindowActivated(QWidget* w);
 
 private:
 

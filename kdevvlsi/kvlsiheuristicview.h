@@ -35,12 +35,11 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rga2d/rga2d.h>
 #include <rga2d/rgeoinfo.h>
 #include <rga2d/rgeoinfos.h>
 #include <rga2d/rconnections.h>
 #include <rga2d/rplacementheuristic.h>
-using namespace RGA;
+using namespace R;
 
 
 //-----------------------------------------------------------------------------
@@ -88,17 +87,17 @@ class KVLSIHeuristicView : public KDevVLSIView, public RGeoInfos
 	/**
 	* Pointer to free polygons to paint.
 	*/
-	RFreePolygons *free;
+	RFreePolygons* free;
 
 	/**
 	* Show information about the result.
 	*/
-	QLabel *result;
+	QLabel* result;
 
 	/**
 	* Show the polygons.
 	*/
-	QDrawPolygons *draw;
+	QDrawPolygons* draw;
 
 	/**
 	* Heuristic used.
@@ -134,6 +133,11 @@ class KVLSIHeuristicView : public KDevVLSIView, public RGeoInfos
 	* Test all possible orientation.
 	*/
 	bool allOri;
+
+	/**
+	* Stop the heuristic.
+	*/
+	bool Stop;
 
 	/**
 	* Prométhéé Parameters for Heuristic Distance.	

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-12-03 17:19+0100\n"
+"POT-Creation-Date: 2001-02-21 15:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,189 +14,349 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: kdevvlsi.cpp:104
-msgid "New &Window"
-msgstr ""
-
-#: kdevvlsi.cpp:105
-msgid "&Tile"
-msgstr ""
-
-#: kdevvlsi.cpp:106
-msgid "&Cascade"
-msgstr ""
-
-#: kdevvlsi.cpp:108
+#: kdevvlsi.cpp:125
 msgid "Creates a new document"
 msgstr ""
 
-#: kdevvlsi.cpp:109
+#: kdevvlsi.cpp:126
 msgid "Opens an existing document"
 msgstr ""
 
-#: kdevvlsi.cpp:110
+#: kdevvlsi.cpp:127
 msgid "Opens a recently used file"
 msgstr ""
 
-#: kdevvlsi.cpp:111
+#: kdevvlsi.cpp:128
 msgid "Saves the actual document"
 msgstr ""
 
-#: kdevvlsi.cpp:112
+#: kdevvlsi.cpp:129
 msgid "Saves the actual document as..."
 msgstr ""
 
-#: kdevvlsi.cpp:113
+#: kdevvlsi.cpp:130
 msgid "Closes the actual document"
 msgstr ""
 
-#: kdevvlsi.cpp:114
+#: kdevvlsi.cpp:131
 msgid "Prints out the actual document"
 msgstr ""
 
-#: kdevvlsi.cpp:115
+#: kdevvlsi.cpp:132
 msgid "Quits the application"
 msgstr ""
 
-#: kdevvlsi.cpp:117
+#: kdevvlsi.cpp:138
 msgid "Cuts the selected section and puts it to the clipboard"
 msgstr ""
 
-#: kdevvlsi.cpp:118
+#: kdevvlsi.cpp:139
 msgid "Copies the selected section to the clipboard"
 msgstr ""
 
-#: kdevvlsi.cpp:119
+#: kdevvlsi.cpp:140
 msgid "Pastes the clipboard contents to actual position"
 msgstr ""
 
-#: kdevvlsi.cpp:121
-msgid "Enables/disables the toolbar"
+#: kdevvlsi.cpp:143
+msgid "New &Window"
 msgstr ""
 
-#: kdevvlsi.cpp:122
-msgid "Enables/disables the statusbar"
+#: kdevvlsi.cpp:144
+msgid "&Tile"
 msgstr ""
 
-#: kdevvlsi.cpp:124
+#: kdevvlsi.cpp:145
+msgid "&Cascade"
+msgstr ""
+
+#: kdevvlsi.cpp:146
 msgid "&Window"
 msgstr ""
 
-#: kdevvlsi.cpp:137 kdevvlsi.cpp:210 kdevvlsi.cpp:348 kdevvlsi.cpp:363
-#: kdevvlsi.cpp:372 kdevvlsi.cpp:390 kdevvlsi.cpp:416 kdevvlsi.cpp:429
-#: kdevvlsi.cpp:440 kdevvlsi.cpp:460 kdevvlsi.cpp:471 kdevvlsi.cpp:482
-#: kdevvlsi.cpp:493 kdevvlsi.cpp:504 kdevvlsi.cpp:521 kdevvlsi.cpp:538
-#: kdevvlsi.cpp:552
+#: kdevvlsi.cpp:150
+msgid "&Bottom-Left Heuristic"
+msgstr ""
+
+#: kdevvlsi.cpp:151
+msgid "&Edge Heuristic"
+msgstr ""
+
+#: kdevvlsi.cpp:152
+msgid "&Center Heuristic"
+msgstr ""
+
+#: kdevvlsi.cpp:153
+msgid "&Run Heuristic"
+msgstr ""
+
+#: kdevvlsi.cpp:154
+msgid "&Next step for Heuristic"
+msgstr ""
+
+#: kdevvlsi.cpp:155
+msgid "&Select objects of Heuristic"
+msgstr ""
+
+#: kdevvlsi.cpp:158
+msgid "&Initialize"
+msgstr ""
+
+#: kdevvlsi.cpp:160
+msgid "&Pause"
+msgstr ""
+
+#: kdevvlsi.cpp:161
+msgid "&Stop"
+msgstr ""
+
+#: kdevvlsi.cpp:167
+msgid "Enables/disables the toolbar"
+msgstr ""
+
+#: kdevvlsi.cpp:168
+msgid "Enables/disables the statusbar"
+msgstr ""
+
+#: kdevvlsi.cpp:169
+msgid "Set the options"
+msgstr ""
+
+#: kdevvlsi.cpp:179 kdevvlsi.cpp:270 kdevvlsi.cpp:454 kdevvlsi.cpp:468
+#: kdevvlsi.cpp:477 kdevvlsi.cpp:495 kdevvlsi.cpp:520 kdevvlsi.cpp:545
+#: kdevvlsi.cpp:556 kdevvlsi.cpp:579 kdevvlsi.cpp:590 kdevvlsi.cpp:601
+#: kdevvlsi.cpp:612 kdevvlsi.cpp:623 kdevvlsi.cpp:796 kdevvlsi.cpp:813
+#: kdevvlsi.cpp:852 kdevvlsi.cpp:866
 msgid "Ready."
 msgstr ""
 
-#: kdevvlsi.cpp:172 kdevvlsi.cpp:353 kdevvlsi.cpp:368
+#: kdevvlsi.cpp:223 kdevvlsi.cpp:461 kdevvlsi.cpp:475
 msgid "Opening file..."
 msgstr ""
 
-#: kdevvlsi.cpp:191
+#: kdevvlsi.cpp:246
 #, c-format
 msgid "Untitled%1"
 msgstr ""
 
-#: kdevvlsi.cpp:201
+#: kdevvlsi.cpp:256
 msgid "Could not open document !"
 msgstr ""
 
-#: kdevvlsi.cpp:201
+#: kdevvlsi.cpp:256
 msgid "Error !"
 msgstr ""
 
-#: kdevvlsi.cpp:281
+#: kdevvlsi.cpp:372
 msgid ""
 "One or more documents have been modified.\n"
 "Save changes before exiting?"
 msgstr ""
 
-#: kdevvlsi.cpp:292 kdevvlsi.cpp:387 kdevvlsi.cpp:407
+#: kdevvlsi.cpp:383 kdevvlsi.cpp:493 kdevvlsi.cpp:512
 msgid "Could not save the current document !"
 msgstr ""
 
-#: kdevvlsi.cpp:292 kdevvlsi.cpp:387 kdevvlsi.cpp:407 kdevvlsidoc.cpp:217
+#: kdevvlsi.cpp:383 kdevvlsi.cpp:493 kdevvlsi.cpp:512 kdevvlsidoc.cpp:410
 msgid "I/O Error !"
 msgstr ""
 
-#: kdevvlsi.cpp:344
+#: kdevvlsi.cpp:452
 msgid "Creating new document..."
 msgstr ""
 
-#: kdevvlsi.cpp:356 kdevvlsi.cpp:398 kdevvlsidoc.cpp:207
-msgid "*|All files"
+#: kdevvlsi.cpp:462
+msgid "*.pl2d|2D Placement files"
 msgstr ""
 
-#: kdevvlsi.cpp:356
+#: kdevvlsi.cpp:462
 msgid "Open File..."
 msgstr ""
 
-#: kdevvlsi.cpp:377
+#: kdevvlsi.cpp:484
 msgid "Saving file..."
 msgstr ""
 
-#: kdevvlsi.cpp:395
+#: kdevvlsi.cpp:502
 msgid "Saving file with a new filename..."
 msgstr ""
 
-#: kdevvlsi.cpp:421
+#: kdevvlsi.cpp:503 kdevvlsidoc.cpp:400
+msgid "*|All files"
+msgstr ""
+
+#: kdevvlsi.cpp:527
 msgid "Closing file..."
 msgstr ""
 
-#: kdevvlsi.cpp:434
+#: kdevvlsi.cpp:552
 msgid "Printing..."
 msgstr ""
 
-#: kdevvlsi.cpp:445
+#: kdevvlsi.cpp:565
 msgid "Exiting..."
 msgstr ""
 
-#: kdevvlsi.cpp:465
+#: kdevvlsi.cpp:586
 msgid "Reverting last action..."
 msgstr ""
 
-#: kdevvlsi.cpp:476
+#: kdevvlsi.cpp:597
 msgid "Cutting selection..."
 msgstr ""
 
-#: kdevvlsi.cpp:487
+#: kdevvlsi.cpp:608
 msgid "Copying selection to clipboard..."
 msgstr ""
 
-#: kdevvlsi.cpp:498
+#: kdevvlsi.cpp:619
 msgid "Inserting clipboard contents..."
 msgstr ""
 
-#: kdevvlsi.cpp:509
+#: kdevvlsi.cpp:786
 msgid "Toggle the toolbar..."
 msgstr ""
 
-#: kdevvlsi.cpp:526
+#: kdevvlsi.cpp:803
 msgid "Toggle the statusbar..."
 msgstr ""
 
-#: kdevvlsi.cpp:543
+#: kdevvlsi.cpp:820
+msgid "Set the options..."
+msgstr ""
+
+#: kdevvlsi.cpp:859
 msgid "Opening a new application window..."
 msgstr ""
 
-#: kdevvlsidoc.cpp:200
+#: kdevvlsidoc.cpp:153
+msgid ""
+"An heuristic is calculated.\n"
+"Are you sure you want to stop it?"
+msgstr ""
+
+#: kdevvlsidoc.cpp:394
 msgid ""
 "The current file has been modified.\n"
 "Do you want to save it?"
 msgstr ""
 
-#: kdevvlsidoc.cpp:216
+#: kdevvlsidoc.cpp:409
 msgid ""
 "Could not save the current document !\n"
 "Close anyway ?"
 msgstr ""
 
-#: main.cpp:40 main.cpp:54
+#: main.cpp:45
+msgid ""
+"KDevVLSI\n"
+"Development Application for VLSI Placement"
+msgstr ""
+
+#: main.cpp:51
+msgid "file to open"
+msgstr ""
+
+#: main.cpp:60
 msgid "KDevVLSI"
 msgstr ""
 
-#: main.cpp:46
-msgid "file to open"
+#: kappoptions.cpp:79 rc.cpp:7
+msgid "Free Polygons"
 msgstr ""
+
+#: kappoptions.cpp:83 rc.cpp:8
+msgid "Use"
+msgstr ""
+
+#: kappoptions.cpp:87 rc.cpp:9
+msgid "Compute"
+msgstr ""
+
+#: kappoptions.cpp:91
+msgid "Prométhée"
+msgstr ""
+
+#: kappoptions.cpp:95 rc.cpp:11
+msgid "Area Criterion"
+msgstr ""
+
+#: kappoptions.cpp:99 kappoptions.cpp:128
+#: rc.cpp:12 rc.cpp:16
+msgid "Indifference threshold (p)"
+msgstr ""
+
+#: kappoptions.cpp:104 kappoptions.cpp:133
+#: rc.cpp:13 rc.cpp:17
+msgid "Preference threshold (q)"
+msgstr ""
+
+#: kappoptions.cpp:108 kappoptions.cpp:137 
+#: rc.cpp:14 rc.cpp:18
+msgid "Weight"
+msgstr ""
+
+#: kappoptions.cpp:124 rc.cpp:15
+msgid "Dist Criterion"
+msgstr ""
+
+#: kappoptions.cpp:153 rc.cpp:19
+msgid "Orientations"
+msgstr ""
+
+#: kappoptions.cpp:157 rc.cpp:20
+msgid "Test all orientations"
+msgstr ""
+
+#: kappoptions.cpp:158 rc.cpp:6
+msgid "Heuristics"
+msgstr ""
+
+#: kappoptions.cpp:161 rc.cpp:21
+msgid "GA"
+msgstr ""
+
+#: kappoptions.cpp:167 rc.cpp:23
+msgid "Run Mode"
+msgstr ""
+
+#: kappoptions.cpp:171 rc.cpp:24
+msgid "Step Mode"
+msgstr ""
+
+#: kappoptions.cpp:172 rc.cpp:22
+msgid "General"
+msgstr ""
+
+#: kdevvlsi.moc.cpp:43 kdevvlsi.moc.cpp:48
+msgid "KDevVLSIApp"
+msgstr ""
+
+#: kvlsiprjview.moc.cpp:43 kvlsiprjview.moc.cpp:48
+msgid "KVLSIPrjView"
+msgstr ""
+
+#: kdevvlsiview.moc.cpp:43 kdevvlsiview.moc.cpp:48
+msgid "KDevVLSIView"
+msgstr ""
+
+#: kvlsiheuristicview.moc.cpp:43 kvlsiheuristicview.moc.cpp:48
+msgid "KVLSIHeuristicView"
+msgstr ""
+
+#: kdevvlsidoc.moc.cpp:43 kdevvlsidoc.moc.cpp:48
+msgid "KDevVLSIDoc"
+msgstr ""
+
+#: rc.cpp:1
+msgid "He&uristic"
+msgstr ""
+
+#: rc.cpp:2
+msgid "&GA"
+msgstr ""
+
+#: rc.cpp:10
+msgid "PromÃ©thÃ©e"
+msgstr ""
+

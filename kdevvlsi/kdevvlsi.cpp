@@ -54,6 +54,8 @@
 #include <kconfig.h>
 #include <kstdaction.h>
 #include <kcombobox.h>
+#include <kpopupmenu.h>
+#include <kstatusbar.h>
 
 
 //-----------------------------------------------------------------------------
@@ -152,18 +154,18 @@ void KDevVLSIApp::initActions(void)
 	connect(windowMenu->popupMenu(), SIGNAL(aboutToShow(void)), this, SLOT(windowMenuAboutToShow(void)));
 
 	// Menu "Heuristic"
-	heuristicBL=new KAction(i18n("&Bottom-Left Heuristic"),KAccel::stringToKey("Alt+B"),this,SLOT(slotHeuristicBL(void)),actionCollection(),"heuristic_bl");
-	heuristicEdge=new KAction(i18n("&Edge Heuristic"),KAccel::stringToKey("Alt+E"),this,SLOT(slotHeuristicEdge(void)),actionCollection(),"heuristic_edge");
-	heuristicCenter=new KAction(i18n("&Center Heuristic"),KAccel::stringToKey("Alt+C"),this,SLOT(slotHeuristicCenter(void)),actionCollection(),"heuristic_center");
-	heuristicRun=new KAction(i18n("&Run Heuristic"),"run",KAccel::stringToKey("Alt+R"),this,SLOT(slotHeuristicRun(void)),actionCollection(),"heuristic_run");
-	heuristicNext=new KAction(i18n("&Next step for Heuristic"),"next",KAccel::stringToKey("Alt+N"),this,SLOT(slotHeuristicNext(void)),actionCollection(),"heuristic_next");
-	heuristicSelect=new KAction(i18n("&Select objects of Heuristic"),"queue",KAccel::stringToKey("Alt+O"),this,SLOT(slotHeuristicSelect(void)),actionCollection(),"heuristic_select");
+	heuristicBL=new KAction(i18n("&Bottom-Left Heuristic"),KKey("Alt+B").keyCodeQt(),this,SLOT(slotHeuristicBL(void)),actionCollection(),"heuristic_bl");
+	heuristicEdge=new KAction(i18n("&Edge Heuristic"),KKey("Alt+E").keyCodeQt(),this,SLOT(slotHeuristicEdge(void)),actionCollection(),"heuristic_edge");
+	heuristicCenter=new KAction(i18n("&Center Heuristic"),KKey("Alt+C").keyCodeQt(),this,SLOT(slotHeuristicCenter(void)),actionCollection(),"heuristic_center");
+	heuristicRun=new KAction(i18n("&Run Heuristic"),"run",KKey("Alt+R").keyCodeQt(),this,SLOT(slotHeuristicRun(void)),actionCollection(),"heuristic_run");
+	heuristicNext=new KAction(i18n("&Next step for Heuristic"),"next",KKey("Alt+N").keyCodeQt(),this,SLOT(slotHeuristicNext(void)),actionCollection(),"heuristic_next");
+	heuristicSelect=new KAction(i18n("&Select objects of Heuristic"),"queue",KKey("Alt+O").keyCodeQt(),this,SLOT(slotHeuristicSelect(void)),actionCollection(),"heuristic_select");
 
 	// Menu "GA"
-	GAInit=new KAction(i18n("&Initialize"),"reload",KAccel::stringToKey("Alt+I"),this,SLOT(slotGAInit(void)),actionCollection(),"ga_init");
-	GAStart=new KAction(i18n("&Start"),"exec",KAccel::stringToKey("Alt+S"),this,SLOT(slotGAStart(void)),actionCollection(),"ga_start");
-	GAPause=new KAction(i18n("&Pause"),"player_pause",KAccel::stringToKey("Alt+P"),this,SLOT(slotGAPause(void)),actionCollection(),"ga_pause");
-	GAStop=new KAction(i18n("&Stop"),"stop",KAccel::stringToKey("Alt+T"),this,SLOT(slotGAStop(void)),actionCollection(),"ga_stop");
+	GAInit=new KAction(i18n("&Initialize"),"reload",KKey("Alt+I").keyCodeQt(),this,SLOT(slotGAInit(void)),actionCollection(),"ga_init");
+	GAStart=new KAction(i18n("&Start"),"exec",KKey("Alt+S").keyCodeQt(),this,SLOT(slotGAStart(void)),actionCollection(),"ga_start");
+	GAPause=new KAction(i18n("&Pause"),"player_pause",KKey("Alt+P").keyCodeQt(),this,SLOT(slotGAPause(void)),actionCollection(),"ga_pause");
+	GAStop=new KAction(i18n("&Stop"),"stop",KKey("Alt+T").keyCodeQt(),this,SLOT(slotGAStop(void)),actionCollection(),"ga_stop");
 
 	// Menu "Tools"
 	ToolsViewPolygons=new KAction(i18n("View &Polygons"),"viewmag",0,this,SLOT(slotViewPolygons(void)),actionCollection(),"tools_view_polygons");
@@ -198,18 +200,74 @@ void KDevVLSIApp::initView(void)
 	view_back->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
 	pWorkspace = new QWorkspace( view_back );
 	//Output=new QMultiLineEdit(view_back);
-	connect(pWorkspace, SIGNAL(windowActivated(QWidget*)), this, SLOT(setWndTitle(QWidget*)));
+	connect(pWorkspace, SIGNAL(windowActivated(QWidget*)), this, SLOT(slotWindowActivated(QWidget*)));
 	setCentralWidget(view_back);
 }
 
 
 //-----------------------------------------------------------------------------
-void KDevVLSIApp::setWndTitle(QWidget*)
+void KDevVLSIApp::slotWindowActivated(QWidget*)
 {
-	if(pWorkspace->activeWindow())
-		setCaption(pWorkspace->activeWindow()->caption());
+	bool bPrj,bGA,bHeuristic;
+
+	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
+	if(m)
+	{
+		// Update caption
+		setCaption(m->caption());
+
+		// Update menu
+		switch(m->getType())
+		{
+			case Project:
+				bPrj=true;
+				bGA=false;
+				bHeuristic=false;
+				break;
+
+			case Heuristic:
+				bPrj=false;
+				bGA=false;
+				bHeuristic=true;
+				break;
+
+			case GA:
+				bPrj=false;
+				bGA=true;
+				bHeuristic=false;
+				break;
+
+			default:
+				bPrj=false;
+				bGA=false;
+				bHeuristic=false;
+				break;
+		}
+		GAInit->setEnabled(bPrj);
+		heuristicBL->setEnabled(bPrj);
+		heuristicEdge->setEnabled(bPrj);
+		heuristicCenter->setEnabled(bPrj);
+		GAStart->setEnabled(bGA);
+		GAPause->setEnabled(bGA);
+		GAStop->setEnabled(bGA);
+		heuristicRun->setEnabled(bHeuristic);
+		heuristicNext->setEnabled(bHeuristic);
+		heuristicSelect->setEnabled(bHeuristic);
+	}
 	else
+	{
 		setCaption("");
+		GAInit->setEnabled(false);
+		heuristicBL->setEnabled(false);
+		heuristicEdge->setEnabled(false);
+		heuristicCenter->setEnabled(false);
+		GAStart->setEnabled(false);
+		GAPause->setEnabled(false);
+		GAStop->setEnabled(false);
+		heuristicRun->setEnabled(false);
+		heuristicNext->setEnabled(false);
+		heuristicSelect->setEnabled(false);
+	}
 }
 
 
@@ -247,7 +305,6 @@ void KDevVLSIApp::openDocumentFile(const KURL& url)
 	doc = new KDevVLSIDoc();
 	pDocList->append(doc);
 	doc->newDocument();
-	connect(doc,SIGNAL(endRun(void)),this,SLOT(slotEndHeuristic(void)));
 
 	// Creates an untitled window if file is 0	
 	if(url.isEmpty())
@@ -272,11 +329,6 @@ void KDevVLSIApp::openDocumentFile(const KURL& url)
 
 	// create the window
 	createClient(doc);
-	heuristicBL->setEnabled(true);
-	heuristicEdge->setEnabled(true);
-	heuristicCenter->setEnabled(true);
-	GAInit->setEnabled(true);
-
 	slotStatusMsg(i18n("Ready."));
 }
 
@@ -446,21 +498,10 @@ bool KDevVLSIApp::eventFilter(QObject* object, QEvent* event)
 		if(pDoc&&(pDoc->canCloseFrame(pView)))
 		{
 			pDoc->removeView(pView);
-			if(!pDoc->firstView())
+			if((!pDoc->firstView())||(pView->getType()==Project))
 			{
 				pDoc->closeDocument();
 				pDocList->remove(pDoc);
-				if(pDocList->isEmpty())
-		 		{
-					heuristicBL->setEnabled(false);
-					heuristicEdge->setEnabled(false);
-					heuristicCenter->setEnabled(false);
-					heuristicRun->setEnabled(false);
-					GAInit->setEnabled(false);
-					GAStart->setEnabled(false);	
-					GAPause->setEnabled(false);	
-					GAStop->setEnabled(false);
-    	        }
 			}
 		}
 		QWidgetList l=pWorkspace->windowList();
@@ -564,16 +605,6 @@ void KDevVLSIApp::slotFileClose(void)
 		KDevVLSIDoc* doc=m->getDocument();
 		doc->closeDocument();
 		pDocList->remove(doc);
-		if(pDocList->isEmpty())
-		{
-			heuristicBL->setEnabled(false);
-			heuristicEdge->setEnabled(false);
-			heuristicCenter->setEnabled(false);
-			GAInit->setEnabled(false);
-			GAStart->setEnabled(false);
-			GAPause->setEnabled(false);
-			GAStop->setEnabled(false);
-      }
 	}
 	slotStatusMsg(i18n("Ready."));
 }
@@ -664,8 +695,6 @@ void KDevVLSIApp::slotHeuristicBL(void)
 	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
 	if(m&&(m->getType()==Project))
 	{
-		heuristicRun->setEnabled(true);
-		heuristicNext->setEnabled(true);
 		KDevVLSIDoc* doc = m->getDocument();
 		KVLSIHeuristicView* w = new KVLSIHeuristicView(doc,BottomLeft,pWorkspace,0,WDestructiveClose);
 		w->installEventFilter(this);
@@ -686,8 +715,6 @@ void KDevVLSIApp::slotHeuristicEdge(void)
 	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
 	if(m&&(m->getType()==Project))
 	{
-		heuristicRun->setEnabled(true);
-		heuristicNext->setEnabled(true);
 		KDevVLSIDoc* doc = m->getDocument();
 		KVLSIHeuristicView* w = new KVLSIHeuristicView(doc,Edge,pWorkspace,0,WDestructiveClose);
 		w->installEventFilter(this);
@@ -708,8 +735,6 @@ void KDevVLSIApp::slotHeuristicCenter(void)
 	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
 	if(m&&(m->getType()==Project))
 	{
-		heuristicRun->setEnabled(true);
-		heuristicNext->setEnabled(true);
 		KDevVLSIDoc* doc = m->getDocument();
 		KVLSIHeuristicView* w = new KVLSIHeuristicView(doc,Center,pWorkspace,0,WDestructiveClose);
 		w->installEventFilter(this);
@@ -742,13 +767,6 @@ void KDevVLSIApp::slotEndHeuristic(void)
 				bRun=true;
 		}
 	}
-
-	if(!bRun)
-	{
-		heuristicNext->setEnabled(false);
-		heuristicRun->setEnabled(false);
-	}
-	heuristicSelect->setEnabled(true);
 }
 
 
@@ -795,9 +813,6 @@ void KDevVLSIApp::slotGAInit(void)
 	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
 	if(m&&(m->getType()==Project))
 	{
-		GAStart->setEnabled(true);
-		GAStop->setEnabled(false);
-		GAPause->setEnabled(false);
 		KDevVLSIDoc* doc = m->getDocument();
 		KVLSIGAView* w = new KVLSIGAView(doc,pWorkspace,0,WDestructiveClose);
 		w->installEventFilter(this);
@@ -817,9 +832,6 @@ void KDevVLSIApp::slotGAStart(void)
 	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
 	if(m&&(m->getType()==GA))
 	{
-		GAPause->setEnabled(true);
-		GAStop->setEnabled(true);
-		GAStart->setEnabled(false);
 		((KVLSIGAView*)m)->RunGA();
 	}
 }
@@ -833,9 +845,6 @@ void KDevVLSIApp::slotGAPause(void)
 	if(m&&(m->getType()==GA))
 	{
 		((KVLSIGAView*)m)->PauseGA();
-		GAStart->setEnabled(true);
-		GAPause->setEnabled(false);
-		GAStop->setEnabled(true);
 	}
 }
 
@@ -848,9 +857,6 @@ void KDevVLSIApp::slotGAStop(void)
 	if(m&&(m->getType()==GA))
 	{
 		((KVLSIGAView*)m)->StopGA();
-    	GAStart->setEnabled(false);
-		GAPause->setEnabled(false);
-    	GAStop->setEnabled(false);
 	}
 }
 

@@ -29,18 +29,6 @@
 
 
 //-----------------------------------------------------------------------------
-// include files for R Project
-#include <rstd/rtextfile.h>
-using namespace RStd;
-#include <rmath/random.h>
-using namespace RMath;
-#include <rga2d/rplacementbottomleft.h>
-#include <rga2d/rplacementedge.h>
-#include <rga2d/rplacementcenter.h>
-using namespace RGA;
-
-
-//-----------------------------------------------------------------------------
 // include files for Qt
 #include <qdir.h>
 #include <qfileinfo.h>

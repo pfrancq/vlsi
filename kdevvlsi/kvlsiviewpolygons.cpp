@@ -68,10 +68,10 @@ KVLSIViewPolygons::KVLSIViewPolygons(const char* file,QWidget *parent, const cha
 		
 	}
 	draw=new QDrawPolygons(this);
-	draw->setInfos(infos);
+//	draw->setInfos(this);
 	draw->setNbInfos(nbInfos);
 	draw->setLimits(Limits);
-	draw->setChanged();	
+	draw->setChanged();
 	setTitle(file);
 }
 

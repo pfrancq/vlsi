@@ -1,24 +1,31 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 bin_PROGRAMS = kdevvlsi
-kdevvlsi_SOURCES = kvlsiviewpolygons.cpp qxmlcontainer.cpp qgamonitor.cpp kvlsigaview.cpp kappoptions.ui qdrawpolygons.cpp kvlsiheuristicview.cpp kvlsiprjview.cpp kdevvlsiview.cpp kdevvlsidoc.cpp kdevvlsi.cpp main.cpp 
-kdevvlsi_LDADD   = ./rainbow/rstd/librstd.a ./rainbow/rgeometry/librgeometry.a ./rainbow/rmath/librmath.a ./rainbow/rga/librga.a ./rainbow/rpromethee/librpromethee.a ./rainbow/rga2d/librga2d.a ./rainbow/rvlsi/librvlsi.a ./rainbow/rgraph/librgraph.a /home/pfrancq/prj/kdevvlsi/kdevvlsi/rainbow/rpromethee/librpromethee.a /home/pfrancq/prj/kdevvlsi/kdevvlsi/rainbow/rstd/librstd.a -lkfile -lkdeui -lkdecore $(LIB_QT) $(LIBSOCKET)
 
-SUBDIRS = rainbow 
+## INCLUDES were found outside kdevelop specific part
 
-EXTRA_DIST = main.cpp kdevvlsi.cpp kdevvlsi.h kdevvlsidoc.cpp kdevvlsidoc.h kdevvlsiview.cpp kdevvlsiview.h kdevvlsiui.rc kdevvlsi.desktop kdevvlsi.xpm mini-kdevvlsi.xpm kvlsiprjview.cpp kvlsiprjview.h kvlsiheuristicview.cpp kvlsiheuristicview.h qdrawpolygons.cpp qdrawpolygons.h kappoptions.ui kvlsigaview.cpp kvlsigaview.h qgamonitor.cpp qgamonitor.h qxmlcontainer.cpp qxmlcontainer.h kvlsiviewpolygons.cpp kvlsiviewpolygons.h 
+kdevvlsi_SOURCES = kappoptions.ui kvlsiviewpolygons.cpp kvlsigaview.cpp qdrawpolygons.cpp kvlsiheuristicview.cpp kvlsiprjview.cpp kdevvlsiview.cpp kdevvlsidoc.cpp kdevvlsi.cpp main.cpp
+kdevvlsi_LDADD   = $(R_LIB)/rga2d/librga2d.la $(R_LIB)/rvlsi/librvlsi.la $(R_LIB)/rmath/librmath.la $(R_LIB)/rpromethee/librpromethee.la $(R_LIB)/rstd/librstd.la $(R_LIB)/rga/librga.la $(QTWIDGETS_LIB)/rga/libkde_rga.la $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
+
+SUBDIRS =
+
+EXTRA_DIST = main.cpp kdevvlsi.cpp kdevvlsi.h kdevvlsidoc.cpp kdevvlsidoc.h \
+		kdevvlsiview.cpp kdevvlsiview.h kdevvlsiui.rc kdevvlsi.desktop \
+		kdevvlsi.xpm mini-kdevvlsi.xpm kvlsiprjview.cpp kvlsiprjview.h \
+		kvlsiheuristicview.cpp kvlsiheuristicview.h qdrawpolygons.cpp qdrawpolygons.h \
+		kvlsigaview.cpp kvlsigaview.h kvlsiviewpolygons.cpp kvlsiviewpolygons.h kappoptions.ui
 
 install-data-local:
-	$(mkinstalldirs) $$$$(kde_appsdir)/Applications/
-	$(INSTALL_DATA) $(srcdir)/kdevvlsi.desktop $$$$(kde_appsdir)/Applications/kdevvlsi.desktop
-	$(mkinstalldirs) $$$$(kde_icondir)/medium/locolor/apps/
-	$(INSTALL_DATA) $(srcdir)/kdevvlsi.xpm $$$$(kde_icondir)/medium/locolor/apps/kdevvlsi.xpm
-	$(mkinstalldirs) $$$$(kde_icondir)/small/locolor/apps/
-	$(INSTALL_DATA) $(srcdir)/mini-kdevvlsi.xpm $$$$(kde_icondir)/small/locolor/apps/kdevvlsi.xpm
+	$(mkinstalldirs) $(kde_appsdir)/Applications/
+	$(INSTALL_DATA) $(srcdir)/kdevvlsi.desktop $(kde_appsdir)/Applications/kdevvlsi.desktop
+	$(mkinstalldirs) $(kde_icondir)/medium/locolor/apps/
+	$(INSTALL_DATA) $(srcdir)/kdevvlsi.xpm $(kde_icondir)/medium/locolor/apps/kdevvlsi.xpm
+	$(mkinstalldirs) $(kde_icondir)/small/locolor/apps/
+	$(INSTALL_DATA) $(srcdir)/mini-kdevvlsi.xpm $(kde_icondir)/small/locolor/apps/kdevvlsi.xpm
 
 uninstall-local:
-	-rm -f $$$$(kde_appsdir)/Applications/kdevvlsi.desktop
-	-rm -f $$$$(kde_icondir)/medium/locolor/apps/kdevvlsi.xpm
-	-rm -f $$$$(kde_icondir)/small/locolor/apps/kdevvlsi.xpm
+	-rm -f $(kde_appsdir)/Applications/kdevvlsi.desktop
+	-rm -f $(kde_icondir)/medium/locolor/apps/kdevvlsi.xpm
+	-rm -f $(kde_icondir)/small/locolor/apps/kdevvlsi.xpm
 
 ####### kdevelop will overwrite this part!!! (end)############
 # this 10 paths are KDE specific. Use them:
@@ -35,7 +42,7 @@ uninstall-local:
 # kde_wallpaperdir  Where general wallpapers should go to.
 
 # set the include path for X, qt and KDE
-INCLUDES= $(all_includes)
+INCLUDES= $(all_includes) -I$(R_LIB) -I$(QTWIDGETS_LIB)
 
 METASOURCES = AUTO
 

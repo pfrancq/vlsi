@@ -50,7 +50,7 @@ static KCmdLineOptions options[] =
 {
 	{ "+[File]", I18N_NOOP("file to open"), 0 },
 	{ 0, 0, 0 }
-  // INSERT YOUR COMMANDLINE OPTIONS HERE
+	// INSERT YOUR COMMANDLINE OPTIONS HERE
 };
 
 
@@ -63,9 +63,10 @@ int main(int argc, char *argv[])
 {
 	KAboutData aboutData( "kdevvlsi", I18N_NOOP("KDevVLSI"),
 		VERSION, description, KAboutData::License_GPL,
-		"(c) 1999-2000, Université Libre de Bruxelles","http://www.ulb.ac.be",0,"pfrancq@ulb.ac.be");
-	aboutData.addAuthor("Pascal Francq",0, "pfrancq@ulb.ac.be");
-
+		"(c) 1999-2001, Université Libre de Bruxelles",0,"http://www.ulb.ac.be","pfrancq@ulb.ac.be");
+	aboutData.addAuthor("Pascal Francq",I18N_NOOP("Project Manager"), "pfrancq@ulb.ac.be");
+	aboutData.addCredit("Thomas L'Eglise",I18N_NOOP("PROMETHEE Developper"), "leglise@ulb.ac.be");
+	
 	KCmdLineArgs::init( argc, argv, &aboutData );
 	KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 

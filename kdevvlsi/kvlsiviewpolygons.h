@@ -35,8 +35,8 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rgeometry/rpolygon.h>
-using namespace RStd;
+#include <rmath/rpolygon.h>
+using namespace R;
 
 
 //-----------------------------------------------------------------------------
@@ -62,7 +62,7 @@ class KVLSIViewPolygons : public KDevVLSIView
 	/**
 	* Geometric Information for this heuristic.
 	*/
-	RGeoInfo **infos;
+	RGeoInfo** infos;
 
 	/**
 	* Number of geometric information.
