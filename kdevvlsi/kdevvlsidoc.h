@@ -76,7 +76,6 @@ class KDevVLSIApp;
 * objects. Also, KDevVLSIDoc contains the methods for serialization of the
 * document data from and to files.
 * @author Pascal Francq
-* @version $Revision$
 */
 class KDevVLSIDoc : public QObject, public RProblem2D
 {

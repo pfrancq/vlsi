@@ -79,7 +79,6 @@ class KDevVLSIView;
 * @see KAccel
 *
 * @author Pascal Francq.
-* @version $Revision$
 */
 class KDevVLSIApp : public KMainWindow
 {
