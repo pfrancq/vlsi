@@ -69,8 +69,8 @@ using namespace RGA;
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
-RInstVLSI::RInstVLSI(unsigned int max,unsigned int popsize,RObj2D **objs,unsigned int nbobjs,RPoint &limits) throw(bad_alloc)
-	: RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(popsize,objs,nbobjs,limits),
+RInstVLSI::RInstVLSI(unsigned int max,unsigned int popsize,RObj2D **objs,unsigned int nbobjs,RPoint &limits,HeuristicType h) throw(bad_alloc)
+	: RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(popsize,objs,nbobjs,limits,h),
 		MaxGen(max)
 {
 }

@@ -77,27 +77,16 @@ namespace RGA{
 	*/
 class RChromoVLSI : public RChromo2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>
 {
-	/** Container of geometric information used to calculate the fitness of the chromosome.*/
-	RGeoInfos *VLSIInfos;
 public:
-
 	/** Construct the chromosome.
 		* @param inst			The instance of the problem.
 		* @param id				The identificator of the chromosome.
 		*/
   RChromoVLSI(RInstVLSI *inst,unsigned int id) throw(bad_alloc);
 
-	/** Initialise the chromosome.
-		* @param thData		The "thread-dependent" data of the chromosome.
-		*/
-	virtual void Init(RThreadDataVLSI *thData) throw(bad_alloc);
-
 	/** Evaluate the chromosome, by comparing the area of the boundary rectangle,
 		* with the sum of the areas of all the polygons.*/
   virtual void Evaluate(void);
-
-	/** Destruct the chromosome.*/
-	virtual ~RChromoVLSI(void);
 };
 
 

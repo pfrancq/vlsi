@@ -87,8 +87,9 @@ public:
 		* @param nbobjs			Number of objects to place.
 		* @param max				Maximal number of generations.
 		* @param limits			The limits for the placement.
+		* @param h					The type of heuristic to be used.
 		*/
-  RInstVLSI(unsigned int max,unsigned int popsize,RObj2D **objs,unsigned int nbobjs,RPoint &limits) throw(bad_alloc);
+  RInstVLSI(unsigned int max,unsigned int popsize,RObj2D **objs,unsigned int nbobjs,RPoint &limits,HeuristicType h) throw(bad_alloc);
 
 	/** This function determines if the GA must be stopped. Actually, it is the case
 		* when the maximal number of generation is calculated.
