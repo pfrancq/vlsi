@@ -1,0 +1,202 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2000-12-03 17:19+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+
+#: kdevvlsi.cpp:104
+msgid "New &Window"
+msgstr ""
+
+#: kdevvlsi.cpp:105
+msgid "&Tile"
+msgstr ""
+
+#: kdevvlsi.cpp:106
+msgid "&Cascade"
+msgstr ""
+
+#: kdevvlsi.cpp:108
+msgid "Creates a new document"
+msgstr ""
+
+#: kdevvlsi.cpp:109
+msgid "Opens an existing document"
+msgstr ""
+
+#: kdevvlsi.cpp:110
+msgid "Opens a recently used file"
+msgstr ""
+
+#: kdevvlsi.cpp:111
+msgid "Saves the actual document"
+msgstr ""
+
+#: kdevvlsi.cpp:112
+msgid "Saves the actual document as..."
+msgstr ""
+
+#: kdevvlsi.cpp:113
+msgid "Closes the actual document"
+msgstr ""
+
+#: kdevvlsi.cpp:114
+msgid "Prints out the actual document"
+msgstr ""
+
+#: kdevvlsi.cpp:115
+msgid "Quits the application"
+msgstr ""
+
+#: kdevvlsi.cpp:117
+msgid "Cuts the selected section and puts it to the clipboard"
+msgstr ""
+
+#: kdevvlsi.cpp:118
+msgid "Copies the selected section to the clipboard"
+msgstr ""
+
+#: kdevvlsi.cpp:119
+msgid "Pastes the clipboard contents to actual position"
+msgstr ""
+
+#: kdevvlsi.cpp:121
+msgid "Enables/disables the toolbar"
+msgstr ""
+
+#: kdevvlsi.cpp:122
+msgid "Enables/disables the statusbar"
+msgstr ""
+
+#: kdevvlsi.cpp:124
+msgid "&Window"
+msgstr ""
+
+#: kdevvlsi.cpp:137 kdevvlsi.cpp:210 kdevvlsi.cpp:348 kdevvlsi.cpp:363
+#: kdevvlsi.cpp:372 kdevvlsi.cpp:390 kdevvlsi.cpp:416 kdevvlsi.cpp:429
+#: kdevvlsi.cpp:440 kdevvlsi.cpp:460 kdevvlsi.cpp:471 kdevvlsi.cpp:482
+#: kdevvlsi.cpp:493 kdevvlsi.cpp:504 kdevvlsi.cpp:521 kdevvlsi.cpp:538
+#: kdevvlsi.cpp:552
+msgid "Ready."
+msgstr ""
+
+#: kdevvlsi.cpp:172 kdevvlsi.cpp:353 kdevvlsi.cpp:368
+msgid "Opening file..."
+msgstr ""
+
+#: kdevvlsi.cpp:191
+#, c-format
+msgid "Untitled%1"
+msgstr ""
+
+#: kdevvlsi.cpp:201
+msgid "Could not open document !"
+msgstr ""
+
+#: kdevvlsi.cpp:201
+msgid "Error !"
+msgstr ""
+
+#: kdevvlsi.cpp:281
+msgid ""
+"One or more documents have been modified.\n"
+"Save changes before exiting?"
+msgstr ""
+
+#: kdevvlsi.cpp:292 kdevvlsi.cpp:387 kdevvlsi.cpp:407
+msgid "Could not save the current document !"
+msgstr ""
+
+#: kdevvlsi.cpp:292 kdevvlsi.cpp:387 kdevvlsi.cpp:407 kdevvlsidoc.cpp:217
+msgid "I/O Error !"
+msgstr ""
+
+#: kdevvlsi.cpp:344
+msgid "Creating new document..."
+msgstr ""
+
+#: kdevvlsi.cpp:356 kdevvlsi.cpp:398 kdevvlsidoc.cpp:207
+msgid "*|All files"
+msgstr ""
+
+#: kdevvlsi.cpp:356
+msgid "Open File..."
+msgstr ""
+
+#: kdevvlsi.cpp:377
+msgid "Saving file..."
+msgstr ""
+
+#: kdevvlsi.cpp:395
+msgid "Saving file with a new filename..."
+msgstr ""
+
+#: kdevvlsi.cpp:421
+msgid "Closing file..."
+msgstr ""
+
+#: kdevvlsi.cpp:434
+msgid "Printing..."
+msgstr ""
+
+#: kdevvlsi.cpp:445
+msgid "Exiting..."
+msgstr ""
+
+#: kdevvlsi.cpp:465
+msgid "Reverting last action..."
+msgstr ""
+
+#: kdevvlsi.cpp:476
+msgid "Cutting selection..."
+msgstr ""
+
+#: kdevvlsi.cpp:487
+msgid "Copying selection to clipboard..."
+msgstr ""
+
+#: kdevvlsi.cpp:498
+msgid "Inserting clipboard contents..."
+msgstr ""
+
+#: kdevvlsi.cpp:509
+msgid "Toggle the toolbar..."
+msgstr ""
+
+#: kdevvlsi.cpp:526
+msgid "Toggle the statusbar..."
+msgstr ""
+
+#: kdevvlsi.cpp:543
+msgid "Opening a new application window..."
+msgstr ""
+
+#: kdevvlsidoc.cpp:200
+msgid ""
+"The current file has been modified.\n"
+"Do you want to save it?"
+msgstr ""
+
+#: kdevvlsidoc.cpp:216
+msgid ""
+"Could not save the current document !\n"
+"Close anyway ?"
+msgstr ""
+
+#: main.cpp:40 main.cpp:54
+msgid "KDevVLSI"
+msgstr ""
+
+#: main.cpp:46
+msgid "file to open"
+msgstr ""
