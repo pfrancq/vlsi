@@ -67,7 +67,7 @@ KVLSIGAView::KVLSIGAView(KDevVLSIDoc* pDoc,QWidget *parent, const char *name,int
 	StatSplitter->setGeometry(rect());
 	Monitor=new	QGAMonitor(StatSplitter);
 	Monitor->setMaxGen(theApp->GAMaxGen);
-	connect(this,SIGNAL(signalSetGen(unsigned int,unsigned int,double)),Monitor,SLOT(slotSetGen(unsigned int,unsigned int,double)));
+	connect(this,SIGNAL(signalSetGen(unsigned int,double)),Monitor,SLOT(slotSetGen(unsigned int,double)));
 	Debug=new QXMLContainer(StatSplitter);
 
 	// Solution part
