@@ -33,11 +33,8 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rgeometry/rrect.h>
-using namespace RGeometry2D;
 #include <rvlsi/rchromovlsi.h>
-using namespace RVLSI;
-
+#include <rvlsi/rinstvlsi.h>
 
 
 //-----------------------------------------------------------------------------

@@ -39,6 +39,8 @@
 //-----------------------------------------------------------------------------
 // include files for Rainbow
 #include <rvlsi/rgavlsi.h>
+#include <rga2d/rinst2d.h>
+using namespace RGA2D;
 
 
 //-----------------------------------------------------------------------------
@@ -48,11 +50,29 @@ namespace RVLSI{
 
 //-----------------------------------------------------------------------------
 /**
+* This class represent "thread-dependent" data for the VLSI GA.
+* @author Pascal Francq
+* @short VSLI GA "thread-dependent" Data.
+*/
+class RThreadDataVLSI : public RThreadData2D<RInstVLSI,RChromoVLSI>
+{
+public:
+
+	/**
+	* Construct the data.
+	* @param owner          The instance of the problem.
+	*/
+	RThreadDataVLSI(RInstVLSI *owner);
+};
+
+
+//-----------------------------------------------------------------------------
+/**
 * The instance of the VLSI problem.
 * @author Pascal Francq
 * @short VLSI GA Instance.
 */
-class RInstVLSI :	public RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>
+class RInstVLSI : public RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>
 {
 public:
 
@@ -80,7 +100,7 @@ public:
 };
 
 
-}  //-------- End of namespace RGA --------------------------------------------
+}  //-------- End of namespace RVLSI ------------------------------------------
 
 
 //-----------------------------------------------------------------------------

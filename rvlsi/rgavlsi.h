@@ -37,7 +37,9 @@
 
 
 //-----------------------------------------------------------------------------
-// include files for Rainbow
+// include files for R Project
+#include <rga/rfitness.h>
+using namespace RGA;
 #include <rga2d/rga2d.h>
 using namespace RGA2D;
 
@@ -54,33 +56,8 @@ namespace RVLSI
 
 
 //-----------------------------------------------------------------------------
-// include files for GA
-#include <rvlsi/rinstvlsi.h>
-#include <rvlsi/rchromovlsi.h>
-using namespace RGA2D;
-
-
-//-----------------------------------------------------------------------------
 namespace RVLSI{
 //-----------------------------------------------------------------------------
-
-
-//-----------------------------------------------------------------------------
-/**
-* This class represent "thread-dependent" data for the VLSI GA.
-* @author Pascal Francq
-* @short VSLI GA "thread-dependent" Data.
-*/
-class RThreadDataVLSI : public RThreadData2D<RInstVLSI,RChromoVLSI>
-{
-public:
-
-	/**
-	* Construct the data.
-	* @param owner          The instance of the problem.
-	*/
-	RThreadDataVLSI(RInstVLSI *owner) : RThreadData2D<RInstVLSI,RChromoVLSI>(owner) {}
-};
 
 
 //-----------------------------------------------------------------------------
@@ -118,7 +95,7 @@ public:
 };
 
 
-}  //-------- End of namespace RGA --------------------------------------------
+}  //-------- End of namespace RVLSI ------------------------------------------
 
 
 //-----------------------------------------------------------------------------

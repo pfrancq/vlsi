@@ -34,7 +34,19 @@
 //-----------------------------------------------------------------------------
 // include files for R Project
 #include <rvlsi/rinstvlsi.h>
-using namespace RVLSI;
+#include <rvlsi/rchromovlsi.h>
+
+//-----------------------------------------------------------------------------
+//
+// RThreadDataVLSI
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+RVLSI::RThreadDataVLSI::RThreadDataVLSI(RInstVLSI *owner)
+ : RThreadData2D<RInstVLSI,RChromoVLSI>(owner)
+{
+}
 
 
 

@@ -40,6 +40,8 @@
 // include files for Rainbow
 #include <rvlsi/rgavlsi.h>
 using namespace RVLSI;
+#include <rga2d/rchromo2d.h>
+using namespace RGA2D;
 
 
 //------------------------------------------------------------------------
@@ -72,7 +74,7 @@ public:
 };
 
 
-}  //-------- End of namespace RGA --------------------------------------------
+}  //-------- End of namespace RVLSI ------------------------------------------
 
 
 //-----------------------------------------------------------------------------
