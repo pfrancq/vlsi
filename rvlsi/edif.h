@@ -1,30 +1,33 @@
 /*
 
-  Edif.h
+	R Project Library
 
-  EDIF File - Header.
+	Edif.h
 
-  (C) 1999-2000 by P. Francq.
+	EDIF File - Header.
 
-  Version $Revision$
+	(c) 1999-2001 by P. Francq.
 
-  Last Modify: $Date$
+	Version $Revision$
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  any later version.
+	Last Modify: $Date$
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	any later version.
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
+
 
 
 //---------------------------------------------------------------------------
@@ -38,21 +41,22 @@
 	#include <unistd.h>
 #endif
 
+
 //---------------------------------------------------------------------------
-// include files for Rainbow
-#include "rstd/rstring.h"
-#include "rstd/tree.h"
+// include files for R Project
+#include <rstd/rstring.h>
+#include <rstd/tree.h>
 using namespace RStd;
 
 
 //---------------------------------------------------------------------------
 // include files for VLSI
-#include "files.h"
+#include <rvlsi/files.h>
 using namespace RVLSI;
 
 
 //---------------------------------------------------------------------------
-namespace RVLSI{
+namespace RVLSI{    // namespace RVLSI
 //---------------------------------------------------------------------------
 
 
@@ -66,24 +70,26 @@ const long TYPENET=5;
 const long TYPEPORT=6;
 
 
-//---------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Forward declarations
 class REDIFTag;
 class REDIFFile;
 
 
-//---------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 class RStringId : public RString
 {
 public:
-	long Id;	
-	
+	long Id;
+
 	RStringId(const RString &str) : RString(str) { Id=-1; }
 };
 
 
-//---------------------------------------------------------------------------
-// A EDIF Tag
+//-----------------------------------------------------------------------------
+/**
+* @short EDIF Tag
+*/
 class REDIFTag : public RBaseNode<REDIFTag>
 {
 public:
@@ -103,8 +109,10 @@ public:
 
 
 
-//---------------------------------------------------------------------------
-// A EDIF2 data file
+//-----------------------------------------------------------------------------
+/**
+* @short EDIF2 data file
+*/
 class REDIFFile : public RDataFile
 {
 	RCell *CurrCell;
@@ -112,7 +120,7 @@ class REDIFFile : public RDataFile
 public:
   RTree<REDIFTag> *Struct;
 	RContainer<RStringId,unsigned int,true,true> *Types;
-	
+
   REDIFFile(const RString &name);
   virtual char* StringType(void) {return("=EDIF2");}
   virtual char* TreeType(void) {return(" - EDIF2 File");}
@@ -123,7 +131,8 @@ public:
 };
 
 
-}  //-------- End of namespace RVLSI ---------------------------------------
+}  //-------- End of namespace RVLSI ------------------------------------------
 
-//---------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 #endif

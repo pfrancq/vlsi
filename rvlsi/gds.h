@@ -1,6 +1,6 @@
 /*
 
-  GGS.h
+  GDS.h
 
   GDS file - Header.
 
