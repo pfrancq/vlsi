@@ -1,12 +1,12 @@
 /*
 
-	Rainbow Library Project
+	R Project Library
 
 	RGAVLSI.cpp
 
 	GA for VLSI placement - Implementation
 
-	(C) 1999-2000 by P. Francq.
+	(C) 1999-2001 by P. Francq.
 
 	Version $Revision$
 
@@ -32,7 +32,7 @@
 
 
 //-----------------------------------------------------------------------------
-// include fiels for Rainbow
-#include "rgavlsi.h"
-using namespace RGA;
+// include files for R Project
+#include <rvlsi/rgavlsi.h>
+using namespace RVLSI;
 

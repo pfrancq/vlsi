@@ -38,7 +38,7 @@
 #include "rstd/rstring.h"
 using namespace RStd;
 #include "rgeometry/polygons.h"
-using namespace RGeometry;
+using namespace RGeometry2D;
 
 
 

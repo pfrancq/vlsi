@@ -1,6 +1,6 @@
 /*
 
-	Rainbow Library Project
+	R Project Library
 
 	RGAVLSI.h
 
@@ -38,14 +38,13 @@
 
 //-----------------------------------------------------------------------------
 // include files for Rainbow
-#include "rga.h"
-#include "rga2d.h"
-using namespace RGA;
+#include <rga2d/rga2d.h>
+using namespace RGA2D;
 
 
 //-----------------------------------------------------------------------------
 // Forward class declaration
-namespace RGA
+namespace RVLSI
 {
 	class RInstVLSI;
 	class RChromoVLSI;
@@ -56,13 +55,13 @@ namespace RGA
 
 //-----------------------------------------------------------------------------
 // include files for GA
-#include "rinstvlsi.h"
-#include "rchromovlsi.h"
-using namespace RGA;
+#include <rvlsi/rinstvlsi.h>
+#include <rvlsi/rchromovlsi.h>
+using namespace RGA2D;
 
 
 //-----------------------------------------------------------------------------
-namespace RGA{
+namespace RVLSI{
 //-----------------------------------------------------------------------------
 
 
@@ -78,7 +77,7 @@ public:
 
 	/**
 	* Construct the data.
-	* @param owner	The instance of the problem.
+	* @param owner          The instance of the problem.
 	*/
 	RThreadDataVLSI(RInstVLSI *owner) : RThreadData2D<RInstVLSI,RChromoVLSI>(owner) {}
 };
@@ -115,7 +114,7 @@ public:
 	{
 		RFitness<double,false>::operator=(val);
 		return(*this);
-  }
+	}
 };
 
 

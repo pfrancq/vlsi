@@ -1,6 +1,6 @@
 /*
 
-	Rainbow Library Project
+	R Project Library
 
 	RInstVLSI.h
 
@@ -38,12 +38,11 @@
 
 //-----------------------------------------------------------------------------
 // include files for Rainbow
-#include "rgavlsi.h"
-using namespace RGA;
+#include <rvlsi/rgavlsi.h>
 
 
 //-----------------------------------------------------------------------------
-namespace RGA{
+namespace RVLSI{
 //-----------------------------------------------------------------------------
 
 
@@ -64,14 +63,13 @@ public:
 
 	/**
 	* Construct the instance.
-	* @param popsize		The size of the population.
-	* @param objs				The objects to place.
-	* @param nbobjs			Number of objects to place.
-	* @param max				Maximal number of generations.
-	* @param limits			The limits for the placement.
-	* @param h					The type of heuristic to be used.
+	* @param max            Maximal number of generations.
+	* @param popsize        The size of the population.	
+	* @param prob           The problem.
+	* @param h              The type of heuristic to be used.
+	* @param debug          Debugger.
 	*/
-	RInstVLSI(unsigned int max,unsigned int popsize,RObj2D **objs,unsigned int nbobjs,RPoint &limits,HeuristicType h) throw(bad_alloc);
+	RInstVLSI(unsigned int max,unsigned int popsize,RProblem2D* prob,HeuristicType h,RDebug *debug=0) throw(bad_alloc);
 
 	/**
 	* This function determines if the GA must be stopped. Actually, it is the case

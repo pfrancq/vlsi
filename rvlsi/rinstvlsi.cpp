@@ -1,12 +1,12 @@
 /*
 
-	Rainbow Library Project
+	R Project Library
 
 	RInstVLSI.cpp
 
 	Instance for VLSI placement GA - Implementation
 
-	(C) 1999-2000 by P. Francq.
+	(C) 1999-2001 by P. Francq.
 
 	Version $Revision$
 
@@ -32,9 +32,9 @@
 
 
 //-----------------------------------------------------------------------------
-// include files for Rainbow
-#include "rinstvlsi.h"
-using namespace RGA;
+// include files for R Project
+#include <rvlsi/rinstvlsi.h>
+using namespace RVLSI;
 
 
 
@@ -45,15 +45,15 @@ using namespace RGA;
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-RInstVLSI::RInstVLSI(unsigned int max,unsigned int popsize,RObj2D **objs,unsigned int nbobjs,RPoint &limits,HeuristicType h) throw(bad_alloc)
-	: RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(popsize,objs,nbobjs,limits,h),
+RVLSI::RInstVLSI::RInstVLSI(unsigned int max,unsigned int popsize,RProblem2D* prob,HeuristicType h,RDebug *debug) throw(bad_alloc)
+	: RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(popsize,prob,h,debug),
 		MaxGen(max)
 {
 }
 
 
 //-----------------------------------------------------------------------------
-bool RInstVLSI::StopCondition(void)
+bool RVLSI::RInstVLSI::StopCondition(void)
 {
 	return(Gen==MaxGen);
 }

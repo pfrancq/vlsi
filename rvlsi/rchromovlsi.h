@@ -1,6 +1,6 @@
 /*
 
-	Rainbow Library Project
+	R Project Library
 
 	RChromoVLSI.h
 
@@ -38,12 +38,12 @@
 
 //-----------------------------------------------------------------------------
 // include files for Rainbow
-#include "rgavlsi.h"
-using namespace RGA;
+#include <rvlsi/rgavlsi.h>
+using namespace RVLSI;
 
 
 //------------------------------------------------------------------------
-namespace RGA{
+namespace RVLSI{
 //-----------------------------------------------------------------------------
 
 
@@ -59,8 +59,8 @@ public:
 
 	/**
 	* Construct the chromosome.
-	* @param inst			The instance of the problem.
-	* @param id				The identificator of the chromosome.
+	* @param inst           The instance of the problem.
+	* @param id             The identificator of the chromosome.
 	*/
 	RChromoVLSI(RInstVLSI *inst,unsigned int id) throw(bad_alloc);
 

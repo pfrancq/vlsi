@@ -1,12 +1,12 @@
 /*
 
-	Rainbow Library Project
+	R Project Library
 
 	RChromoVLSI.cpp
 
 	Chromosome for VLSI placement GA - Implementation
 
-	(C) 1999-2000 by P. Francq.
+	(C) 1999-2001 by P. Francq.
 
 	Version $Revision$
 
@@ -32,9 +32,9 @@
 
 
 //-----------------------------------------------------------------------------
-// include files for Rainbow
-#include "rchromovlsi.h"
-using namespace RGA;
+// include files for R Project
+#include <rvlsi/rchromovlsi.h>
+using namespace RVLSI;
 
 
 
@@ -45,14 +45,14 @@ using namespace RGA;
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-RChromoVLSI::RChromoVLSI(RInstVLSI *inst,unsigned int id) throw(bad_alloc)
+RVLSI::RChromoVLSI::RChromoVLSI(RInstVLSI *inst,unsigned int id) throw(bad_alloc)
   : RChromo2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(inst,id)
 {
 }
 
 
 //-----------------------------------------------------------------------------
-void RChromoVLSI::Evaluate(void)
+void RVLSI::RChromoVLSI::Evaluate(void)
 {
 	double Num,Den;
 
