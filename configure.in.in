@@ -1,5 +1,32 @@
 #MIN_CONFIG(3.0.0)
 
+
+#--------------------- CHECK THE USE OF KDE FRONTEND ---------
+
+AC_ARG_ENABLE(kde, [  --enable-kde            enable kde frontend for plugins [[default=no]]],,enable_kde=no)
+
+
+if test "$enable_kde" != "no"; then
+	dnl check for qt libs
+	KDE_SET_PREFIX
+	KDE_PROG_LIBTOOL
+	AM_KDE_WITH_NLS
+	KDE_USE_QT
+	AC_PATH_KDE
+	AC_CHECK_KDEMAXPATHLEN
+	FRONTEND="kde"
+	CXXFLAGS="$CXXFLAGS -D_USE_KDE"
+	echo " -----------------------------------"
+	echo " -- KDE Frontend will be compiled --"
+	echo " -----------------------------------"
+fi
+
+AC_SUBST(FRONTEND)
+
+
+#--------------------- END CHECK THE USE OF KDE FRONTEND ---------
+
+
 #--------------------- R LIB -----------------------------
 
 #VARIABLES USE :
@@ -40,20 +67,6 @@ AC_ARG_WITH(r-libs,
 
 # ---- def function to check for a specific R library on the system
 AC_DEFUN(R_LIB_CHK,[
-	str="$1/lib$2.*"
-	R_LIB_DIR=""
-	for j in `echo $str`; do
-		if test -r $j; then
-		R_LIB_DIR=$1
-		break 2
-	fi
-	done
-])
-# --- end def function -----
-
-	
-# ---- def function to check for a specific R library on the system
-AC_DEFUN(RFRONTEND_LIB_CHK,[
 	str="$1/$2.*"
 	R_LIB_DIR=""
 	for j in `echo $str`; do
@@ -63,6 +76,8 @@ AC_DEFUN(RFRONTEND_LIB_CHK,[
 	fi
 	done
 ])
+	
+
 # --- end def function -----
 	
 	
@@ -122,17 +137,20 @@ R_INC_CHK(rprg,rprg.h)
 R_INC_CHK(rpromethee,rpromethee.h)
 R_INC_CHK(rstd,rcontainer.h)
 
-# ---- check the presence of the includes for all the R frontend libraries ----
-R_INC_CHK(frontend/kde,qgamonitor.h)
+if test "$enable_kde" != "no"; then
+	# ---- check the presence of the includes for all the R frontend libraries ----
+	R_INC_CHK(frontend/kde,rqt.h)
+fi
+
 
 # ---- check the presence of all R libraries
 for l in rdb rga rga2d rgga rmath rprg rpromethee rstd; do
 
 	#AC_MSG_CHECKING(for lib$l)
 	for i in $R_LIB_PATH ; do
-		R_LIB_CHK($i/$l,$l)  #check for local presence
-		R_LIB_CHK($i,$l)
-		R_LIB_CHK($i/r,$l)
+		R_LIB_CHK($i/$l,lib$l)  #check for local presence
+		R_LIB_CHK($i,lib$l)
+		R_LIB_CHK($i/r,lib$l)
 	done
 	AC_MSG_CHECKING(for lib$l)
 	if test -z "$R_LIB_DIR"; then
@@ -150,35 +168,37 @@ for l in rdb rga rga2d rgga rmath rprg rpromethee rstd; do
 done
 
 
-# ---- check the presence of all frontend libraries ----
-# --------------------------------------------------------------
-for i in $R_LIB_PATH ; do
-	RFRONTEND_LIB_CHK($i/frontend/kde,libkde_r)
-	RFRONTEND_LIB_CHK($i,libkde_r)
-	RFRONTEND_LIB_CHK($i/r,libkde_r)
-done
+if test "$enable_kde" != "no"; then
+	# ---- check the presence of all R frontend libraries ----
+	# --------------------------------------------------------------
+	for i in $R_LIB_PATH ; do
+		R_LIB_CHK($i/frontend/kde,libkde_r)
+		R_LIB_CHK($i,libkde_r)
+		R_LIB_CHK($i/r,libkde_r)
+	done
 
-AC_MSG_CHECKING(for libkde_r)
-if test -z "$R_LIB_DIR"; then
-	AC_MSG_RESULT(no)
-	AC_MSG_ERROR(Cannot find libkde_r.
+	AC_MSG_CHECKING(for libkde_r)
+	if test -z "$R_LIB_DIR"; then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR(Cannot find libkde_r.
 No GUI will be available for r libraries.
 Verify that R was installed
 using the --enable-kde=yes option !!!
 -------------------------------------)
 
-else
-	AC_MSG_RESULT(yes in $R_LIB_DIR)
+	else
+		AC_MSG_RESULT(yes in $R_LIB_DIR)
+	
+		if test "x$R_LIB_DIR" != "x$PAST_R_LIB_DIR"; then
+        	
+			LDFLAGS="-L$R_LIB_DIR $LDFLAGS"
+		fi
 
-	if test "x$R_LIB_DIR" != "x$PAST_R_LIB_DIR"; then
-
-		LDFLAGS="-L$R_LIB_DIR $LDFLAGS"
-	RVLSI_ADD="$R_LIB_DIR/libkde_r.la $RVLSI_ADD"
 	fi
 
+	PAST_R_LIB_DIR="$R_LIB_DIR"
+	
 fi
-
-PAST_R_LIB_DIR="$R_LIB_DIR"
 
 
 #--------------------- END R LIB -----------------------------
