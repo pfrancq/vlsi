@@ -37,7 +37,7 @@
 //-----------------------------------------------------------------------------
 // include files for R Project
 #include <rpromethee/rpromcriterion.h>
-#include <rga2d/rga2d.h>
+#include <rga/rga2d.h>
 using namespace R;
 
 
@@ -105,22 +105,22 @@ class KDevVLSIApp : public KMainWindow
 	bool allOri;
 
 	/**
-	* Prométhéé Parameters for Heuristic Distance.	
+	* Promï¿½hï¿½ Parameters for Heuristic Distance.
 	*/
 	RPromCriterionParams HeurDist;
 
 	/**
-	* Prométhéé Parameters for Heuristic Area.	
+	* Promï¿½hï¿½ Parameters for Heuristic Area.
 	*/
 	RPromCriterionParams HeurArea;
 
 	/**
-	* Prométhéé Parameters for Selection Distance.
+	* Promï¿½hï¿½ Parameters for Selection Distance.
 	*/
 	RPromCriterionParams SelectDist;
 
 	/**
-	* Prométhéé Parameters for Selection Weight.
+	* Promï¿½hï¿½ Parameters for Selection Weight.
 	*/
 	RPromCriterionParams SelectWeight;
 
@@ -175,7 +175,7 @@ protected:
 	* @see KTMainWindow#closeEvent
 	*/
 	virtual bool queryClose(void);
-	
+
 	/**
 	* queryExit is called by KTMainWindow when the last window of the
 	* application is going to be closed during the closeEvent(). Against the
@@ -317,7 +317,7 @@ private slots:
 	* End the heuristic in once.
 	*/
 	void slotHeuristicRun(void);
-	
+
 	/**
 	* Select objects for the current heuristic.
 	*/
@@ -327,27 +327,27 @@ private slots:
 	* Initialize the GA.
 	*/
 	void slotGAInit(void);
-	
+
 	/**
 	* Start the GA.
 	*/
 	void slotGAStart(void);
-	
+
 	/**
 	* Pause the GA.
 	*/
 	void slotGAPause(void);
-	
+
 	/**
 	* Stop the GA.
 	*/
 	void slotGAStop(void);
-	
+
 	/**
 	* View some polygons in a window.
 	*/
 	void slotViewPolygons(void);
-	
+
 	/**
 	* Toggles the toolbar.
 	*/
@@ -460,7 +460,7 @@ private:
 	* document list is checked for modified documents when the user is about to
 	* close the application.
 	*/
-	QList<KDevVLSIDoc> *pDocList;	
+	QList<KDevVLSIDoc> *pDocList;
 
 	// KAction pointers to enable/disable actions
 	KAction* fileNew;
@@ -483,9 +483,9 @@ private:
 	KAction* heuristicRun;
 	KAction* heuristicNext;
 	KAction* heuristicSelect;
-	KAction* GAInit;	
+	KAction* GAInit;
 	KAction* GAStart;
-	KAction* GAPause;	
+	KAction* GAPause;
 	KAction* GAStop;
 	KAction* ToolsViewPolygons;
 	KToggleAction* viewToolBar;

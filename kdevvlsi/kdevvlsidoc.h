@@ -32,12 +32,12 @@
 //-----------------------------------------------------------------------------
 #ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif 
+#endif
 
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rga2d/rproblem2d.h>
+#include <rga/rproblem2d.h>
 using namespace R;
 
 
@@ -94,7 +94,7 @@ class KDevVLSIDoc : public QObject, public RProblem2D
 	/**
 	* The list of the views currently connected to the document.
 	*/
-	QList<KDevVLSIView>* pViewList;	
+	QList<KDevVLSIView>* pViewList;
 
 public:
 
@@ -113,7 +113,7 @@ public:
 	* Usually this is your main view.
 	*/
 	void addView(KDevVLSIView *view);
-	
+
 	/**
 	* Removes a view from the list of currently connected views.
 	*/
@@ -177,9 +177,9 @@ public:
 
 	/**
 	* Saves the document under filename and format.
-	*/	
+	*/
 	bool saveDocument(const KURL &url, const char *format=0);
-	
+
 	/**
 	* Returns the KURL of the document.
 	*/

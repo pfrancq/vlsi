@@ -31,10 +31,10 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rga2d/rgeoinfo.h>
-#include <rga2d/rgeoinfos.h>
-#include <rga2d/rconnections.h>
-#include <rga2d/rplacementheuristic.h>
+#include <rga/rgeoinfo.h>
+#include <rga/rgeoinfos.h>
+#include <rga/rconnections.h>
+#include <rga/rplacementheuristic.h>
 using namespace R;
 
 
@@ -140,12 +140,12 @@ class KVLSIHeuristicView : public KDevVLSIView, public RGeoInfos
 	bool Stop;
 
 	/**
-	* Prométhéé Parameters for Heuristic Distance.	
+	* Promï¿½hï¿½ Parameters for Heuristic Distance.
 	*/
 	RPromCriterionParams HeurDist;
 
 	/**
-	* Prométhéé Parameters for Heuristic Area.	
+	* Promï¿½hï¿½ Parameters for Heuristic Area.
 	*/
 	RPromCriterionParams HeurArea;
 
@@ -200,12 +200,12 @@ public:
 	* Set the connections
 	*/
 	void setCons(RConnections* c) {draw->setCons(c);}
-	
+
 	/**
 	* Add a free polygon "on the fly"
 	*/
 	void addFree(RFreePolygon* poly) {draw->addFree(poly);}
-	
+
 	/**
 	* The widget has changed and has to be repainted.
 	*/

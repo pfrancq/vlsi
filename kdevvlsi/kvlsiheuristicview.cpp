@@ -32,10 +32,10 @@
 //-----------------------------------------------------------------------------
 // include files for R Project
 #include <rmath/rrect.h>
-#include <rga2d/robj2dcontainer.h>
-#include <rga2d/rplacementbottomleft.h>
-#include <rga2d/rplacementedge.h>
-#include <rga2d/rplacementcenter.h>
+#include <rga/robj2dcontainer.h>
+#include <rga/rplacementbottomleft.h>
+#include <rga/rplacementedge.h>
+#include <rga/rplacementcenter.h>
 using namespace R;
 
 
@@ -184,7 +184,7 @@ void KVLSIHeuristicView::NextStep(void)
 			RRect Rect=PlacementHeuristic->GetResult();
 			ActLimits.X=Rect.Width();
 			ActLimits.Y=Rect.Height();
-			
+
 			// Construct Result Message
 			sprintf(Str,"ActLimits=(%u,%u)  -  Area=%u  -  Dist=%.1f  -  Free(Calc=",
 				ActLimits.X,ActLimits.Y,ActLimits.X*ActLimits.Y,PlacementHeuristic->GetDistances());
@@ -207,7 +207,7 @@ void KVLSIHeuristicView::NextStep(void)
 			strcat(Str,Tmp);
 			sprintf(Tmp,"  -  Dist Crit.(p=%.3f,q=%.3f,w=%.1f)",HeurDist.P,HeurDist.Q,HeurDist.Weight);
 			strcat(Str,Tmp);
-	
+
 			// Set the variables and repaint all
 			result->setText(Str);
 			draw->setChanged();
