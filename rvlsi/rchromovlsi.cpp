@@ -51,7 +51,7 @@ RVLSI::RChromoVLSI::RChromoVLSI(RInstVLSI *inst,unsigned int id) throw(bad_alloc
 
 
 //-----------------------------------------------------------------------------
-void RVLSI::RChromoVLSI::Evaluate(void)
+void RVLSI::RChromoVLSI::Evaluate(void) throw(RGA::eGA)
 {
 	double Num,Den;
 

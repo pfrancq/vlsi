@@ -70,7 +70,7 @@ public:
 	* Evaluate the chromosome, by comparing the area of the boundary rectangle,
 	* with the sum of the areas of all the polygons.
 	*/
-	virtual void Evaluate(void);
+	virtual void Evaluate(void) throw(RGA::eGA);
 };
 
 
