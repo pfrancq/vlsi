@@ -97,8 +97,8 @@ public:
 	unsigned int Id;
 
 	REDIFTag(unsigned int,REDIFFile*,char *(&Buffer),unsigned &BufferLen);
-	virtual int Compare(const REDIFTag*) const {return(0);}
-	virtual int Compare(const RNode<REDIFTag,false>*) const {return(0);}
+	virtual int Compare(const REDIFTag&) const {return(0);}
+	virtual int Compare(const RNode<REDIFTag,false>&) const {return(0);}
 	virtual int Compare(const char* name) const { return(TagName.Compare(name)); }
 	void InsertInst(REDIFFile*);
 	void InsertPortImp(REDIFFile*);

@@ -4,7 +4,7 @@
 
 	VLSI Structure - Header.
 
-	Copyright 1999-2003 by the Université Libre de Bruxelles.
+	Copyright 1999-2003 by the Universitï¿½Libre de Bruxelles.
 
 	Authors:
 		Pascal Francq (pfrancq@ulb.ac.be).
@@ -68,7 +68,7 @@ public:
 
 	RLibrary(const RString& name) throw(std::bad_alloc);
 	int Compare(const RString& name) const { return(Name.Compare(name)); }
-	int Compare(const RLibrary* lib) const { return(Name.Compare(lib->Name)); }
+	int Compare(const RLibrary& lib) const { return(Name.Compare(lib.Name)); }
 	void InsertCell(RCell*);
 	~RLibrary(void);
 };
@@ -97,7 +97,7 @@ public:
 
 	RPort(const RString& name) throw(std::bad_alloc);
 	int Compare(const RString& name) const { return(Name.Compare(name)); }
-	int Compare(const RPort* port) const { return(Name.Compare(port->Name)); }
+	int Compare(const RPort& port) const { return(Name.Compare(port.Name)); }
 };
 
 
@@ -115,8 +115,8 @@ public:
 	bool Abstract;
 
 	RCell(const RString &name) throw(std::bad_alloc);
-	int Compare(const RString &name) const { return(Name.Compare(name)); }
-	int Compare(const RCell* cell) const { return(Name.Compare(cell->Name)); }
+	int Compare(const RString& name) const { return(Name.Compare(name)); }
+	int Compare(const RCell& cell) const { return(Name.Compare(cell.Name)); }
 	RPort* GetPort(const RString& name) const { return(Ports->GetInsertPtr<RString>(name)); }
 	void InsertPort(const RString& name,const char dir)
 	{
@@ -161,7 +161,7 @@ public:
 
 	RInstance(const RString& name) throw(std::bad_alloc) { Name=name; }
 	int Compare(const RString& name) const { return(Name.Compare(name)); }
-	int Compare(const RInstance* inst) const { return(Name.Compare(inst->Name)); }
+	int Compare(const RInstance& inst) const { return(Name.Compare(inst.Name)); }
 };
 
 
@@ -181,7 +181,7 @@ public:
 	RPort* Port;
 	RInstance* Inst;
 
-	int Compare(const RPortRef *ref) const {return(Port->Compare(ref->Port));}
+	int Compare(const RPortRef& ref) const {return(Port->Compare(*ref.Port));}
 };
 
 
@@ -195,7 +195,7 @@ public:
 
 	RNet(const RString &name);
 	int Compare(const RString &name) const { return(Name.Compare(name)); }
-	int Compare(const RNet *net) const { return(Name.Compare(net->Name)); }
+	int Compare(const RNet& net) const { return(Name.Compare(net.Name)); }
 	void InsertRef(const RString &port,const RString &instance);
 	~RNet(void);
 };

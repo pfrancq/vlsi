@@ -83,14 +83,14 @@ public:
 	char Type;
 
 	RDataFile(const RString &);
-	int Compare(const RDataFile* file) const
+	int Compare(const RDataFile& file) const
 	{
-		if(Type==file->Type)
-			return(Name.Compare(file->Name));
+		if(Type==file.Type)
+			return(Name.Compare(file.Name));
 		else
-		 return(Type-file->Type);
+		 return(Type-file.Type);
 	}
-	int Compare(const RString &name) { return(Name.Compare(name)); }
+	int Compare(const RString& name) const { return(Name.Compare(name)); }
 	virtual const char* StringType(void) {return(0);}
 	virtual const char* TreeType(void) {return(0);}
 	virtual bool Analyse(void) {return(true);}
