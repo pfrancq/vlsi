@@ -1,5 +1,8 @@
 #MIN_CONFIG(3.0.0)
 
+AM_INIT_AUTOMAKE(rvlsi, 1.0)
+AC_C_BIGENDIAN
+
 
 #--------------------- CHECK THE USE OF KDE FRONTEND ---------
 
@@ -26,188 +29,20 @@ AC_SUBST(FRONTEND)
 
 #--------------------- END CHECK THE USE OF KDE FRONTEND ---------
 
+#--------------- Check R INCLUDES and LIBs ------------------
 
-#--------------------- R LIB -----------------------------
+R_CHK($FRONTEND)
 
-#VARIABLES USE :
-#	$R_LIB environnement variable used for developpment
-#	$R_INC_PATH = the path specified in the --with-r-includes
-#	$R_LIB_PATH = the path specified in the --with-r-libs
-#	$R_INC_DIR = the directory where the includes were found
-#	$R_LIB_DIR = the directory where the libraries were found
+#---------- END of R INCLUDES and LIBs ----------------------
 
-#---------------------------------------------------------
-# ---- add configure option : --with-r-includes=DIR ----
-if test "x$R_LIB" != "x" ; then
-	R_INC_PATH=$R_LIB
-else
-	R_INC_PATH=" /usr/include /usr/include/r /usr/local /usr/local/include /usr/local/include/r ${prefix}/include/r"
-fi
-AC_ARG_WITH(r-includes,
-	AC_HELP_STRING(
-		[--with-r-includes=DIR],
-		[where the R includes are, like [/usr/include/r]. ]),
-	R_INC_PATH="$withval")
 
-# ---- end arg for configure ----
-
-# ---- add configure option : --with-r-libs=DIR ----
-if test "x$R_LIB" != "x" ; then
-	R_LIB_PATH=$R_LIB
-else
-	R_LIB_PATH="/usr/lib /usr/lib/r /usr/local/lib /usr/local/lib/r ${prefix}/lib/r"
-fi
-AC_ARG_WITH(r-libs,
-	AC_HELP_STRING(
-		[--with-r-libs=DIR],
-		[where the R libraries are installed, like [/usr/lib]. ]),
-	R_LIB_PATH="$withval")
-
-# ---- end arg for configure ----
-
-# ---- def function to check for a specific R library on the system
-AC_DEFUN(R_LIB_CHK,[
-	str="$1/$2.*"
-	R_LIB_DIR=""
-	for j in `echo $str`; do
-		if test -r $j; then
-		R_LIB_DIR=$1
-		break 2
-	fi
-	done
-])
-	
-
-# --- end def function -----
-	
-	
-# ---- def function to check for a specific R includes on the system
-AC_DEFUN(R_INC_CHK,[
-	R_INC_DIR=""
-	str="$1/$2"
-	for i in $R_INC_PATH ; do
-		test -f $i/$str                    && R_INC_DIR=$i/$1 && break
-		#test -f $i/r/$str              && R_INC_DIR=$i/r/$1 && break
-	done
-	AC_MSG_CHECKING(for $1/$2)
-	if test -z "$R_INC_DIR"; then
-		if test "x$R_INC_PATH" != "x"; then
-			AC_MSG_RESULT(no)
-			#check for missing frontend
-			if test "x$1" != "xfrontend/kde"; then
-				AC_MSG_ERROR(Cannot find $1 header files under $R_INC_PATH)
-			else
-				AC_MSG_ERROR(Cannot find $1 header files under $R_INC_PATH.
-Verify that R was installed
-using the --enable-kde=yes option !!!
--------------------------------------)
-			fi
-		else
-			AC_MSG_RESULT(no)
-			#check for missing frontend
-			if test "x$1" != "xfrontend/kde"; then
-				AC_MSG_ERROR(Cannot find $2 headers.  Use --with-r-includes=DIR to specify non-default path.)
-			else
-				AC_MSG_ERROR(Cannot find $2 headers.
-Verify that R was installed
-using the --enable-kde=yes option !!!
--------------------------------------)
-
-			fi
-		fi
-
-	else
-		AC_MSG_RESULT(yes in $R_INC_DIR)
-	fi
-
-	if test "x$i" != "x$PAST_R_INC_DIR"; then
-		CPPFLAGS="-I$i $CPPFLAGS"
-	fi
-	PAST_R_INC_DIR="$i"
-])
-# --- end def function -----
-
-# ---- check the presence of the includes for all the R libraries
-R_INC_CHK(rdb,rmysql.h)
-R_INC_CHK(rga,rga.h)
-R_INC_CHK(rga2d,rga2d.h)
-R_INC_CHK(rgga,rgga.h)
-R_INC_CHK(rmath,rgraph.h)
-R_INC_CHK(rprg,rprg.h)
-R_INC_CHK(rpromethee,rpromethee.h)
-R_INC_CHK(rstd,rcontainer.h)
-
-if test "$enable_kde" != "no"; then
-	# ---- check the presence of the includes for all the R frontend libraries ----
-	R_INC_CHK(frontend/kde,rqt.h)
+#--------------------- CHECK FOR RDEBUG ----------------------
+#---------------------Test if enable-debug is used -----------
+if test "$enable_debug" != "no"; then
+	CXXFLAGS="$CXXFLAGS -D_RDEBUG"
 fi
 
-
-# ---- check the presence of all R libraries
-for l in rdb rga rga2d rgga rmath rprg rpromethee rstd; do
-
-	#AC_MSG_CHECKING(for lib$l)
-	for i in $R_LIB_PATH ; do
-		R_LIB_CHK($i/$l,lib$l)  #check for local presence
-		R_LIB_CHK($i,lib$l)
-		R_LIB_CHK($i/r,lib$l)
-	done
-	AC_MSG_CHECKING(for lib$l)
-	if test -z "$R_LIB_DIR"; then
-		AC_MSG_RESULT(no)
-		AC_MSG_ERROR(Cannot find lib$l)
-	else
-		AC_MSG_RESULT(yes in $R_LIB_DIR)
-	fi
-	if test "x$R_LIB_DIR" != "x$PAST_R_LIB_DIR"; then
-		LDFLAGS="-L$R_LIB_DIR $LDFLAGS"
-	fi
-	PAST_R_LIB_DIR="$R_LIB_DIR"
-	RVLSI_ADD="$R_LIB_DIR/lib$l.la $RVLSI_ADD"
-
-done
+#----------------- END CHECK FOR RDEBUG ----------------------
 
 
-if test "$enable_kde" != "no"; then
-	# ---- check the presence of all R frontend libraries ----
-	# --------------------------------------------------------------
-	for i in $R_LIB_PATH ; do
-		R_LIB_CHK($i/frontend/kde,libkde_r)
-		R_LIB_CHK($i,libkde_r)
-		R_LIB_CHK($i/r,libkde_r)
-	done
-
-	AC_MSG_CHECKING(for libkde_r)
-	if test -z "$R_LIB_DIR"; then
-		AC_MSG_RESULT(no)
-		AC_MSG_ERROR(Cannot find libkde_r.
-No GUI will be available for r libraries.
-Verify that R was installed
-using the --enable-kde=yes option !!!
--------------------------------------)
-
-	else
-		AC_MSG_RESULT(yes in $R_LIB_DIR)
-	
-		if test "x$R_LIB_DIR" != "x$PAST_R_LIB_DIR"; then
-        	
-			LDFLAGS="-L$R_LIB_DIR $LDFLAGS"
-		fi
-
-	fi
-
-	PAST_R_LIB_DIR="$R_LIB_DIR"
-	
-fi
-
-
-#--------------------- END R LIB -----------------------------
-
-
-AC_SUBST(RVLSI_ADD)
-
-AM_INIT_AUTOMAKE(r, 0.1)
-AC_C_BIGENDIAN
-AC_CHECK_KDEMAXPATHLEN
-
-CXXFLAGS="$CXXFLAGS $USE_EXCEPTIONS"
+CXXFLAGS="-ldl $CXXFLAGS $USE_EXCEPTIONS"
