@@ -79,7 +79,7 @@ RProject::RProject(void) throw(bad_alloc)
 //------------------------------------------------------------------------------
 bool RProject::LoadProject(void)
 {
-	RTextFile f(Name(),Read);
+	RTextFile f(Name,Read);
 	char *Tmp;
 	char* ptr;
 
