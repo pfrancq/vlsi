@@ -1,0 +1,4 @@
+#MIN_CONFIG
+
+AM_INIT_AUTOMAKE(kdevvlsi,0.1)
+

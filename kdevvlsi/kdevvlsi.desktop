@@ -1,0 +1,12 @@
+# KDE Config File  
+[KDE Desktop Entry]
+Type=Application
+Exec=kdevvlsi -caption "%c" %i %m  
+Icon=kdevvlsi.xpm
+MiniIcon=kdevvlsi.xpm
+DocPath=kdevvlsi/index.html
+Comment=
+Comment[de]=
+Terminal=0
+Name=KDevVLSI
+Name[de]=KDevVLSI
