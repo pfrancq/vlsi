@@ -29,6 +29,11 @@
 
 
 //-----------------------------------------------------------------------------
+// include files for R
+#include <frontend/kde/rqt.h>
+
+
+//-----------------------------------------------------------------------------
 // include files for current application
 #include "kvlsiprjview.h"
 #include "kdevvlsidoc.h"
@@ -76,7 +81,7 @@ void KVLSIPrjView::createPrj(void)
 	for(doc->Problem.Connectors.Start();!doc->Problem.Connectors.End();doc->Problem.Connectors.Next())
 	{
 		connector=doc->Problem.Connectors();
-		item3=new QListViewItem(item2,item3,connector->GetName());
+		item3=new QListViewItem(item2,item3,ToQt(connector->GetName()));
 		for(unsigned int i=0;i<connector->NbPos;i++)
 		{
 			sprintf(tmp,"Pin at (%d,%d)",connector->Pos[i].X,connector->Pos[i].Y);
@@ -115,7 +120,7 @@ void KVLSIPrjView::createPrj(void)
 		for(obj->Connectors.Start();!obj->Connectors.End();obj->Connectors.Next())
 		{
 			connector=obj->Connectors();
-			item4=new QListViewItem(item3,item4,connector->GetName());
+			item4=new QListViewItem(item3,item4,ToQt(connector->GetName()));
 			item5=0;
 			for(unsigned int i=0;i<connector->NbPos;i++)
 			{
