@@ -96,7 +96,7 @@ void KVLSIPrjView::createPrj(void)
 	{
 		obj=doc->Objs();
 		// Name of the object
-		sprintf(tmp,"%s (%u)",obj->Name(),obj->GetId());
+		sprintf(tmp,"%s (%u)",obj->Name.Latin1(),obj->GetId());
 		item2 = new QListViewItem(item,item2,tmp);
 		item3=0;
 
@@ -138,7 +138,7 @@ void KVLSIPrjView::createPrj(void)
 			con=doc->Cons();
 			for(con->Connect.Start();!con->Connect.End();con->Connect.Next())
 			{
-				sprintf(tmp,"%s\t|\t%s",con->Connect()->Owner->Name(),con->Connect()->Name());
+				sprintf(tmp,"%s\t|\t%s",con->Connect()->Owner->Name.Latin1(),con->Connect()->Name.Latin1());
 				item3 = new QListViewItem(item2,item3,tmp);
 			}
 		}
