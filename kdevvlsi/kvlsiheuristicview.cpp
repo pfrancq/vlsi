@@ -69,7 +69,7 @@ KVLSIHeuristicView::KVLSIHeuristicView(KDevVLSIDoc* pDoc,HeuristicType pType,QWi
 	: KDevVLSIView(pDoc,parent,name,wflags), RGeoInfos(pDoc,true), Random(0), type(pType), grid(0),
 	  free(0), PlacementHeuristic(0), nbFree(0)
 {
-	nbObjs = pDoc->Objs.NbPtr;
+	nbObjs = pDoc->Objs.GetNb();
 	draw=new QDrawPolygons(pDoc,this);
 	draw->setNbInfos(nbObjs);
 	draw->setInfos(this);
@@ -90,15 +90,15 @@ KVLSIHeuristicView::KVLSIHeuristicView(KDevVLSIDoc* pDoc,HeuristicType pType,QWi
 	switch(pType)
 	{
 		case R::BottomLeft:
-			PlacementHeuristic = new RPlacementBottomLeft(pDoc->Objs.NbPtr,calcFree,useFree,Random,allOri);
+			PlacementHeuristic = new RPlacementBottomLeft(pDoc->Objs.GetNb(),calcFree,useFree,Random,allOri);
 			break;
 
 		case R::Edge:
-			PlacementHeuristic = new RPlacementEdge(pDoc->Objs.NbPtr,calcFree,useFree,Random,allOri);
+			PlacementHeuristic = new RPlacementEdge(pDoc->Objs.GetNb(),calcFree,useFree,Random,allOri);
 			break;
 
 		case R::Center:
-			PlacementHeuristic = new RPlacementCenter(pDoc->Objs.NbPtr,calcFree,useFree,Random,allOri);
+			PlacementHeuristic = new RPlacementCenter(pDoc->Objs.GetNb(),calcFree,useFree,Random,allOri);
 			break;
 	}
 	PlacementHeuristic->Init(pDoc,this,grid);
@@ -173,8 +173,8 @@ void KVLSIHeuristicView::NextStep(void)
 		if(step)
 		{
 			draw->addInfo(CurInfo);
-			while(free->NbPtr>nbFree)
-				addFree(free->Tab[nbFree++]);
+			while(free->GetNb()>nbFree)
+				addFree((*free)[nbFree++]);
 		}
 
 		// test if the end
@@ -238,15 +238,15 @@ void KVLSIHeuristicView::RunToEnd(void)
 //-----------------------------------------------------------------------------
 void KVLSIHeuristicView::SelectObjects(void)
 {
-	RObj2DContainer* ptr=new RObj2DContainer(NbPtr+1,"Temporary Object",NbPtr);
+	RObj2DContainer* ptr=new RObj2DContainer(GetNb()+1,"Temporary Object",GetNb());
 
-	memset(Selected,0,doc->Objs.NbPtr*sizeof(bool));
+	memset(Selected,0,doc->Objs.GetNb()*sizeof(bool));
 	doc->Cons.SetParams(theApp->SelectDist,theApp->SelectWeight,Random);
 	GetSetInfos(ptr,grid,Selected);
-	for(unsigned int i=0;i<doc->Objs.NbPtr;i++)
+	for(unsigned int i=0;i<doc->Objs.GetNb();i++)
 	{
 		if(Selected[i])
-			Tab[i]->SetSelect();
+			((*this)[i])->SetSelect();
 	}
 	delete ptr;
 	draw->setChanged();

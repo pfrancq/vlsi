@@ -59,28 +59,26 @@ void KVLSIPrjView::createPrj(void)
 {
 	char tmp[100];
 	QListViewItem *item=0,*item2=0,*item3=0,*item4=0,*item5=0;
-	RObj2D* obj;
-	RConnection *con;
-	RObj2DConnector* connector;
 
 	// Problem
 	item=new QListViewItem(prj,"Problem");
 	item2=new QListViewItem(item,item2,"Vertices");
 	item3=0;
-	for(doc->Problem.Polygon.Start();!doc->Problem.Polygon.End();doc->Problem.Polygon.Next())
+	RCursor<RPoint> Cur(doc->Problem.Polygon);
+	for(Cur.Start();!Cur.End();Cur.Next())
 	{
-		sprintf(tmp,"(%d,%d)",doc->Problem.Polygon()->X,doc->Problem.Polygon()->Y);
+		sprintf(tmp,"(%d,%d)",Cur()->X,Cur()->Y);
 		item3=new QListViewItem(item2,item3,tmp);
 	}
 	item2=new QListViewItem(item,item2,"Terminals");
 	item3=0;
-	for(doc->Problem.Connectors.Start();!doc->Problem.Connectors.End();doc->Problem.Connectors.Next())
+	RCursor<RObj2DConnector> Cur2(doc->Problem.Connectors);
+	for(Cur2.Start();!Cur2.End();Cur2.Next())
 	{
-		connector=doc->Problem.Connectors();
-		item3=new QListViewItem(item2,item3,ToQString(connector->GetName()));
-		for(unsigned int i=0;i<connector->NbPos;i++)
+		item3=new QListViewItem(item2,item3,ToQString(Cur2()->GetName()));
+		for(unsigned int i=0;i<Cur2()->NbPos;i++)
 		{
-			sprintf(tmp,"Pin at (%d,%d)",connector->Pos[i].X,connector->Pos[i].Y);
+			sprintf(tmp,"Pin at (%d,%d)",Cur2()->Pos[i].X,Cur2()->Pos[i].Y);
 			item4=new QListViewItem(item3,item4,tmp);
 		}
 	}
@@ -90,55 +88,57 @@ void KVLSIPrjView::createPrj(void)
 	item2=new QListViewItem(item,item2,tmp);
 
 	// Construct Objects
-	sprintf(tmp,"Objects (%u)",doc->Objs.NbPtr);
+	sprintf(tmp,"Objects (%u)",doc->Objs.GetNb());
 	item = new QListViewItem(prj,item,tmp);
 	item2=0;
-	for(doc->Objs.Start();!doc->Objs.End();doc->Objs.Next())
+	RCursor<RObj2D> Objs(doc->Objs);
+	for(Objs.Start();!Objs.End();Objs.Next())
 	{
-		obj=doc->Objs();
 		// Name of the object
-		item2 = new QListViewItem(item,item2,ToQString(obj->Name)+" ("+QString::number(obj->GetId()));
+		item2 = new QListViewItem(item,item2,ToQString(Objs()->Name)+" ("+QString::number(Objs()->GetId()));
 		item3=0;
 
 		// Vertices
 		item3=new QListViewItem(item2,item3,"Vertices");
 		item4=0;
-		for(obj->Polygon.Start();!obj->Polygon.End();obj->Polygon.Next())
+		Cur.Set(Objs()->Polygon);
+		for(Cur.Start();!Cur.End();Cur.Next())
 		{
-			sprintf(tmp,"(%d,%d)",obj->Polygon()->X,obj->Polygon()->Y);
+			sprintf(tmp,"(%d,%d)",Cur()->X,Cur()->Y);
 			item4=new QListViewItem(item3,item4,tmp);
 		}
 		
 		// Connectors
 		item3=new QListViewItem(item2,item3,"Terminals");
 		item4=0;
-		for(obj->Connectors.Start();!obj->Connectors.End();obj->Connectors.Next())
+		Cur2.Set(Objs()->Connectors);
+		for(Cur2.Start();!Cur2.End();Cur2.Next())
 		{
-			connector=obj->Connectors();
-			item4=new QListViewItem(item3,item4,ToQString(connector->GetName()));
+			item4=new QListViewItem(item3,item4,ToQString(Cur2()->GetName()));
 			item5=0;
-			for(unsigned int i=0;i<connector->NbPos;i++)
+			for(unsigned int i=0;i<Cur2()->NbPos;i++)
 			{
-				sprintf(tmp,"Pin at (%d,%d)",connector->Pos[i].X,connector->Pos[i].Y);
+				sprintf(tmp,"Pin at (%d,%d)",Cur2()->Pos[i].X,Cur2()->Pos[i].Y);
 				item5=new QListViewItem(item4,item5,tmp);
 			}
 		}
 	}
 
 	// Construct Connections
-	if(doc->Cons.NbPtr)
+	if(doc->Cons.GetNb())
 	{
-		sprintf(tmp,"Nets (%u)",doc->Cons.NbPtr);
+		sprintf(tmp,"Nets (%u)",doc->Cons.GetNb());
 		item=new QListViewItem(prj,item,tmp);
 		item2=0;
-		for(doc->Cons.Start();!doc->Cons.End();doc->Cons.Next())
+		RCursor<RConnection> Cons(doc->Cons);
+		for(Cons.Start();!Cons.End();Cons.Next())
 		{
 			item2=new QListViewItem(item,item2,"Net");
 			item3=0;
-			con=doc->Cons();
-			for(con->Connect.Start();!con->Connect.End();con->Connect.Next())
+			Cur2.Set(Cons()->Connect);
+			for(Cur2.Start();!Cur2.End();Cur2.Next())
 			{
-				item3 = new QListViewItem(item2,item3,ToQString(con->Connect()->Owner->Name)+"\t|\t"+ToQString(con->Connect()->Name));
+				item3 = new QListViewItem(item2,item3,ToQString(Cur2()->Owner->Name)+"\t|\t"+ToQString(Cur2()->Name));
 			}
 		}
 	}

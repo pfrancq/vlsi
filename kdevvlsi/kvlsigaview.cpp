@@ -73,14 +73,14 @@ KVLSIGAView::KVLSIGAView(KDevVLSIDoc* pDoc,QWidget *parent, const char *name,int
 	// Solution part
 	Best = new QDrawPolygons(pDoc,TabWidget);
 	TabWidget->insertTab(Best,"Best Solution");
-	Best->setNbInfos(doc->Objs.NbPtr);
+	Best->setNbInfos(doc->Objs.GetNb());
 	Best->setCons(&doc->Cons);
 
 	// Solution part
 	Sol = new QDrawPolygons(pDoc,TabWidget);
 	sprintf(tmp,"Solution (0/%u)",((KDevVLSIApp*)parentWidget()->parentWidget()->parentWidget())->GAPopSize-1);
 	TabWidget->insertTab(Sol,tmp);
-	Sol->setNbInfos(doc->Objs.NbPtr);
+	Sol->setNbInfos(doc->Objs.GetNb());
 	Sol->setCons(&doc->Cons);
 
 	// Create GA
