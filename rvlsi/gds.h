@@ -6,7 +6,7 @@
 
 	GDS file - Header.
 
-	Copyright 1999-2003 by the Université Libre de Bruxelles.
+	Copyright 1999-2003 by the Universitï¿½Libre de Bruxelles.
 
 	Authors:
 		Pascal Francq (pfrancq@ulb.ac.be).
@@ -109,7 +109,7 @@ public:
 /**
 * @short: A GDSII data file.
 */
-class RGDSFile : public RDataFile, public RContainer<RGDSRecord,unsigned int,true,false>
+class RGDSFile : public RDataFile, public RContainer<RGDSRecord,true,false>
 {
 private:
 	RCell* CurrCell;

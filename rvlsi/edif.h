@@ -6,7 +6,7 @@
 
 	EDIF File - Header.
 
-	Copyright 1999-2003 by the Université Libre de Bruxelles.
+	Copyright 1999-2003 by the Universitï¿½Libre de Bruxelles.
 
 	Authors:
 		Pascal Francq (pfrancq@ulb.ac.be).
@@ -118,7 +118,7 @@ class REDIFFile : public RDataFile
 	RLibrary *CurrLib;
 public:
 	RTree<REDIFTag,true,false> *Struct;
-	RContainer<RStringId,unsigned int,true,true> *Types;
+	RContainer<RStringId,true,true> *Types;
 
 	REDIFFile(const RString& name);
 	virtual const char* StringType(void) {return("=EDIF2");}

@@ -6,7 +6,7 @@
 
 	A GDS File - Implementation.
 
-	Copyright 1999-2003 by the Université Libre de Bruxelles.
+	Copyright 1999-2003 by the Universitï¿½Libre de Bruxelles.
 
 	Authors:
 		Pascal Francq (pfrancq@ulb.ac.be).
@@ -463,7 +463,7 @@ char* RGDSRecord::GetRecDesc(void)
 			break;
 
 		case 28:
-			sprintf(tmp,"%g°",GetType5(0));
+			sprintf(tmp,"%g",GetType5(0));
 			break;
 
 		default:
@@ -491,7 +491,7 @@ RGDSRecord::~RGDSRecord(void)
 
 
 //------------------------------------------------------------------------------
-RGDSFile::RGDSFile(const RString& name) : RDataFile(name),RContainer<RGDSRecord,unsigned int,true,false>(100,50)
+RGDSFile::RGDSFile(const RString& name) : RDataFile(name),RContainer<RGDSRecord,true,false>(100,50)
 {
 /*  unsigned char *File,*Buffer;
   unsigned int BufferLen;

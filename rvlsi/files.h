@@ -6,7 +6,7 @@
 
 	VLSI input and output Files - Header
 
-	Copyright 1999-2003 by the Université Libre de Bruxelles.
+	Copyright 1999-2003 by the Universitï¿½Libre de Bruxelles.
 
 	Authors:
 		Pascal Francq (pfrancq@ulb.ac.be).
@@ -101,7 +101,7 @@ public:
 
 //------------------------------------------------------------------------------
 // A VLSI project
-class RProject : public RContainer<RDataFile,unsigned int,true,true>, public RStructure
+class RProject : public RContainer<RDataFile,true,true>, public RStructure
 {
 public:
 	/**

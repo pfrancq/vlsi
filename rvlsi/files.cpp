@@ -6,7 +6,7 @@
 
 	VLSI input and output Files - Implementation.
 
-	Copyright 1999-2003 by the Université Libre de Bruxelles.
+	Copyright 1999-2003 by the Universitï¿½Libre de Bruxelles.
 
 	Authors:
 		Pascal Francq (pfrancq@ulb.ac.be).
@@ -61,14 +61,14 @@ RDataFile::RDataFile(const RString& name)
 
 //------------------------------------------------------------------------------
 RProject::RProject(const RString &name) throw(bad_alloc)
-	: RContainer<RDataFile,unsigned int,true,true>(10,5),RStructure(), Name(name), InputName(name),OutputName(name)
+	: RContainer<RDataFile,true,true>(10,5),RStructure(), Name(name), InputName(name),OutputName(name)
 {
 }
 
 
 //------------------------------------------------------------------------------
 RProject::RProject(void) throw(bad_alloc)
-	: RContainer<RDataFile,unsigned int,true,true>(10,5),RStructure(), Name(200), InputName(200),OutputName(200)
+	: RContainer<RDataFile,true,true>(10,5),RStructure(), Name(200), InputName(200),OutputName(200)
 {
 }
 

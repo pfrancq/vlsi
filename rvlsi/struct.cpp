@@ -6,7 +6,7 @@
 
 	VLSI Structure - Implementation.
 
-	Copyright 1999-2003 by the Université Libre de Bruxelles.
+	Copyright 1999-2003 by the Universitï¿½Libre de Bruxelles.
 
 	Authors:
 		Pascal Francq (pfrancq@ulb.ac.be).
@@ -46,7 +46,7 @@ using namespace std;
 RLibrary::RLibrary(const RString& name) throw(bad_alloc)
 	: Name(name.ToUpper()),RealName(name)
 {
-	Cells=new RContainer<RCell,unsigned int,false,false>(20,10);
+	Cells=new RContainer<RCell,false,false>(20,10);
 }
 
 
@@ -73,7 +73,7 @@ RLibrary::~RLibrary(void)
 
 //------------------------------------------------------------------------------
 RLibraries::RLibraries(void) throw(bad_alloc)
-	: RContainer<RLibrary,unsigned int,true,true>(20,5)
+	: RContainer<RLibrary,true,true>(20,5)
 {
 }
 
@@ -108,7 +108,7 @@ RCell::RCell(const RString& name) throw(bad_alloc)
 	Ports=0;
 	Instances=0;
 	Nets=0;
-	Ports=new RContainer<RPort,unsigned int,true,true>(10,5);
+	Ports=new RContainer<RPort,true,true>(10,5);
 	Instances=new RInstances(10,5);
 	Nets=new RNets(10,5);
 	Abstract=true;
@@ -151,7 +151,7 @@ RCell::~RCell(void)
 
 //------------------------------------------------------------------------------
 RCells::RCells(RStructure* s) throw(bad_alloc)
-	: RContainer<RCell,unsigned int,true,true>(500,250)
+	: RContainer<RCell,true,true>(500,250)
 {
 	Struct=s;
 }
@@ -168,7 +168,7 @@ RCells::RCells(RStructure* s) throw(bad_alloc)
 RNet::RNet(const RString& name)
 	: Name(name)
 {
-	Refs=new RContainer<RPortRef,unsigned int,true,false>(10,5);
+	Refs=new RContainer<RPortRef,true,false>(10,5);
 }
 
 

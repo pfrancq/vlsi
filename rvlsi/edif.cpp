@@ -6,7 +6,7 @@
 
 	EDIF file - Implementation.
 
-	Copyright 1999-2003 by the Université Libre de Bruxelles.
+	Copyright 1999-2003 by the Universitï¿½Libre de Bruxelles.
 
 	Authors:
 		Pascal Francq (pfrancq@ulb.ac.be).
@@ -249,7 +249,7 @@ REDIFFile::REDIFFile(const RString& name)
 
 	Type=cstEDIF2;
 	Struct=new RTree<REDIFTag,true,false>(150,50);
-	Types=new RContainer<RStringId,unsigned int,true,true>(10,5);
+	Types=new RContainer<RStringId,true,true>(10,5);
 	ptr=Types->GetInsertPtr<RString>("CELL");
 	ptr->Id=CurrentId++;
 	ptr=Types->GetInsertPtr<RString>("LIBRARY");
