@@ -1,68 +1,75 @@
 /*
 
-  VlsiPrj.h
+	R Project Library
 
-  VLSI Project File - Header.
+	VlsiPrj.h
 
-  (C) 1999-2000 by P. Francq.
+	VLSI Project File - Header.
 
-  Version $Revision$
+	Copyright 1999-2003 by the Université Libre de Bruxelles.
 
-  Last Modify: $Date$
+	Authors:
+		Pascal Francq (pfrancq@ulb.ac.be).
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  any later version.
+	Version $Revision$
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+	Last Modify: $Date$
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef RVLSIPRJH
 #define RVLSIPRJH
 
 
-//---------------------------------------------------------------------------
-// Includes
-#include "files.h"
-#include "edif.h"
-#include "gds.h"
-using namespace RVLSI;
+//------------------------------------------------------------------------------
+// Include files for R Project
+#include <rvlsi/files.h>
+#include <rvlsi/edif.h>
+#include <rvlsi/gds.h>
 
 
-//---------------------------------------------------------------------------
-namespace RVLSI{
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+namespace R{
+//------------------------------------------------------------------------------
 
 
-//---------------------------------------------------------------------------
-// A VLSI project
+//------------------------------------------------------------------------------
+/**
+* @short A VLSI project.
+*/
 class RVLSIProject : public RProject
 {
 public:
 
-  RVLSIProject(const RString &name) throw(bad_alloc) : RProject(name) {}
-  RVLSIProject(void) throw(bad_alloc) : RProject() {}
-  virtual RDataFile* CreateFile(const RString &name,const RString &type)
-  {
-  	if(type=="GDSII") return(new RGDSFile(name));
+	RVLSIProject(const RString& name) throw(bad_alloc) : RProject(name) {}
+	RVLSIProject(void) throw(bad_alloc) : RProject() {}
+	virtual RDataFile* CreateFile(const RString& name,const RString& type)
+	{
+		if(type=="GDSII") return(new RGDSFile(name));
 		if(type=="EDIF2") return(new REDIFFile(name));
-		return(NULL);		
-  }
+		return(NULL);
+	}
 };
 
 
-}  //-------- End of namespace RVLSI ---------------------------------------
+}  //-------- End of namespace R -----------------------------------------------
 
-//---------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif

@@ -6,7 +6,10 @@
 
 	Chromosome for VLSI placement GA - Implementation
 
-	(C) 1999-2001 by P. Francq.
+	Copyright 1999-2003 by the Université Libre de Bruxelles.
+
+	Authors:
+		Pascal Francq (pfrancq@ulb.ac.be).
 
 	Version $Revision$
 
@@ -31,27 +34,29 @@
 
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // include files for R Project
 #include <rvlsi/rchromovlsi.h>
 #include <rvlsi/rinstvlsi.h>
+using namespace R;
 
 
-//-----------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 //
-// RChromoVLSI
+// class RChromoVLSI
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-RVLSI::RChromoVLSI::RChromoVLSI(RInstVLSI *inst,unsigned int id) throw(bad_alloc)
+//------------------------------------------------------------------------------
+RChromoVLSI::RChromoVLSI(RInstVLSI *inst,unsigned int id) throw(bad_alloc)
   : RChromo2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(inst,id)
 {
 }
 
 
-//-----------------------------------------------------------------------------
-void RVLSI::RChromoVLSI::Evaluate(void) throw(RGA::eGA)
+//------------------------------------------------------------------------------
+void RChromoVLSI::Evaluate(void) throw(eGA)
 {
 	double Num,Den;
 

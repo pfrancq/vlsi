@@ -6,7 +6,10 @@
 
 	Instance for VLSI placement GA - Implementation
 
-	(C) 1999-2001 by P. Francq.
+	Copyright 1999-2003 by the Université Libre de Bruxelles.
+
+	Authors:
+		Pascal Francq (pfrancq@ulb.ac.be).
 
 	Version $Revision$
 
@@ -31,41 +34,44 @@
 
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // include files for R Project
 #include <rvlsi/rinstvlsi.h>
 #include <rvlsi/rchromovlsi.h>
+using namespace R;
 
-//-----------------------------------------------------------------------------
-//
-// RThreadDataVLSI
-//
-//-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-RVLSI::RThreadDataVLSI::RThreadDataVLSI(RInstVLSI *owner)
- : RThreadData2D<RInstVLSI,RChromoVLSI>(owner)
+
+//------------------------------------------------------------------------------
+//
+// class RThreadDataVLSI
+//
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+RThreadDataVLSI::RThreadDataVLSI(RInstVLSI *owner)
+	: RThreadData2D<RInstVLSI,RChromoVLSI>(owner)
 {
 }
 
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 //
-// RInstVLSI
+// class RInstVLSI
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-RVLSI::RInstVLSI::RInstVLSI(unsigned int max,unsigned int popsize,RProblem2D* prob,HeuristicType h,RDebug *debug) throw(bad_alloc)
+//------------------------------------------------------------------------------
+RInstVLSI::RInstVLSI(unsigned int max,unsigned int popsize,RProblem2D* prob,HeuristicType h,RDebug* debug) throw(bad_alloc)
 	: RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(popsize,prob,h,debug),
 		MaxGen(max)
 {
 }
 
 
-//-----------------------------------------------------------------------------
-bool RVLSI::RInstVLSI::StopCondition(void)
+//------------------------------------------------------------------------------
+bool RInstVLSI::StopCondition(void)
 {
 	return(Gen==MaxGen);
 }

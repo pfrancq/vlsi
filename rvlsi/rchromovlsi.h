@@ -6,7 +6,10 @@
 
 	Chromosome for VLSI placement GA - Header
 
-	(C) 1999-2000 by P. Francq.
+	Copyright 1999-2003 by the Université Libre de Bruxelles.
+
+	Authors:
+		Pascal Francq (pfrancq@ulb.ac.be).
 
 	Version $Revision$
 
@@ -31,25 +34,23 @@
 
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef RChromoVLSIH
 #define RChromoVLSIH
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // include files for Rainbow
 #include <rvlsi/rgavlsi.h>
-using namespace RVLSI;
 #include <rga2d/rchromo2d.h>
-using namespace RGA2D;
 
 
-//------------------------------------------------------------------------
-namespace RVLSI{
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+namespace R{
+//------------------------------------------------------------------------------
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 /**
 * The chromosome for the VLSI GA.
 * @author Pascal Francq
@@ -64,18 +65,18 @@ public:
 	* @param inst           The instance of the problem.
 	* @param id             The identificator of the chromosome.
 	*/
-	RChromoVLSI(RInstVLSI *inst,unsigned int id) throw(bad_alloc);
+	RChromoVLSI(RInstVLSI* inst,unsigned int id) throw(bad_alloc);
 
 	/**
 	* Evaluate the chromosome, by comparing the area of the boundary rectangle,
 	* with the sum of the areas of all the polygons.
 	*/
-	virtual void Evaluate(void) throw(RGA::eGA);
+	virtual void Evaluate(void) throw(eGA);
 };
 
 
-}  //-------- End of namespace RVLSI ------------------------------------------
+}  //-------- End of namespace R -----------------------------------------------
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #endif

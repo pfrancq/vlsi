@@ -6,7 +6,10 @@
 
 	Instance for VLSI placement GA - Header
 
-	(C) 1999-2000 by P. Francq.
+	Copyright 1999-2003 by the Université Libre de Bruxelles.
+
+	Authors:
+		Pascal Francq (pfrancq@ulb.ac.be).
 
 	Version $Revision$
 
@@ -31,24 +34,23 @@
 
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef RInstVLSIH
 #define RInstVLSIH
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // include files for Rainbow
 #include <rvlsi/rgavlsi.h>
 #include <rga2d/rinst2d.h>
-using namespace RGA2D;
 
 
-//-----------------------------------------------------------------------------
-namespace RVLSI{
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+namespace R{
+//------------------------------------------------------------------------------
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 /**
 * This class represent "thread-dependent" data for the VLSI GA.
 * @author Pascal Francq
@@ -62,11 +64,11 @@ public:
 	* Construct the data.
 	* @param owner          The instance of the problem.
 	*/
-	RThreadDataVLSI(RInstVLSI *owner);
+	RThreadDataVLSI(RInstVLSI* owner);
 };
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 /**
 * The instance of the VLSI problem.
 * @author Pascal Francq
@@ -89,7 +91,7 @@ public:
 	* @param h              The type of heuristic to be used.
 	* @param debug          Debugger.
 	*/
-	RInstVLSI(unsigned int max,unsigned int popsize,RProblem2D* prob,HeuristicType h,RDebug *debug=0) throw(bad_alloc);
+	RInstVLSI(unsigned int max,unsigned int popsize,RProblem2D* prob,HeuristicType h,RDebug* debug=0) throw(bad_alloc);
 
 	/**
 	* This function determines if the GA must be stopped. Actually, it is the case
@@ -100,8 +102,8 @@ public:
 };
 
 
-}  //-------- End of namespace RVLSI ------------------------------------------
+}  //-------- End of namespace R -----------------------------------------------
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #endif

@@ -6,7 +6,10 @@
 
 	EDIF File - Header.
 
-	(c) 1999-2001 by P. Francq.
+	Copyright 1999-2003 by the Université Libre de Bruxelles.
+
+	Authors:
+		Pascal Francq (pfrancq@ulb.ac.be).
 
 	Version $Revision$
 
@@ -30,37 +33,36 @@
 
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef EDIFH
 #define EDIFH
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // include files for ANSI C/C++
-#if unix
+#ifdef _BSD_SOURCE
 	#include <unistd.h>
 #endif
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // include files for R Project
 #include <rstd/rstring.h>
-#include <rstd/tree.h>
-using namespace RStd;
+#include <rstd/rtree.h>
+#include <rstd/rnode.h>
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // include files for VLSI
 #include <rvlsi/files.h>
-using namespace RVLSI;
 
 
-//---------------------------------------------------------------------------
-namespace RVLSI{    // namespace RVLSI
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+namespace R{
+//------------------------------------------------------------------------------
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Constances
 const long TYPECELL=1;
 const long TYPELIBRARY=2;
@@ -70,13 +72,13 @@ const long TYPENET=5;
 const long TYPEPORT=6;
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Forward declarations
 class REDIFTag;
 class REDIFFile;
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 class RStringId : public RString
 {
 public:
@@ -86,30 +88,31 @@ public:
 };
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 /**
 * @short EDIF Tag
 */
-class REDIFTag : public RBaseNode<REDIFTag>
+class REDIFTag : public RNode<REDIFTag,false>
 {
 public:
-  RString TagName;
-  RString TypeName;
-  RString Params;
+	RString TagName;
+	RString TypeName;
+	RString Params;
+	unsigned int Id;
 
-  REDIFTag(unsigned int,REDIFFile*,char *(&Buffer),unsigned &BufferLen);
-  virtual int Compare(REDIFTag*) {return(0);}
-  virtual int Compare(RBaseNode<REDIFTag>*) {return(0);}
-  virtual int Compare(char* name) { return(TagName.Compare(name)); }
-  void InsertInst(REDIFFile*);
-  void InsertPortImp(REDIFFile*);
-  void InsertNet(REDIFFile*);
-  bool Analyse(REDIFFile*);
+	REDIFTag(unsigned int,REDIFFile*,char *(&Buffer),unsigned &BufferLen);
+	virtual int Compare(const REDIFTag*) const {return(0);}
+	virtual int Compare(const RNode<REDIFTag,false>*) const {return(0);}
+	virtual int Compare(const char* name) const { return(TagName.Compare(name)); }
+	void InsertInst(REDIFFile*);
+	void InsertPortImp(REDIFFile*);
+	void InsertNet(REDIFFile*);
+	bool Analyse(REDIFFile*);
 };
 
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 /**
 * @short EDIF2 data file
 */
@@ -118,21 +121,21 @@ class REDIFFile : public RDataFile
 	RCell *CurrCell;
 	RLibrary *CurrLib;
 public:
-  RTree<REDIFTag> *Struct;
+	RTree<REDIFTag,true,false> *Struct;
 	RContainer<RStringId,unsigned int,true,true> *Types;
 
-  REDIFFile(const RString &name);
-  virtual char* StringType(void) {return("=EDIF2");}
-  virtual char* TreeType(void) {return(" - EDIF2 File");}
-  virtual bool Analyse(void);
-  ~REDIFFile(void);
+	REDIFFile(const RString& name);
+	virtual const char* StringType(void) {return("=EDIF2");}
+	virtual const char* TreeType(void) {return(" - EDIF2 File");}
+	virtual bool Analyse(void);
+	~REDIFFile(void);
 
-  friend REDIFTag;
+	friend class REDIFTag;
 };
 
 
-}  //-------- End of namespace RVLSI ------------------------------------------
+}  //-------- End of namespace R -----------------------------------------------
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #endif

@@ -1,124 +1,143 @@
 /*
 
-  Files.h
+	R Project Library
 
-  VLSI input and output Files - Header.
+	Files.h
 
-  (C) 1999-2000 by P. Francq.
+	VLSI input and output Files - Header
 
-  Version $Revision$
+	Copyright 1999-2003 by the Université Libre de Bruxelles.
 
-  Last Modify: $Date$
+	Authors:
+		Pascal Francq (pfrancq@ulb.ac.be).
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  any later version.
+	Version $Revision$
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+	Last Modify: $Date$
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
 
 
-//---------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #ifndef FilesH
 #define FilesH
 
 
-//---------------------------------------------------------------------------
-// Includes
-#include <iostream.h>
+//------------------------------------------------------------------------------
+// Includes for ANSI C/C++
+#include <iostream>
 #include <string.h>
 #include <sys/stat.h>
-#ifdef unix
-
+#ifdef _BSD_SOURCE
 #else
 	#include <io.h>
 #endif
 #include <stdio.h>
 #include <fcntl.h>
 #include <math.h>
-#include "rstd/rstring.h"
-#include "rstd/rfunc.h"
-using namespace RStd;
-#include "struct.h"
-using namespace RVLSI;
 
 
-//---------------------------------------------------------------------------
-namespace RVLSI{
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+// include files for R Project
+#include <rstd/rstring.h>
+#include <rstd/rstd.h>
+#include <rvlsi/struct.h>
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+namespace R{
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
 // Declaration
 class RDataFile;
 class RProject;
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Constants
 const char cstNothing=0;
 const char cstEDIF2=1;
 const char cstGDSII=2;
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // A typical data file
 class RDataFile
 {
 public:
-  RProject *Proj;
-  RString Name;
-  char Type;
+	RProject *Proj;
+	RString Name;
+	char Type;
 
-  RDataFile(const RString &);
-  int Compare(RDataFile* file)
+	RDataFile(const RString &);
+	int Compare(const RDataFile* file) const
 	{
 		if(Type==file->Type)
 			return(Name.Compare(file->Name));
 		else
 		 return(Type-file->Type);
- 	}
-  int Compare(const RString &name) { return(Name.Compare(name)); }
-  virtual char* StringType(void) {return("");}
-  virtual char* TreeType(void) {return("");}
-  virtual bool Analyse(void) {return(true);}
+	}
+	int Compare(const RString &name) { return(Name.Compare(name)); }
+	virtual const char* StringType(void) {return(0);}
+	virtual const char* TreeType(void) {return(0);}
+	virtual bool Analyse(void) {return(true);}
 	virtual ~RDataFile(void) {}
 };
 
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // A VLSI project
 class RProject : public RContainer<RDataFile,unsigned int,true,true>, public RStructure
 {
 public:
-  RString Name;                                     // Name
-  RString InputName,OutputName;
+	/**
+	* Name of the project.
+	*/
+	RString Name;
+	RString InputName,OutputName;
 
-  RProject(const RString &) throw(bad_alloc);
-  RProject(void) throw(bad_alloc);
-  inline void InsertFile(RDataFile *file)
-  {
-    InsertPtr(file);
-    file->Proj=this;
-  }
-  bool LoadProject(void);      											// Only for Text interface !!!!
-  bool Analyse(void);         											// Only for Text interface !!!!
-  virtual RDataFile* CreateFile(const RString &name,const RString &type) {return(NULL);};
-  virtual ~RProject(void);
+	RProject(const RString &) throw(bad_alloc);
+	RProject(void) throw(bad_alloc);
+	inline void InsertFile(RDataFile *file)
+	{
+		InsertPtr(file);
+		file->Proj=this;
+	}
+
+	/**
+	* \remarks{Only for Text interface !!!!}
+	*/
+	bool LoadProject(void);
+
+	/**
+	* \remarks{Only for Text interface !!!!}
+	*/
+	bool Analyse(void);
+	virtual RDataFile* CreateFile(const RString&,const RString&) {return(0);};
+	virtual ~RProject(void);
 };
 
 
-}  //-------- End of namespace RVLSI ---------------------------------------
+}  //-------- End of namespace R -----------------------------------------------
 
-//---------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
