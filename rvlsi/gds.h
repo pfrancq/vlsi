@@ -41,7 +41,7 @@
 
 //---------------------------------------------------------------------------
 // include files for Rainbow
-#include "rstring.h"
+#include "rstd/rstring.h"
 using namespace RStd;
 
 

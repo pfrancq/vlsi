@@ -33,11 +33,13 @@
 
 
 //---------------------------------------------------------------------------
-// Includes
-#include "rcontainer.h"
-#include "rstring.h"
-#include "polygons.h"
+// include files for Rainbow
+#include "rstd/rcontainer.h"
+#include "rstd/rstring.h"
 using namespace RStd;
+#include "rgeometry/polygons.h"
+using namespace RGeometry;
+
 
 
 //---------------------------------------------------------------------------

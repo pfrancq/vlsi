@@ -45,8 +45,8 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <math.h>
-#include "rstring.h"
-#include "rfunc.h"
+#include "rstd/rstring.h"
+#include "rstd/rfunc.h"
 using namespace RStd;
 #include "struct.h"
 using namespace RVLSI;

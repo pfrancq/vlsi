@@ -40,8 +40,8 @@
 
 //---------------------------------------------------------------------------
 // include files for Rainbow
-#include "rstring.h"
-#include "tree.h"
+#include "rstd/rstring.h"
+#include "rstd/tree.h"
 using namespace RStd;
 
 
