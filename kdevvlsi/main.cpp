@@ -29,18 +29,23 @@
 
 
 //-----------------------------------------------------------------------------
-
+// include files for KDE
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
 
+
+//-----------------------------------------------------------------------------
+// include file for current application
 #include "kdevvlsi.h"
 
+
+//-----------------------------------------------------------------------------
 static const char *description =
-	I18N_NOOP("KDevVLSI");
-// INSERT A DESCRIPTION FOR YOUR APPLICATION HERE
+	I18N_NOOP("KDevVLSI\nDevelopment Application for VLSI Placement");
 	
 	
+//-----------------------------------------------------------------------------
 static KCmdLineOptions options[] =
 {
   { "+[File]", I18N_NOOP("file to open"), 0 },
@@ -48,42 +53,39 @@ static KCmdLineOptions options[] =
   // INSERT YOUR COMMANDLINE OPTIONS HERE
 };
 
+
+//-----------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
-
-	KAboutData aboutData( "testmdi", I18N_NOOP("KDevVLSI"),
+	KAboutData aboutData( "kdevvlsi", I18N_NOOP("KDevVLSI"),
 		VERSION, description, KAboutData::License_GPL,
-		"(c) 2000, ");
-	aboutData.addAuthor("",0, "");
+		"(c) 1999-2000, Université Libre de Bruxelles","http://www.ulb.ac.be",0,"pfrancq@ulb.ac.be");
+	aboutData.addAuthor("Pascal Francq",0, "pfrancq@ulb.ac.be");
+
 	KCmdLineArgs::init( argc, argv, &aboutData );
 	KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 
-  KApplication app;
+	KApplication app;
  
-  if (app.isRestored())
-  {
-    RESTORE(KDevVLSIApp);
-  }
-  else 
-  {
-    KDevVLSIApp *testmdi = new KDevVLSIApp();
-    testmdi->show();
+	if (app.isRestored())
+	{
+		RESTORE(KDevVLSIApp);
+	}
+	else
+	{
+		KDevVLSIApp *kdevvlsimdi = new KDevVLSIApp();
+		kdevvlsimdi->show();
 
-    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+		KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 		
-		if (args->count())
+		if(args->count())	// Must be files
 		{
 			for(int i=0;i<args->count();i++)
 			{
-        testmdi->openDocumentFile(args->arg(i));
-		  }
-		}
-		else
-		{
-		  testmdi->openDocumentFile();
+				kdevvlsimdi->openDocumentFile(args->arg(i));
+			}
 		}
 		args->clear();
-  }
-
-  return app.exec();
+	}
+	return app.exec();
 }  

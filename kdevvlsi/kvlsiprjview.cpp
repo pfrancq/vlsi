@@ -1,6 +1,6 @@
 /*
 
-  kdevvlsiview.cpp
+  kvlsiprjview.cpp
 
   Description - Implementation.
 
@@ -29,76 +29,65 @@
 
 
 //-----------------------------------------------------------------------------
-// include files for Qt
-#include <qprinter.h>
-#include <qpainter.h>
-#include <qdir.h>
-
-
-//-----------------------------------------------------------------------------
-// include files for KDE
-
-
-//-----------------------------------------------------------------------------
-// application specific includes
-#include "kdevvlsi.h"
-#include "kdevvlsiview.h"
+// include files for current application
+#include "kvlsiprjview.h"
 #include "kdevvlsidoc.h"
 
 
 //-----------------------------------------------------------------------------
 //
-// class KDevVLSIView
+// class KVLSIPrjView
 //
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-KDevVLSIView::KDevVLSIView(KDevVLSIDoc* pDoc, QWidget *parent, const char* name, int wflags)
-	: QWidget(parent, name, wflags)
+KVLSIPrjView::KVLSIPrjView(KDevVLSIDoc* pDoc,QWidget *parent,const char *name,int wflags)
+	: KDevVLSIView(pDoc,parent,name,wflags),prj(0)
 {
-	doc=pDoc;
+	prj=new QListView(this,"Project Elements"+doc->URL().path());
+	prj->addColumn("Elements");
+	prj->setRootIsDecorated(true);
+	prj->setSorting(-1);
+	createPrj();
 }
 
 
 //-----------------------------------------------------------------------------
-KDevVLSIView::~KDevVLSIView(void)
+KVLSIPrjView::~KVLSIPrjView()
 {
 }
 
 
 //-----------------------------------------------------------------------------
-KDevVLSIDoc *KDevVLSIView::getDocument(void) const
+void KVLSIPrjView::createPrj(void)
 {
-	return doc;
-}
+	char tmp[30];
+	QListViewItem *item,*item2,*item3;
+	unsigned int i,j;
+	RObj2D **obj;
+	RPolygon *poly;
+	RPoint **pt;
 
-
-//-----------------------------------------------------------------------------
-void KDevVLSIView::update(KDevVLSIView* pSender)
-{
-	if(pSender != this)
-		repaint();
-}
-
-
-//-----------------------------------------------------------------------------
-void KDevVLSIView::print(QPrinter *pPrinter)
-{
-	if(pPrinter->setup(this))
+	// Construct Objects
+	item = new QListViewItem(prj,"Objects");
+	item2=0;
+	for(i=0,obj=doc->Objs;i<doc->NbObjs;i++,obj++)
 	{
-		QPainter p;
-		p.begin(pPrinter);
-		// TODO: add your printing code here
-		p.end();
+		sprintf(tmp,"Object n°%u",i);
+		item2 = new QListViewItem(item,item2,tmp);
+		item3=0;
+		poly=&(*obj)->Polygon;
+		for(j=poly->NbPtr+1,pt=poly->Tab;--j;pt++)
+		{
+			sprintf(tmp,"(%u,%u)",(*pt)->X,(*pt)->Y);
+			item3=new QListViewItem(item2,item3,tmp);
+		}
 	}
 }
 
 
 //-----------------------------------------------------------------------------
-void KDevVLSIView::closeEvent(QCloseEvent* /*e*/)
+void KVLSIPrjView::resizeEvent(QResizeEvent *)
 {
-	// DO NOT CALL QWidget::closeEvent(e) here !!
-	// This will accept the closing by QCloseEvent::accept() by default.
-	// The installed eventFilter() in KDevVLSIApp takes care for closing the widget
-	// or ignoring the close event		
+	prj->resize(width(),height());
 }
