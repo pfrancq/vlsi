@@ -29,7 +29,8 @@
 
 
 //-----------------------------------------------------------------------------
-// include files for QT
+// include files for Qt
+#include <qapplication.h>
 #include <qdir.h>
 #include <qprinter.h>
 #include <qvbox.h>
@@ -37,6 +38,10 @@
 #include <qtooltip.h>
 #include <qtoolbutton.h>
 #include <qstring.h>
+#include <qvalidator.h>
+#include <qlineedit.h>
+#include <qsplitter.h>
+#include <qcheckbox.h>
 
 
 //-----------------------------------------------------------------------------
@@ -48,6 +53,7 @@
 #include <klocale.h>
 #include <kconfig.h>
 #include <kstdaction.h>
+#include <kcombobox.h>
 
 
 //-----------------------------------------------------------------------------
@@ -55,9 +61,11 @@
 #include "kdevvlsi.h"
 #include "kdevvlsiview.h"
 #include "kvlsiprjview.h"
+#include "kvlsigaview.h"
 #include "kvlsiheuristicview.h"
+#include "kvlsiviewpolygons.h"
 #include "kdevvlsidoc.h"
-#include "qdlgoptions.h"
+#include "kappoptions.h"
 
 
 
@@ -83,7 +91,6 @@ KDevVLSIApp::KDevVLSIApp(void)
 	initStatusBar();
 	initView();
 	initActions();
-	
 	readOptions();
 
 	// disable actions at startup
@@ -100,13 +107,11 @@ KDevVLSIApp::KDevVLSIApp(void)
 	heuristicCenter->setEnabled(false);
 	heuristicRun->setEnabled(false);
 	heuristicNext->setEnabled(false);
-}
-
-
-//-----------------------------------------------------------------------------
-KDevVLSIApp::~KDevVLSIApp(void)
-{
-	delete printer;
+	heuristicSelect->setEnabled(false);	
+	GAInit->setEnabled(false);
+	GAStart->setEnabled(false);	
+	GAPause->setEnabled(false);	
+	GAStop->setEnabled(false);	
 }
 
 
@@ -152,11 +157,21 @@ void KDevVLSIApp::initActions(void)
 	heuristicCenter=new KAction(i18n("&Center Heuristic"),KAccel::stringToKey("Alt+C"),this,SLOT(slotHeuristicCenter(void)),actionCollection(),"heuristic_center");
 	heuristicRun=new KAction(i18n("&Run Heuristic"),"run",KAccel::stringToKey("Alt+R"),this,SLOT(slotHeuristicRun(void)),actionCollection(),"heuristic_run");
 	heuristicNext=new KAction(i18n("&Next step for Heuristic"),"next",KAccel::stringToKey("Alt+N"),this,SLOT(slotHeuristicNext(void)),actionCollection(),"heuristic_next");
+	heuristicSelect=new KAction(i18n("&Select objects of Heuristic"),"queue",KAccel::stringToKey("Alt+O"),this,SLOT(slotHeuristicSelect(void)),actionCollection(),"heuristic_select");
+
+	// Menu "GA"
+	GAInit=new KAction(i18n("&Initialize"),"reload",KAccel::stringToKey("Alt+I"),this,SLOT(slotGAInit(void)),actionCollection(),"ga_init");
+	GAStart=new KAction(i18n("&Start"),"exec",KAccel::stringToKey("Alt+S"),this,SLOT(slotGAStart(void)),actionCollection(),"ga_start");
+	GAPause=new KAction(i18n("&Pause"),"player_pause",KAccel::stringToKey("Alt+P"),this,SLOT(slotGAPause(void)),actionCollection(),"ga_pause");
+	GAStop=new KAction(i18n("&Stop"),"stop",KAccel::stringToKey("Alt+T"),this,SLOT(slotGAStop(void)),actionCollection(),"ga_stop");
+
+	// Menu "Tools"
+	ToolsViewPolygons=new KAction(i18n("View &Polygons"),"viewmag",0,this,SLOT(slotViewPolygons(void)),actionCollection(),"tools_view_polygons");
 
 	// Menu "Settings"
 	viewToolBar = KStdAction::showToolbar(this, SLOT(slotViewToolBar(void)), actionCollection());
 	viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar(void)), actionCollection());
-	settingsOptions = new KAction(i18n("&Options"),0,this,SLOT(slotSettingsOptions(void)),actionCollection(),"settings_options");
+	settingsOptions = new KAction(i18n("&Options"),"configure",0,this,SLOT(slotSettingsOptions(void)),actionCollection(),"settings_options");
 	viewToolBar->setStatusText(i18n("Enables/disables the toolbar"));
 	viewStatusBar->setStatusText(i18n("Enables/disables the statusbar"));
 	settingsOptions->setStatusText(i18n("Set the options"));
@@ -179,8 +194,10 @@ void KDevVLSIApp::initView(void)
 	// here the main view of the KMainWindow is created by a background box and
 	// the QWorkspace instance for MDI view.
 	QVBox* view_back = new QVBox( this );
+	//QSplitter* view_back=new QSplitter(QSplitter::Vertical,this);
 	view_back->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
 	pWorkspace = new QWorkspace( view_back );
+	//Output=new QMultiLineEdit(view_back);
 	connect(pWorkspace, SIGNAL(windowActivated(QWidget*)), this, SLOT(setWndTitle(QWidget*)));
 	setCentralWidget(view_back);
 }
@@ -189,7 +206,10 @@ void KDevVLSIApp::initView(void)
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::setWndTitle(QWidget*)
 {
-	setCaption(pWorkspace->activeWindow()->caption());
+	if(pWorkspace->activeWindow())
+		setCaption(pWorkspace->activeWindow()->caption());
+	else
+		setCaption("");
 }
 
 
@@ -201,7 +221,7 @@ void KDevVLSIApp::createClient(KDevVLSIDoc* doc)
 	doc->addView(w);
 	w->setIcon(kapp->miniIcon());
 	w->show();
-	w->resize(pWorkspace->sizeHint());	
+	w->resize(pWorkspace->sizeHint());
 }
 
 
@@ -217,12 +237,12 @@ void KDevVLSIApp::openDocumentFile(const KURL& url)
 	{
 		if(doc->URL()==url)
 		{
-			KDevVLSIView* view=doc->firstView();	
+			KDevVLSIView* view=doc->firstView();
 			view->setFocus();
 			return;
 		}
 	}
-	
+
 	// Create the document
 	doc = new KDevVLSIDoc();
 	pDocList->append(doc);
@@ -238,14 +258,14 @@ void KDevVLSIApp::openDocumentFile(const KURL& url)
 		url.setFileName(fileName);
 		doc->setURL(url);
 	}
-	// Open the file
 	else
 	{
+		// Open the file
 		if(!doc->openDocument(url))
 		{
 			KMessageBox::error (this,i18n("Could not open document !"), i18n("Error !"));
 			delete doc;
-			return;	
+			return;
 		}
 		fileOpenRecent->addURL(url);
 	}
@@ -255,6 +275,7 @@ void KDevVLSIApp::openDocumentFile(const KURL& url)
 	heuristicBL->setEnabled(true);
 	heuristicEdge->setEnabled(true);
 	heuristicCenter->setEnabled(true);
+	GAInit->setEnabled(true);
 
 	slotStatusMsg(i18n("Ready."));
 }
@@ -271,6 +292,27 @@ void KDevVLSIApp::saveOptions(void)
 	fileOpenRecent->saveEntries(config,"Recent Files");
 	config->setGroup("Heuristic Options");
 	config->writeEntry("Step Mode",step);
+	config->writeEntry("All Orientations",allOri);
+	config->writeEntry("Free Polygons Calculated",calcFree);
+	config->writeEntry("Free Polygons Used",useFree);
+	config->writeEntry("Prométhée p for Area",HeurArea.P);
+	config->writeEntry("Prométhée q for Area",HeurArea.Q);
+	config->writeEntry("Prométhée weight for Area",HeurArea.Weight);
+	config->writeEntry("Prométhée p for Dist",HeurDist.P);
+	config->writeEntry("Prométhée q for Dist",HeurDist.Q);
+	config->writeEntry("Prométhée weight for Dist",HeurDist.Weight);
+	config->setGroup("Selection Options");
+	config->writeEntry("Prométhée p for Weight",SelectWeight.P);
+	config->writeEntry("Prométhée q for Weight",SelectWeight.Q);
+	config->writeEntry("Prométhée weight for Weight",SelectWeight.Weight);
+	config->writeEntry("Prométhée p for Dist",SelectDist.P);
+	config->writeEntry("Prométhée q for Dist",SelectDist.Q);
+	config->writeEntry("Prométhée weight for Dist",SelectDist.Weight);
+	config->setGroup("GA Options");
+	config->writeEntry("Heuristic Type",GAHeur);
+	config->writeEntry("Maximum Generation",GAMaxGen);
+	config->writeEntry("Step Generation",GAStepGen);
+	config->writeEntry("Population Size",GAPopSize);
 }
 
 
@@ -306,13 +348,33 @@ void KDevVLSIApp::readOptions(void)
 	// Heuristics settings
 	config->setGroup("Heuristic Options");
 	step=config->readBoolEntry("Step Mode",false);
+	allOri=config->readBoolEntry("All Orientations",false);	
+	calcFree=config->readBoolEntry("Free Polygons Calculated",true);
+	useFree=config->readBoolEntry("Free Polygons Used",true);
+	HeurArea.P=config->readDoubleNumEntry("Prométhée p for Area",0.0);
+	HeurArea.Q=config->readDoubleNumEntry("Prométhée q for Area",0.0);
+	HeurArea.Weight=config->readDoubleNumEntry("Prométhée weight for Area",2.0);
+	HeurDist.P=config->readDoubleNumEntry("Prométhée p for Dist",0.0);
+	HeurDist.Q=config->readDoubleNumEntry("Prométhée q for Dist",0.0);
+	HeurDist.Weight=config->readDoubleNumEntry("Prométhée weight for Dist",1.0);
+	config->setGroup("Selection Options");
+	SelectWeight.P=config->readDoubleNumEntry("Prométhée p for Weight",0.0);
+	SelectWeight.Q=config->readDoubleNumEntry("Prométhée q for Weight",0.0);
+	SelectWeight.Weight=config->readDoubleNumEntry("Prométhée weight for Weight",1.0);
+	SelectDist.P=config->readDoubleNumEntry("Prométhée p for Dist",0.0);
+	SelectDist.Q=config->readDoubleNumEntry("Prométhée q for Dist",0.0);
+	SelectDist.Weight=config->readDoubleNumEntry("Prométhée weight for Dist",1.0);
+	config->setGroup("GA Options");
+	GAHeur=static_cast<HeuristicType>(config->readNumEntry("Heuristic Type",BottomLeft));
+	GAMaxGen=config->readUnsignedLongNumEntry("Maximum Generation",100);
+	GAStepGen=config->readUnsignedLongNumEntry("Step Generation",0);
+	GAPopSize=config->readUnsignedLongNumEntry("Population Size",16);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::saveProperties(KConfig* /*_cfg*/)
 {
-
 }
 
 
@@ -381,33 +443,33 @@ bool KDevVLSIApp::eventFilter(QObject* object, QEvent* event)
 		QCloseEvent* e=(QCloseEvent*)event;
 		KDevVLSIView* pView=(KDevVLSIView*)object;
 		KDevVLSIDoc* pDoc=pView->getDocument();
-		if(pDoc->canCloseFrame(pView))
+		if(pDoc&&(pDoc->canCloseFrame(pView)))
 		{
 			pDoc->removeView(pView);
 			if(!pDoc->firstView())
 			{
 				pDoc->closeDocument();
 				pDocList->remove(pDoc);
-      		if(pDocList->isEmpty())
-      		{
-      			heuristicBL->setEnabled(false);
-      			heuristicEdge->setEnabled(false);
-      			heuristicCenter->setEnabled(false);
-      			heuristicRun->setEnabled(false);
-            }
+				if(pDocList->isEmpty())
+		 		{
+					heuristicBL->setEnabled(false);
+					heuristicEdge->setEnabled(false);
+					heuristicCenter->setEnabled(false);
+					heuristicRun->setEnabled(false);
+					GAInit->setEnabled(false);
+					GAStart->setEnabled(false);	
+					GAPause->setEnabled(false);	
+					GAStop->setEnabled(false);
+    	        }
 			}
-			e->accept();
-      	//////////////	
-			QWidgetList l=pWorkspace->windowList();
-			l.remove(pView);
-			if(l.count()<1)
-				setPlainCaption(kapp->caption());
-			else
-				setCaption(pWorkspace->activeWindow()->caption());
-			//////////////
 		}
+		QWidgetList l=pWorkspace->windowList();
+		l.remove(pView);
+		if(l.count()<1)
+			setPlainCaption(kapp->caption());
 		else
-			e->ignore();
+			setCaption(pWorkspace->activeWindow()->caption());
+		e->accept();
 	}
 	return QWidget::eventFilter( object, event );    // standard event processing
 }
@@ -425,8 +487,9 @@ void KDevVLSIApp::slotFileNew(void)
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::slotFileOpen(void)
 {
-	slotStatusMsg(i18n("Opening file..."));	
-	KURL url=KFileDialog::getOpenURL(QString::null,i18n("*|All files"), this, i18n("Open File..."));
+	slotStatusMsg(i18n("Opening file..."));
+	KApplication::kApplication()->processEvents(1000);
+	KURL url=KFileDialog::getOpenURL("/home/pfrancq/data/projects/vlsi/data",i18n("*.pl2d|2D Placement files"), this, i18n("Open File..."));
 	if(!url.isEmpty())
 	{
 		openDocumentFile(url);
@@ -439,7 +502,8 @@ void KDevVLSIApp::slotFileOpen(void)
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::slotFileOpenRecent(const KURL& url)
 {
-	slotStatusMsg(i18n("Opening file..."));  	
+	slotStatusMsg(i18n("Opening file..."));
+	KApplication::kApplication()->processEvents(1000);
 	openDocumentFile(url);	
 	slotStatusMsg(i18n("Ready."));
 }
@@ -449,6 +513,7 @@ void KDevVLSIApp::slotFileOpenRecent(const KURL& url)
 void KDevVLSIApp::slotFileSave(void)
 {
 	slotStatusMsg(i18n("Saving file..."));
+	KApplication::kApplication()->processEvents(1000);
 	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
 	if(m)
 	{
@@ -467,6 +532,7 @@ void KDevVLSIApp::slotFileSave(void)
 void KDevVLSIApp::slotFileSaveAs(void)
 {
 	slotStatusMsg(i18n("Saving file with a new filename..."));
+	KApplication::kApplication()->processEvents(1000);
 	KURL url=KFileDialog::getSaveURL(QDir::currentDirPath(),i18n("*|All files"), this, i18n("Save as..."));
 	if(!url.isEmpty())
 	{
@@ -476,13 +542,13 @@ void KDevVLSIApp::slotFileSaveAs(void)
 			KDevVLSIDoc* doc =	m->getDocument();
 			if(!doc->saveDocument(url))
 			{
-        		KMessageBox::error (this,i18n("Could not save the current document !"), i18n("I/O Error !"));
-        		return;
-      	}
+				KMessageBox::error (this,i18n("Could not save the current document !"), i18n("I/O Error !"));
+				return;
+			}
 			doc->changedViewList();
 //			setWndTitle(m);
 			fileOpenRecent->addURL(url);
-		}	
+		}
 	}
 	slotStatusMsg(i18n("Ready."));
 }
@@ -503,8 +569,12 @@ void KDevVLSIApp::slotFileClose(void)
 			heuristicBL->setEnabled(false);
 			heuristicEdge->setEnabled(false);
 			heuristicCenter->setEnabled(false);
+			GAInit->setEnabled(false);
+			GAStart->setEnabled(false);
+			GAPause->setEnabled(false);
+			GAStop->setEnabled(false);
       }
-	}	
+	}
 	slotStatusMsg(i18n("Ready."));
 }
 
@@ -512,7 +582,7 @@ void KDevVLSIApp::slotFileClose(void)
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::slotFilePrint(void)
 {
-	slotStatusMsg(i18n("Printing..."));	
+	slotStatusMsg(i18n("Printing..."));
 	KDevVLSIView* m = (KDevVLSIView*) pWorkspace->activeWindow();
 	if(m)
 		m->print( printer );
@@ -538,7 +608,7 @@ void KDevVLSIApp::slotFileQuit(void)
 			if(!w->close())
 				break;
 		}
-	}	
+	}
 	slotStatusMsg(i18n("Ready."));
 }
 
@@ -546,10 +616,10 @@ void KDevVLSIApp::slotFileQuit(void)
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::slotEditUndo(void)
 {
-	slotStatusMsg(i18n("Reverting last action..."));	
-/*	KDevVLSIView* m = (KDevVLSIView*) pWorkspace->activeWindow();
-	if(m)
-	  m->undo();*/
+	slotStatusMsg(i18n("Reverting last action..."));
+//	KDevVLSIView* m = (KDevVLSIView*) pWorkspace->activeWindow();
+//	if(m)
+//	  m->undo();
 	slotStatusMsg(i18n("Ready."));
 }
 
@@ -557,10 +627,10 @@ void KDevVLSIApp::slotEditUndo(void)
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::slotEditCut(void)
 {
-	slotStatusMsg(i18n("Cutting selection..."));	
-/*	KDevVLSIView* m = (KDevVLSIView*) pWorkspace->activeWindow();
-	if(m)
-		m->cut();*/
+	slotStatusMsg(i18n("Cutting selection..."));
+//	KDevVLSIView* m = (KDevVLSIView*) pWorkspace->activeWindow();
+//	if(m)
+//		m->cut();
 	slotStatusMsg(i18n("Ready."));
 }
 
@@ -568,10 +638,10 @@ void KDevVLSIApp::slotEditCut(void)
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::slotEditCopy(void)
 {
-	slotStatusMsg(i18n("Copying selection to clipboard..."));	
-/*	KDevVLSIView* m = (KDevVLSIView*) pWorkspace->activeWindow();
-	if(m)
-		m->copy();*/		
+	slotStatusMsg(i18n("Copying selection to clipboard..."));
+//	KDevVLSIView* m = (KDevVLSIView*) pWorkspace->activeWindow();
+//	if(m)
+//		m->copy();
 	slotStatusMsg(i18n("Ready."));
 }
 
@@ -579,10 +649,10 @@ void KDevVLSIApp::slotEditCopy(void)
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::slotEditPaste(void)
 {
-	slotStatusMsg(i18n("Inserting clipboard contents..."));	
-/*	KDevVLSIView* m = (KDevVLSIView*) pWorkspace->activeWindow();
-	if(m)
-		m->paste();*/		
+	slotStatusMsg(i18n("Inserting clipboard contents..."));
+//	KDevVLSIView* m = (KDevVLSIView*) pWorkspace->activeWindow();
+//	if(m)
+//		m->paste();
 	slotStatusMsg(i18n("Ready."));
 }
 
@@ -590,8 +660,9 @@ void KDevVLSIApp::slotEditPaste(void)
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::slotHeuristicBL(void)
 {
+	KApplication::kApplication()->processEvents(1000);
 	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
-	if(m)
+	if(m&&(m->getType()==Project))
 	{
 		heuristicRun->setEnabled(true);
 		heuristicNext->setEnabled(true);
@@ -600,9 +671,10 @@ void KDevVLSIApp::slotHeuristicBL(void)
 		w->installEventFilter(this);
 		doc->addView(w);
 		w->setIcon(kapp->miniIcon());
+		w->resize(pWorkspace->sizeHint());
 		w->show();
-		w->resize(pWorkspace->sizeHint());	
-		doc->slotHeuristic(BottomLeft,step,w);
+		w->setFocus();
+		w->RunHeuristic();
 	}
 }
 
@@ -610,8 +682,9 @@ void KDevVLSIApp::slotHeuristicBL(void)
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::slotHeuristicEdge(void)
 {
+	KApplication::kApplication()->processEvents(1000);
 	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
-	if(m)
+	if(m&&(m->getType()==Project))
 	{
 		heuristicRun->setEnabled(true);
 		heuristicNext->setEnabled(true);
@@ -620,9 +693,10 @@ void KDevVLSIApp::slotHeuristicEdge(void)
 		w->installEventFilter(this);
 		doc->addView(w);
 		w->setIcon(kapp->miniIcon());
+		w->resize(pWorkspace->sizeHint());
 		w->show();
-		w->resize(pWorkspace->sizeHint());	
-		doc->slotHeuristic(Edge,step,w);
+		w->setFocus();
+		w->RunHeuristic();
 	}
 }
 
@@ -630,8 +704,9 @@ void KDevVLSIApp::slotHeuristicEdge(void)
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::slotHeuristicCenter(void)
 {
+	KApplication::kApplication()->processEvents(1000);
 	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
-	if(m)
+	if(m&&(m->getType()==Project))
 	{
 		heuristicRun->setEnabled(true);
 		heuristicNext->setEnabled(true);
@@ -640,9 +715,10 @@ void KDevVLSIApp::slotHeuristicCenter(void)
 		w->installEventFilter(this);
 		doc->addView(w);
 		w->setIcon(kapp->miniIcon());
+		w->resize(pWorkspace->sizeHint());
 		w->show();
-		w->resize(pWorkspace->sizeHint());	
-		doc->slotHeuristic(Center,step,w);
+		w->setFocus();	
+		w->RunHeuristic();
 	}
 }
 
@@ -651,30 +727,39 @@ void KDevVLSIApp::slotHeuristicCenter(void)
 void KDevVLSIApp::slotEndHeuristic(void)
 {
 	bool bRun=false;
-	KDevVLSIDoc *doc;
+	KDevVLSIView* v;
+	QWidgetList list;
+
+	KApplication::kApplication()->processEvents(1000);
 
 	// Scan all documents to see if all heuristics are end.
-   for(doc=pDocList->first();doc!=0;doc=pDocList->next())
-		if(doc->Run)
-			bRun=true;
+	list=pWorkspace->windowList();
+	for(v=(KDevVLSIView*)list.first();v!=0;v=(KDevVLSIView*)list.next())
+	{
+		if(v->getType()==Heuristic)
+		{
+			if(((KVLSIHeuristicView*)v)->Running())
+				bRun=true;
+		}
+	}
 
 	if(!bRun)
 	{
 		heuristicNext->setEnabled(false);
 		heuristicRun->setEnabled(false);
 	}
+	heuristicSelect->setEnabled(true);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::slotHeuristicNext(void)
 {
+	KApplication::kApplication()->processEvents(1000);
 	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
-	if(m)
+	if(m&&(m->getType()==Heuristic))
 	{
-		KDevVLSIDoc* doc = m->getDocument();
-		if((doc->Run)&&(doc->curView==m))
-			doc->slotNextStep(step);
+		((KVLSIHeuristicView*)m)->NextStep();
 	}
 }
 
@@ -682,12 +767,109 @@ void KDevVLSIApp::slotHeuristicNext(void)
 //-----------------------------------------------------------------------------
 void KDevVLSIApp::slotHeuristicRun(void)
 {
+	KApplication::kApplication()->processEvents(1000);
 	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
-	if(m)
+	if(m&&(m->getType()==Heuristic))
 	{
-		KDevVLSIDoc* doc = m->getDocument();
-		doc->slotRun();
+		((KVLSIHeuristicView*)m)->RunToEnd();
 	}
+}
+
+
+//-----------------------------------------------------------------------------
+void KDevVLSIApp::slotHeuristicSelect(void)
+{
+	KApplication::kApplication()->processEvents(1000);
+	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
+	if(m&&(m->getType()==Heuristic))
+	{
+		((KVLSIHeuristicView*)m)->SelectObjects();
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+void KDevVLSIApp::slotGAInit(void)
+{
+	KApplication::kApplication()->processEvents(1000);
+	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
+	if(m&&(m->getType()==Project))
+	{
+		GAStart->setEnabled(true);
+		GAStop->setEnabled(false);
+		GAPause->setEnabled(false);
+		KDevVLSIDoc* doc = m->getDocument();
+		KVLSIGAView* w = new KVLSIGAView(doc,pWorkspace,0,WDestructiveClose);
+		w->installEventFilter(this);
+		doc->addView(w);
+		w->setIcon(kapp->miniIcon());
+		w->resize(pWorkspace->sizeHint());
+		w->show();
+		w->setFocus();
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+void KDevVLSIApp::slotGAStart(void)
+{
+	KApplication::kApplication()->processEvents(1000);	
+	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
+	if(m&&(m->getType()==GA))
+	{
+		GAPause->setEnabled(true);
+		GAStop->setEnabled(true);
+		GAStart->setEnabled(false);
+		((KVLSIGAView*)m)->RunGA();
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+void KDevVLSIApp::slotGAPause(void)
+{
+	KApplication::kApplication()->processEvents(1000);
+	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
+	if(m&&(m->getType()==GA))
+	{
+		((KVLSIGAView*)m)->PauseGA();
+		GAStart->setEnabled(true);
+		GAPause->setEnabled(false);
+		GAStop->setEnabled(true);
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+void KDevVLSIApp::slotGAStop(void)
+{
+	KApplication::kApplication()->processEvents(1000);
+	KDevVLSIView* m = (KDevVLSIView*)pWorkspace->activeWindow();
+	if(m&&(m->getType()==GA))
+	{
+		((KVLSIGAView*)m)->StopGA();
+    	GAStart->setEnabled(false);
+		GAPause->setEnabled(false);
+    	GAStop->setEnabled(false);
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+void KDevVLSIApp::slotViewPolygons(void)
+{
+	slotStatusMsg(i18n("Opening file..."));
+	KURL url=KFileDialog::getOpenURL(QString::null,QString::null, this, i18n("Open Polygon File..."));
+	if(!url.isEmpty())
+	{
+		KVLSIViewPolygons* w = new KVLSIViewPolygons(url.path(),pWorkspace,0,WDestructiveClose);
+		w->installEventFilter(this);
+		w->setIcon(kapp->miniIcon());
+		w->resize(pWorkspace->sizeHint());
+		w->show();
+		w->setFocus();
+	}
+	slotStatusMsg(i18n("Ready."));
 }
 
 
@@ -703,7 +885,7 @@ void KDevVLSIApp::slotViewToolBar(void)
 	else
 	{
 		toolBar("mainToolBar")->show();
-	}		
+	}
 	slotStatusMsg(i18n("Ready."));
 }
 
@@ -729,8 +911,63 @@ void KDevVLSIApp::slotViewStatusBar(void)
 void KDevVLSIApp::slotSettingsOptions(void)
 {
 	slotStatusMsg(i18n("Set the options..."));
-	QDlgOptions dlg(this);
-	dlg.show();
+	KAppOptions dlg(this,"Options",true);
+	dlg.txtHeurAreaP->setValidator(new QDoubleValidator(this));
+	dlg.txtHeurAreaQ->setValidator(new QDoubleValidator(this));
+	dlg.txtHeurAreaW->setValidator(new QDoubleValidator(this));
+	dlg.txtHeurDistP->setValidator(new QDoubleValidator(this));
+	dlg.txtHeurDistQ->setValidator(new QDoubleValidator(this));
+	dlg.txtHeurDistW->setValidator(new QDoubleValidator(this));
+	dlg.txtSelectWeightP->setValidator(new QDoubleValidator(this));
+	dlg.txtSelectWeightQ->setValidator(new QDoubleValidator(this));
+	dlg.txtSelectWeightW->setValidator(new QDoubleValidator(this));
+	dlg.txtSelectDistP->setValidator(new QDoubleValidator(this));
+	dlg.txtSelectDistQ->setValidator(new QDoubleValidator(this));
+	dlg.txtSelectDistW->setValidator(new QDoubleValidator(this));
+	dlg.cbStep->setChecked(step);
+	dlg.cbComputePoly->setChecked(calcFree);
+	dlg.cbUsePoly->setChecked(useFree);
+	dlg.cbUsePoly->setEnabled(calcFree);
+	dlg.cbAllOris->setChecked(allOri);
+	dlg.txtHeurAreaP->setText(QString::number(HeurArea.P));
+	dlg.txtHeurAreaQ->setText(QString::number(HeurArea.Q));
+	dlg.txtHeurAreaW->setText(QString::number(HeurArea.Weight));
+	dlg.txtHeurDistP->setText(QString::number(HeurDist.P));
+	dlg.txtHeurDistQ->setText(QString::number(HeurDist.Q));
+	dlg.txtHeurDistW->setText(QString::number(HeurDist.Weight));
+	dlg.txtSelectWeightP->setText(QString::number(SelectWeight.P));
+	dlg.txtSelectWeightQ->setText(QString::number(SelectWeight.Q));
+	dlg.txtSelectWeightW->setText(QString::number(SelectWeight.Weight));
+	dlg.txtSelectDistP->setText(QString::number(SelectDist.P));
+	dlg.txtSelectDistQ->setText(QString::number(SelectDist.Q));
+	dlg.txtSelectDistW->setText(QString::number(SelectDist.Weight));
+	dlg.txtMaxGen->setText(QString::number(GAMaxGen));
+	dlg.txtStepGen->setText(QString::number(GAStepGen));
+	dlg.cbGAHeuristicType->setCurrentItem(GAHeur);
+	dlg.txtPopSize->setText(QString::number(GAPopSize));
+	if(dlg.exec())
+	{
+		step=dlg.cbStep->isChecked();
+		calcFree=dlg.cbComputePoly->isChecked();
+		useFree=dlg.cbUsePoly->isChecked();
+		allOri=dlg.cbAllOris->isChecked();
+		HeurArea.P=dlg.txtHeurAreaP->text().toDouble();
+		HeurArea.Q=dlg.txtHeurAreaQ->text().toDouble();
+		HeurArea.Weight=dlg.txtHeurAreaW->text().toDouble();
+		HeurDist.P=dlg.txtHeurDistP->text().toDouble();
+		HeurDist.Q=dlg.txtHeurDistQ->text().toDouble();
+		HeurDist.Weight=dlg.txtHeurDistW->text().toDouble();
+		SelectWeight.P=dlg.txtSelectWeightP->text().toDouble();
+		SelectWeight.Q=dlg.txtSelectWeightQ->text().toDouble();
+		SelectWeight.Weight=dlg.txtSelectWeightW->text().toDouble();
+		SelectDist.P=dlg.txtSelectDistP->text().toDouble();
+		SelectDist.Q=dlg.txtSelectDistQ->text().toDouble();
+		SelectDist.Weight=dlg.txtSelectDistW->text().toDouble();
+		GAMaxGen=dlg.txtMaxGen->text().toULong();
+		GAStepGen=dlg.txtStepGen->text().toULong();
+		GAHeur=static_cast<HeuristicType>(dlg.cbGAHeuristicType->currentItem());
+		GAPopSize=dlg.txtPopSize->text().toULong();
+	}
 	slotStatusMsg(i18n("Ready."));
 }
 
@@ -808,4 +1045,12 @@ void KDevVLSIApp::windowMenuActivated(int id)
 	QWidget* w = pWorkspace->windowList().at(id);
 	if(w)
 		w->setFocus();
+}
+
+
+//-----------------------------------------------------------------------------
+KDevVLSIApp::~KDevVLSIApp(void)
+{
+	if(printer)
+		delete printer;
 }

@@ -50,11 +50,16 @@ class KDevVLSIDoc;
 
 
 //-----------------------------------------------------------------------------
+// include files for current application
+#include "kdevvlsi.h"
+
+
+//-----------------------------------------------------------------------------
 // Enum declaration
 /**
 * Defines all the possible type of view for a document.
 */
-enum VLSIViewType{Nothing,Project,Heuristic};
+enum VLSIViewType{Nothing,Project,Heuristic,GA,Polygons};
 
 
 //-----------------------------------------------------------------------------
@@ -93,9 +98,9 @@ public:
 
 	/**
 	* Constructor for the view.
-	* @param pDoc		your document instance that the view represents. Create a
-	*						document before calling the constructor or connect an
-	*						already existing document to a new MDI child widget.
+	* @param pDoc           your document instance that the view represents. Create a
+	*                       document before calling the constructor or connect an
+	*                       already existing document to a new MDI child widget.
 	*/
 	KDevVLSIView(KDevVLSIDoc* pDoc, QWidget* parent, const char *name, int wflags);
 
@@ -129,7 +134,7 @@ public:
 	* KDevVLSIApp::slotFilePrint().
 	*/
 	void print(QPrinter *pPrinter);
-		
+
 protected:
 
 	/**
@@ -139,6 +144,13 @@ protected:
 	* has to be empty. Don't overwrite this method !
 	*/
 	virtual void closeEvent(QCloseEvent* e);
+
+	/**
+	* Return a pointer to the application. These views have (normally) the
+	* QWorkspace as parent, which himself as QVBox as parent, which is a child
+	* of KDevVLSIApp.
+	*/
+	KDevVLSIApp* getApp(void) {return((KDevVLSIApp*)(parentWidget()->parentWidget()->parentWidget()->parentWidget()));}
 
 	/**
 	* The document connected to the view, specified in the constructor.

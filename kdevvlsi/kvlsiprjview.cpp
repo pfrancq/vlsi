@@ -34,6 +34,7 @@
 #include "kdevvlsidoc.h"
 
 
+
 //-----------------------------------------------------------------------------
 //
 // class KVLSIPrjView
@@ -53,34 +54,91 @@ KVLSIPrjView::KVLSIPrjView(KDevVLSIDoc* pDoc,QWidget *parent,const char *name,in
 
 
 //-----------------------------------------------------------------------------
-KVLSIPrjView::~KVLSIPrjView()
-{
-}
-
-
-//-----------------------------------------------------------------------------
 void KVLSIPrjView::createPrj(void)
 {
-	char tmp[30];
-	QListViewItem *item,*item2,*item3;
-	unsigned int i,j;
-	RObj2D **obj;
-	RPolygon *poly;
-	RPoint **pt;
+	char tmp[100];
+	QListViewItem *item,*item2,*item3,*item4,*item5;
+	RObj2D* obj;
+	RConnection *con;
+	RObj2DConnector* connector;
+
+	// Problem
+	item=new QListViewItem(prj,"Problem");
+	item2=new QListViewItem(item,item2,"Vertices");
+	item3=0;
+	for(doc->Problem.Polygon.Start();!doc->Problem.Polygon.End();doc->Problem.Polygon.Next())
+	{
+		sprintf(tmp,"(%d,%d)",doc->Problem.Polygon()->X,doc->Problem.Polygon()->Y);
+		item3=new QListViewItem(item2,item3,tmp);
+	}
+	item2=new QListViewItem(item,item2,"Terminals");
+	item3=0;
+	for(doc->Problem.Connectors.Start();!doc->Problem.Connectors.End();doc->Problem.Connectors.Next())
+	{
+		connector=doc->Problem.Connectors();
+		item3=new QListViewItem(item2,item3,connector->GetName());
+		for(unsigned int i=0;i<connector->NbPos;i++)
+		{
+			sprintf(tmp,"Pin at (%d,%d)",connector->Pos[i].X,connector->Pos[i].Y);
+			item4=new QListViewItem(item3,item4,tmp);
+		}
+	}
+	sprintf(tmp,"Limits (%d,%d)",doc->Limits.X,doc->Limits.Y);
+	item2=new QListViewItem(item,item2,tmp);
+	sprintf(tmp,"Global Limits (%d,%d)",doc->GlobalLimits.X,doc->GlobalLimits.Y);
+	item2=new QListViewItem(item,item2,tmp);
 
 	// Construct Objects
-	item = new QListViewItem(prj,"Objects");
+	sprintf(tmp,"Objects (%u)",doc->Objs.NbPtr);
+	item = new QListViewItem(prj,item,tmp);
 	item2=0;
-	for(i=0,obj=doc->Objs;i<doc->NbObjs;i++,obj++)
+	for(doc->Objs.Start();!doc->Objs.End();doc->Objs.Next())
 	{
-		sprintf(tmp,"Object n°%u",i);
-		item2 = new QListViewItem(item,item2,tmp);
+		obj=doc->Objs();
+		// Name of the object
+		item2 = new QListViewItem(item,item2,obj->Name());
 		item3=0;
-		poly=&(*obj)->Polygon;
-		for(j=poly->NbPtr+1,pt=poly->Tab;--j;pt++)
+
+		// Vertices
+		item3=new QListViewItem(item2,item3,"Vertices");
+		item4=0;
+		for(obj->Polygon.Start();!obj->Polygon.End();obj->Polygon.Next())
 		{
-			sprintf(tmp,"(%u,%u)",(*pt)->X,(*pt)->Y);
-			item3=new QListViewItem(item2,item3,tmp);
+			sprintf(tmp,"(%d,%d)",obj->Polygon()->X,obj->Polygon()->Y);
+			item4=new QListViewItem(item3,item4,tmp);
+		}
+		
+		// Connectors
+		item3=new QListViewItem(item2,item3,"Terminals");
+		item4=0;
+		for(obj->Connectors.Start();!obj->Connectors.End();obj->Connectors.Next())
+		{
+			connector=obj->Connectors();
+			item4=new QListViewItem(item3,item4,connector->GetName());
+			for(unsigned int i=0;i<connector->NbPos;i++)
+			{
+				sprintf(tmp,"Pin at (%d,%d)",connector->Pos[i].X,connector->Pos[i].Y);
+				item5=new QListViewItem(item4,item5,tmp);
+			}
+		}
+	}
+
+	// Construct Connections
+	if(doc->Cons.NbPtr)
+	{
+		sprintf(tmp,"Nets (%u)",doc->Cons.NbPtr);
+		item=new QListViewItem(prj,item,tmp);
+		item2=0;
+		for(doc->Cons.Start();!doc->Cons.End();doc->Cons.Next())
+		{
+			item2=new QListViewItem(item,item2,"Net");
+			item3=0;
+			con=doc->Cons();
+			for(con->Connect.Start();!con->Connect.End();con->Connect.Next())
+			{
+				sprintf(tmp,"%s\t|\t%s",con->Connect()->Owner->Name(),con->Connect()->Name());
+				item3 = new QListViewItem(item2,item3,tmp);
+			}
 		}
 	}
 }
@@ -90,4 +148,10 @@ void KVLSIPrjView::createPrj(void)
 void KVLSIPrjView::resizeEvent(QResizeEvent *)
 {
 	prj->resize(width(),height());
+}
+
+
+//-----------------------------------------------------------------------------
+KVLSIPrjView::~KVLSIPrjView()
+{
 }

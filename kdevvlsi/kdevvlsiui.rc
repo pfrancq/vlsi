@@ -2,6 +2,29 @@
 <kpartgui name="kdevvlsi" version="0.1">
 <MenuBar>
 	<Action name="window_menu"/>
-	<Menu><text>Coucou</text></Menu>
+	<Menu name="settings">
+		<Action name="settings_options"/>
+	</Menu>
+	<Menu name="heuristic_menu"><text>He&amp;uristic</text>
+		<Action name="heuristic_bl"/>
+		<Action name="heuristic_edge"/>
+		<Action name="heuristic_center"/>
+		<Separator/>
+		<Action name="heuristic_next"/>
+		<Separator/>
+		<Action name="heuristic_run"/>
+		<Separator/>
+		<Action name="heuristic_select"/>
+	</Menu>
+	<Menu name="GA_menu"><text>&amp;GA</text>
+		<Action name="ga_init"/>
+		<Separator/>
+		<Action name="ga_start"/>
+		<Action name="ga_pause"/>
+		<Action name="ga_stop"/>
+	</Menu>
+	<Menu name="tools_menu"><text>&amp;Tools</text>
+		<Action name="tools_view_polygons"/>
+	</Menu>
 </MenuBar>
 </kpartgui>

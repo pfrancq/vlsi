@@ -43,15 +43,19 @@
 //-----------------------------------------------------------------------------
 static const char *description =
 	I18N_NOOP("KDevVLSI\nDevelopment Application for VLSI Placement");
-	
-	
+
+
 //-----------------------------------------------------------------------------
 static KCmdLineOptions options[] =
 {
-  { "+[File]", I18N_NOOP("file to open"), 0 },
-  { 0, 0, 0 }
+	{ "+[File]", I18N_NOOP("file to open"), 0 },
+	{ 0, 0, 0 }
   // INSERT YOUR COMMANDLINE OPTIONS HERE
 };
+
+
+//-----------------------------------------------------------------------------
+KDevVLSIApp* theApp;
 
 
 //-----------------------------------------------------------------------------
@@ -66,15 +70,15 @@ int main(int argc, char *argv[])
 	KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 
 	KApplication app;
- 
+
 	if (app.isRestored())
 	{
 		RESTORE(KDevVLSIApp);
 	}
 	else
 	{
-		KDevVLSIApp *kdevvlsimdi = new KDevVLSIApp();
-		kdevvlsimdi->show();
+		theApp = new KDevVLSIApp();
+		theApp->show();
 
 		KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 		
@@ -82,7 +86,7 @@ int main(int argc, char *argv[])
 		{
 			for(int i=0;i<args->count();i++)
 			{
-				kdevvlsimdi->openDocumentFile(args->arg(i));
+				theApp->openDocumentFile(args->arg(i));
 			}
 		}
 		args->clear();

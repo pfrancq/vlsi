@@ -31,7 +31,7 @@
 //-----------------------------------------------------------------------------
 #ifndef KDEVVLSI_H
 #define KDEVVLSI_H
- 
+
 
 //-----------------------------------------------------------------------------
 #ifdef HAVE_CONFIG_H
@@ -40,9 +40,18 @@
 
 
 //-----------------------------------------------------------------------------
+// include files for R Project
+#include <rpromethee/rpromcriterion.h>
+using namespace RPromethee;
+#include <rga2d/rga2d.h>
+using namespace RGA;
+
+
+//-----------------------------------------------------------------------------
 // include files for Qt
 #include <qstrlist.h>
 #include <qworkspace.h>
+#include <qmultilineedit.h>
 
 
 //-----------------------------------------------------------------------------
@@ -86,6 +95,60 @@ class KDevVLSIApp : public KMainWindow
 	*/
 	bool step;
 
+	/**
+	* Calculate free polygons.
+	*/
+	bool calcFree;
+
+	/**
+	* Use free polygons.
+	*/
+	bool useFree;
+
+	/**
+	* Test all possible orientation.
+	*/
+	bool allOri;
+
+	/**
+	* Prométhéé Parameters for Heuristic Distance.	
+	*/
+	RPromCriterionParams HeurDist;
+
+	/**
+	* Prométhéé Parameters for Heuristic Area.	
+	*/
+	RPromCriterionParams HeurArea;
+
+	/**
+	* Prométhéé Parameters for Selection Distance.
+	*/
+	RPromCriterionParams SelectDist;
+
+	/**
+	* Prométhéé Parameters for Selection Weight.
+	*/
+	RPromCriterionParams SelectWeight;
+
+	/**
+	* Heuristic to used for the GA.
+	*/
+	HeuristicType GAHeur;
+
+	/**
+	* Maximum number of generation.
+	*/
+	unsigned int GAMaxGen;
+
+	/**
+	* Step of generation.
+	*/
+	unsigned int GAStepGen;
+
+	/**
+	* Size of the Population.
+	*/
+	unsigned int GAPopSize;
 
 public:
 
@@ -105,16 +168,6 @@ public:
 	* Opens a file specified by commandline option.
 	*/
 	void openDocumentFile(const KURL& url=0);
-
-	/**
-	* Return if the heuristics are run in step mode.
-	*/
-	bool isStep() {return(step);}
-
-	/**
-	* Set the mode of the heuristics;
-	*/
-	void setStep(bool _s) {step=_s;}
 
 protected:
 
@@ -172,8 +225,8 @@ protected:
 	* Then call createClient() to get a new MDI child window.
 	* @see KDevVLSIDoc#addView
 	* @see KDevVLSIDoc#openDocument
-	* @param doc 		pointer to the document instance that the view will
-	* 						be connected to.
+	* @param doc            pointer to the document instance that the view will
+	*                       be connected to.
 	*/
 	void createClient(KDevVLSIDoc* doc);
 
@@ -276,7 +329,37 @@ private slots:
 	* End the heuristic in once.
 	*/
 	void slotHeuristicRun(void);
+	
+	/**
+	* Select objects for the current heuristic.
+	*/
+	void slotHeuristicSelect(void);
 
+	/**
+	* Initialize the GA.
+	*/
+	void slotGAInit(void);
+	
+	/**
+	* Start the GA.
+	*/
+	void slotGAStart(void);
+	
+	/**
+	* Pause the GA.
+	*/
+	void slotGAPause(void);
+	
+	/**
+	* Stop the GA.
+	*/
+	void slotGAStop(void);
+	
+	/**
+	* View some polygons in a window.
+	*/
+	void slotViewPolygons(void);
+	
 	/**
 	* Toggles the toolbar.
 	*/
@@ -331,7 +414,7 @@ private:
 	/**
 	* Save general Options like all bar positions and status as well as the
 	* geometry and the recent file list to the configuration file.
-	*/ 	
+	*/
 	void saveOptions(void);
 
 	/**
@@ -406,11 +489,30 @@ private:
 	KAction* heuristicCenter;
 	KAction* heuristicRun;
 	KAction* heuristicNext;
+	KAction* heuristicSelect;
+	KAction* GAInit;	
+	KAction* GAStart;
+	KAction* GAPause;	
+	KAction* GAStop;
+	KAction* ToolsViewPolygons;
 	KToggleAction* viewToolBar;
 	KToggleAction* viewStatusBar;
 	KAction* settingsOptions;
 	KActionMenu* windowMenu;
+	//QMultiLineEdit* Output;
+
+	// friend classes
+	friend class KDevVLSIDoc;
+	friend class KVLSIHeuristicView;
+	friend class KVLSIGAView;
 };
+
+
+//-----------------------------------------------------------------------------
+/**
+* Global pointer to the KMainWindow of the Application.
+*/
+extern KDevVLSIApp* theApp;
 
 
 //-----------------------------------------------------------------------------

@@ -29,12 +29,14 @@
 
 
 //-----------------------------------------------------------------------------
-// include files for Rainbow
+// include files for R Project
 #include <rstd/rtextfile.h>
 using namespace RStd;
-#include <rga/rplacementbottomleft.h>
-#include <rga/rplacementedge.h>
-#include <rga/rplacementcenter.h>
+#include <rmath/random.h>
+using namespace RMath;
+#include <rga2d/rplacementbottomleft.h>
+#include <rga2d/rplacementedge.h>
+#include <rga2d/rplacementcenter.h>
 using namespace RGA;
 
 
@@ -47,6 +49,7 @@ using namespace RGA;
 
 //-----------------------------------------------------------------------------
 // include files for KDE
+#include <kapp.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kfiledialog.h>
@@ -58,8 +61,10 @@ using namespace RGA;
 // application specific includes
 #include "kdevvlsi.h"
 #include "kdevvlsiview.h"
+#include "kvlsigaview.h"
 #include "kvlsiheuristicview.h"
 #include "kdevvlsidoc.h"
+
 
 
 //-----------------------------------------------------------------------------
@@ -69,8 +74,8 @@ using namespace RGA;
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-KDevVLSIDoc::KDevVLSIDoc(void)
-	:  curView(0),PlacementHeuristic(0)
+KDevVLSIDoc::KDevVLSIDoc(void) :
+	RProblem2D()
 {
 	pViewList = new QList<KDevVLSIView>;
 	pViewList->setAutoDelete(false);
@@ -78,17 +83,10 @@ KDevVLSIDoc::KDevVLSIDoc(void)
 
 
 //-----------------------------------------------------------------------------
-KDevVLSIDoc::~KDevVLSIDoc(void)
-{
-	delete pViewList;
-}
-
-
-//-----------------------------------------------------------------------------
 void KDevVLSIDoc::addView(KDevVLSIView *view)
 {
 	pViewList->append(view);
-	changedViewList();
+	view->setTitle(URL().fileName());
 }
 
 
@@ -114,10 +112,10 @@ void KDevVLSIDoc::changedViewList(void)
 		w->setTitle(URL().fileName());
 	}
 	else
-	{	
+	{
 		int i;
-		for( i=1,w=pViewList->first(); w!=0; i++, w=pViewList->next())
-			w->setTitle(/*QString(*/URL().fileName()/*+":%1").arg(i)*/);	
+		for(i=1,w=pViewList->first(); w!=0; i++, w=pViewList->next())
+			w->setTitle(/*QString(*/URL().fileName()/*+":%1").arg(i)*/);
 	}
 }
 
@@ -130,7 +128,7 @@ bool KDevVLSIDoc::isLastView(void)
 
 
 //-----------------------------------------------------------------------------
-void KDevVLSIDoc::updateAllViews(KDevVLSIView *sender)
+void KDevVLSIDoc::updateAllViews(KDevVLSIView* sender)
 {
 	KDevVLSIView *w;
 
@@ -138,98 +136,6 @@ void KDevVLSIDoc::updateAllViews(KDevVLSIView *sender)
 	{
 		w->update(sender);
 	}
-}
-
-
-//-----------------------------------------------------------------------------
-void KDevVLSIDoc::slotHeuristic(HeuristicType h,bool pStep,KVLSIHeuristicView* v)
-{
-	if(!NbObjs) return;
-
-	// Verify that no current heuristic works.
-	if(curView&&Run)
-	{
-		if(KMessageBox::warningContinueCancel(curView,i18n("An heuristic is calculated.\nAre you sure you want to stop it?"),
-									i18n("Warning"),i18n("Stop"),true)==KMessageBox::Cancel)
-			return;
-		emit breakRun();
-		curView->close();
-	}
-	curView=v;
-   connect(this,SIGNAL(endRun(void)),curView,SLOT(slotEndRun(void)));
-   connect(this,SIGNAL(beginRun(void)),curView,SLOT(slotBeginRun(void)));
-   connect(this,SIGNAL(breakRun(void)),curView,SLOT(slotBreakRun(void)));
-
-	// Clear geometric information
-	for(unsigned i=0;i<NbObjs;i++)
-		Infos[i]->Clear();
-
-	// Init the heuristic
-	if(PlacementHeuristic) delete PlacementHeuristic;
-	switch(h)
-	{
-		case BottomLeft:
-			PlacementHeuristic = new RPlacementBottomLeft(NbObjs,true);
-			break;
-
-		case Edge:
-			PlacementHeuristic = new RPlacementEdge(NbObjs,true);
-			break;
-
-		case Center:
-			PlacementHeuristic = new RPlacementCenter(NbObjs,true);
-			break;
-	}
-	PlacementHeuristic->Init(Limits,grid,Objs,Infos,NbObjs);
-	nbFree=0;
-
-	// Run the heuristic
-	emit beginRun();
-	Run=true;
-	if(pStep)
-		slotNextStep(pStep);
-	else
-		while(!PlacementHeuristic->IsEnd())
-			slotNextStep(pStep);
-}
-
-
-//-----------------------------------------------------------------------------
-void KDevVLSIDoc::slotNextStep(bool pStep)
-{
-	CurInfo=PlacementHeuristic->NextObject();
-	RFreePolygons *frees;
-
-	if(pStep)
-	{
-		curView->addInfo(CurInfo);
-		frees=PlacementHeuristic->GetFreePolygons();
-		while(frees->NbPtr>nbFree)
-			curView->addFree(frees->Tab[nbFree++]);
-   }
-
-	// test if the end
-	if(PlacementHeuristic->IsEnd())
-	{
-		PlacementHeuristic->PostRun(Limits);
-		RRect Rect=PlacementHeuristic->GetResult();
-		ActLimits.X=Rect.Width();
-		ActLimits.Y=Rect.Height();
-		Run=false;
-		emit endRun();
-   	disconnect(curView);
-		curView=0;
-		return;
-	}
-}
-
-
-//-----------------------------------------------------------------------------
-void KDevVLSIDoc::slotRun(void)
-{
-	if(!Run) return;
-	while(!PlacementHeuristic->IsEnd())
-		slotNextStep(false);
 }
 
 
@@ -251,9 +157,6 @@ const KURL& KDevVLSIDoc::URL(void) const
 void KDevVLSIDoc::closeDocument(void)
 {
 	KDevVLSIView *w;
-	unsigned int i;
-	RGeoInfo **info;
-	RObj2D **obj;
 
 	// Delete Views
 	if(!isLastView())
@@ -271,30 +174,7 @@ void KDevVLSIDoc::closeDocument(void)
 	}
 
 	// Delete Objs
-	if(Objs)
-	{
-		for(i=NbObjs+1,obj=Objs;--i;obj++)
-			delete (*obj);
-		delete[] Objs;
-		Objs=0;
-	}
-
-	// Delete Infos
-	if(Infos)
-	{
-		for(i=NbObjs+1,info=Infos;--i;info++)
-			delete (*info);
-		delete[] Infos;
-		Infos=0;
-	}
-	NbObjs=0;
-
-	// Delete Grid
-	if(grid)
-	{
-		delete grid;
-		grid=0;
-	}
+	Clear();
 }
 
 
@@ -312,45 +192,10 @@ bool KDevVLSIDoc::openDocument(const KURL &url, const char* /*format*/ /*=0*/)
 {
 	QString tmpfile;
 	static char Tmp[300];
-	RPoint Pt;
-	unsigned int i;
-	unsigned int NbPts;
-	RGeoInfo **info;
-	RObj2D **obj;
 
 	KIO::NetAccess::download(url,tmpfile);
 	strcpy(Tmp,tmpfile);
-	RTextFile f(Tmp,RTextFile::Read);
-
-	// Read Limits and NbObjects -> Create them
-	f>>Limits.X>>Limits.Y>>NbObjs;
-	Objs=new RObj2D*[NbObjs];
-	Infos=new RGeoInfo*[NbObjs];
-
-	// Read Objs
-	for(i=0,obj=Objs,info=Infos;i<NbObjs;i++,obj++,info++)
-	{
-		(*obj) = new RObj2D(i,false);
-		(*info) = new RGeoInfo(*obj);
-		f>>NbPts;
-		for(unsigned int j=0;j<NbPts;j++)
-		{
-			f>>Pt.X>>Pt.Y;
-			(*obj)->Polygon.InsertPtr(new RPoint(Pt));
-		}
-		(*obj)->SetOri(Normal);
-		(*obj)->SetOri(NormalX);
-		(*obj)->SetOri(NormalY);
-		(*obj)->SetOri(NormalYX);
-		(*obj)->SetOri(Rota90);
-		(*obj)->SetOri(Rota90X);
-		(*obj)->SetOri(Rota90Y);
-		(*obj)->SetOri(Rota90YX);
-		(*obj)->Init();
-	}
-
-	// Init Grid
-	grid=new RGrid(Limits);
+	Load(Tmp);
 
 	// Remove file
 	KIO::NetAccess::removeTempFile(tmpfile);
@@ -410,14 +255,14 @@ bool KDevVLSIDoc::canCloseFrame(KDevVLSIView* pFrame)
 					
 				if(!saveDocument(saveURL))
 				{
- 					switch(KMessageBox::warningYesNo(pFrame,i18n("Could not save the current document !\n"
-																												"Close anyway ?"), i18n("I/O Error !")))
+					switch(KMessageBox::warningYesNo(pFrame,i18n("Could not save the current document !\n"
+								"Close anyway ?"), i18n("I/O Error !")))
 					{
- 						case KMessageBox::Yes:
- 							ret=true;
- 						case KMessageBox::No:
- 							ret=false;
- 					}	        			
+						case KMessageBox::Yes:
+							ret=true;
+						case KMessageBox::No:
+							ret=false;
+					}
 				}
 				else
 					ret=true;
@@ -430,12 +275,19 @@ bool KDevVLSIDoc::canCloseFrame(KDevVLSIView* pFrame)
 			case KMessageBox::Cancel:
 
 			default:
-				ret=false; 				
+				ret=false;
 				break;
 		}
 	}
 	else
 		ret=true;
-		
+
 	return(ret);
+}
+
+
+//-----------------------------------------------------------------------------
+KDevVLSIDoc::~KDevVLSIDoc(void)
+{
+	delete pViewList;
 }

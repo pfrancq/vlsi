@@ -100,5 +100,5 @@ void KDevVLSIView::closeEvent(QCloseEvent* /*e*/)
 	// DO NOT CALL QWidget::closeEvent(e) here !!
 	// This will accept the closing by QCloseEvent::accept() by default.
 	// The installed eventFilter() in KDevVLSIApp takes care for closing the widget
-	// or ignoring the close event		
+	// or ignoring the close event.
 }

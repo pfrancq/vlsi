@@ -40,13 +40,16 @@
 
 
 //-----------------------------------------------------------------------------
-// include files for Rainbow
+// include files for R Project
 #include <rgeometry/rpoint.h>
 using namespace RGeometry2D;
-#include <rga/rga2d.h>
-#include <rga/rgeoinfo.h>
-#include <rga/rgrid.h>
-#include <rga/rplacementheuristic.h>
+#include <rga2d/rga2d.h>
+#include <rga2d/rgeoinfo.h>
+#include <rga2d/rgeoinfos.h>
+#include <rga2d/rgrid.h>
+#include <rga2d/rplacementheuristic.h>
+#include <rvlsi/rgavlsi.h>
+#include <rga2d/rproblem2d.h>
 using namespace RGA;
 
 
@@ -65,9 +68,11 @@ using namespace RGA;
 //-----------------------------------------------------------------------------
 // forward declaration of the KDevVLSI classes
 class KDevVLSIView;
+class KVLSIGAView;
 class KVLSIPrjView;
 class KVLSIHeuristicView;
 class KDevVLSIApp;
+
 
 //-----------------------------------------------------------------------------
 /**
@@ -85,7 +90,7 @@ class KDevVLSIApp;
 * @author Pascal Francq
 * @version $Revision$
 */
-class KDevVLSIDoc : public QObject
+class KDevVLSIDoc : public QObject, public RProblem2D
 {
 	Q_OBJECT
 
@@ -102,67 +107,7 @@ class KDevVLSIDoc : public QObject
 	/**
 	* The list of the views currently connected to the document.
 	*/
-	QList<KDevVLSIView> *pViewList;	
-
-	/**
-	* Points to the current heuristic view.
-	*/
-	KVLSIHeuristicView* curView;
-
-	/**
-	* Limits for the construction.
-	*/
-	RPoint Limits;
-
-	/**
-	* Number of objects.
-	*/
-	unsigned int NbObjs;
-
-	/**
-	* Objects.
-	*/
-	RObj2D **Objs;
-
-	/**
-	* Infos.
-	*/
-	RGeoInfo **Infos;
-
-	/**
-	* Current information to treat.
-	*/
-	RGeoInfo *CurInfo;
-
-	/**
-	* Run the heuristics in step mode.
-	*/
-	bool step;
-
-	/**
-	* Is an heuristic running.
-	*/
-	bool Run;
-
-	/**
-	* Grid.
-	*/
-	RGrid *grid;
-
-	/**
-	* The actual limits of the placement.
-	*/
-	RPoint ActLimits;
-
-	/**
-	* Heuristic used.
-	*/
-	RPlacementHeuristic *PlacementHeuristic;
-
-	/**
-	* Count the number of free polygons actually calculated.
-	*/
-	unsigned int nbFree;
+	QList<KDevVLSIView>* pViewList;	
 
 public:
 
@@ -257,7 +202,7 @@ public:
 	* sets the URL of the document.
 	*/
 	void setURL(const KURL& url);
-	
+
 public slots:
 
 	/**
@@ -265,42 +210,7 @@ public slots:
 	* called by the view by which the document has been changed.
 	* As this view normally repaints itself, it is excluded from the paintEvent.
 	*/
-	void updateAllViews(KDevVLSIView *sender);
-
-	/**
-	* Start the Heuristic.
-	* @param h			The heuristic to use.
-	* @param pStep    Must only make one step?
-	* @param v			The view which interact with the document.
-	*/
-	void slotHeuristic(HeuristicType h,bool pStep,KVLSIHeuristicView* v);
-
-	/**
-	* Next step for the choosen Heuristic.
-	*/
-	void slotNextStep(bool pStep);
-
-	/**
-	* Finish the current heuristic.
-	*/
-	void slotRun(void);
-
-signals:
-
-	/**
-	* This signal indicates that the heuristic has been stop.
-	*/
-	void breakRun(void);
-
-	/**
-	* This signal indicates that the heuristic has begin to run.
-	*/
-	void beginRun(void);
-
-	/**
-	* This signal indicates that the heuristic has finish to run.
-	*/
-	void endRun(void);
+	void updateAllViews(KDevVLSIView* sender);
 
 public:
 
@@ -308,6 +218,7 @@ public:
 	friend KDevVLSIView;
 	friend KVLSIPrjView;
 	friend KVLSIHeuristicView;
+	friend KVLSIGAView;	
 };
 
 

@@ -34,9 +34,12 @@
 
 
 //-----------------------------------------------------------------------------
-// include files for Rainbow
-#include <rga/rga2d.h>
-#include <rga/rgeoinfo.h>
+// include files for R Project
+#include <rga2d/rga2d.h>
+#include <rga2d/rgeoinfo.h>
+#include <rga2d/rgeoinfos.h>
+#include <rga2d/rconnections.h>
+#include <rga2d/rplacementheuristic.h>
 using namespace RGA;
 
 
@@ -58,9 +61,14 @@ using namespace RGA;
 * specific heuristic.
 * @author Pascal Francq
 */
-class KVLSIHeuristicView : public KDevVLSIView
+class KVLSIHeuristicView : public KDevVLSIView, public RGeoInfos
 {
-   Q_OBJECT
+	Q_OBJECT
+
+	/**
+	* Random number generator.
+	*/
+	RRandom* Random;
 
 	/**
 	* Type of the heuristic.
@@ -73,9 +81,9 @@ class KVLSIHeuristicView : public KDevVLSIView
 	unsigned int nbObjs;
 
 	/**
-	* Geometric Information for this heuristic.
+	* Grid.
 	*/
-	RGeoInfo **infos;
+	RGrid* grid;
 
 	/**
 	* Pointer to free polygons to paint.
@@ -91,6 +99,51 @@ class KVLSIHeuristicView : public KDevVLSIView
 	* Show the polygons.
 	*/
 	QDrawPolygons *draw;
+
+	/**
+	* Heuristic used.
+	*/
+	RPlacementHeuristic* PlacementHeuristic;
+
+	/**
+	* Count the number of free polygons actually calculated.
+	*/
+	unsigned int nbFree;
+
+	/**
+	* Current information to treat.
+	*/
+	RGeoInfo* CurInfo;
+
+	/**
+	* Step Mode.
+	*/
+	bool step;
+
+	/**
+	* Calculate free polygons.
+	*/
+	bool calcFree;
+
+	/**
+	* Use free polygons.
+	*/
+	bool useFree;
+
+	/**
+	* Test all possible orientation.
+	*/
+	bool allOri;
+
+	/**
+	* Prométhéé Parameters for Heuristic Distance.	
+	*/
+	RPromCriterionParams HeurDist;
+
+	/**
+	* Prométhéé Parameters for Heuristic Area.	
+	*/
+	RPromCriterionParams HeurArea;
 
 public:
 
@@ -115,14 +168,50 @@ public:
 	virtual void setTitle(QString _title);
 
 	/**
+	* Start the heuristic.
+	*/
+	void RunHeuristic(void);
+
+	/**
+	* Next step for the choosen Heuristic.
+	*/
+	void NextStep(void);
+
+	/**
+	* Run the heuristic to the end.
+	*/
+	void RunToEnd(void);
+
+	/**
+	* Select the objects.
+	*/
+	void SelectObjects(void);
+
+	/**
 	* Add a new RGeoInfo "on the fly"
 	*/
 	void addInfo(RGeoInfo* info) {draw->addInfo(info);}
 
 	/**
+	* Set the connections
+	*/
+	void setCons(RConnections* c) {draw->setCons(c);}
+	
+	/**
 	* Add a free polygon "on the fly"
 	*/
 	void addFree(RFreePolygon* poly) {draw->addFree(poly);}
+	
+	/**
+	* The widget has changed and has to be repainted.
+	*/
+	void setChanged(void) {draw->setChanged();}
+
+	/**
+	* See if the heurisitic is running or not.
+	* @return true if the heuristic is running.
+	*/
+	bool Running(void) {return(!PlacementHeuristic->IsEnd());}
 
 protected:
 
@@ -131,22 +220,12 @@ protected:
 	*/
 	virtual void resizeEvent(QResizeEvent *);
 
-public slots:
+signals:
 
 	/**
-	* Call and the begin of an heuristic.
+	* This signal indicates that the heuristic has finish to run.
 	*/
-	void slotBeginRun(void);
-
-	/**
-	* Call to tell the heuristic is break.
-	*/
-	void slotBreakRun(void);
-
-	/**
-	* Call to tell the end of an heuristic.
-	*/
-	void slotEndRun(void);
+	void endRun(void);
 
 };
 
