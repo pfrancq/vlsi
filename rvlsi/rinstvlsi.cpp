@@ -31,20 +31,20 @@
 
 
 
-//---------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // include files for Rainbow
 #include "rinstvlsi.h"
 using namespace RGA;
 
 
 
-//---------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 //
 // RInstVLSI
 //
-//---------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 RInstVLSI::RInstVLSI(unsigned int max,unsigned int popsize,RObj2D **objs,unsigned int nbobjs,RPoint &limits,HeuristicType h) throw(bad_alloc)
 	: RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(popsize,objs,nbobjs,limits,h),
 		MaxGen(max)
@@ -52,7 +52,7 @@ RInstVLSI::RInstVLSI(unsigned int max,unsigned int popsize,RObj2D **objs,unsigne
 }
 
 
-//---------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 bool RInstVLSI::StopCondition(void)
 {
 	return(Gen==MaxGen);
