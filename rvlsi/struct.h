@@ -66,7 +66,7 @@ class RLibrary
 public:
   RString Name;
   RString RealName;
-  RContainer<RCell,long,false,false> *Cells;
+  RContainer<RCell,unsigned int,false,false> *Cells;
 
   RLibrary(const RString &name) throw(bad_alloc);
   int Compare(const RString &name) { return(Name.Compare(name)); }
@@ -77,7 +77,7 @@ public:
 
 
 //---------------------------------------------------------------------------
-class RLibraries : public RContainer<RLibrary,long,true,true>
+class RLibraries : public RContainer<RLibrary,unsigned int,true,true>
 {
 public:
   RLibraries(void) throw(bad_alloc);
@@ -93,7 +93,7 @@ class RPort
 {
 public:
   RString Name;
-  long Id;
+  unsigned int Id;
   RCell *Owner;
   char Dir;
 
@@ -110,7 +110,7 @@ public:
   RString Name;
   RLibrary *Lib;
   RCells *Owner;
-  RContainer<RPort,long,true,true> *Ports;
+  RContainer<RPort,unsigned int,true,true> *Ports;
   RInstances *Instances;
   RNets *Nets;
   RPolygons Polygons;
@@ -132,7 +132,7 @@ public:
 
 
 //---------------------------------------------------------------------------
-class RCells : public RContainer<RCell,long,true,true>
+class RCells : public RContainer<RCell,unsigned int,true,true>
 {
 public:
   RStructure *Struct;
@@ -158,7 +158,7 @@ class RInstance
 {
 public:
   RCell *CellRef;
-  RContainer<RPortRef,long,true,true> *PortRefs;
+  RContainer<RPortRef,unsigned int,true,true> *PortRefs;
   RString Name;
 
   RInstance(const RString &name) throw(bad_alloc) { Name=name; }
@@ -168,10 +168,10 @@ public:
 
 
 //---------------------------------------------------------------------------
-class RInstances : public RContainer<RInstance,long,true,true>
+class RInstances : public RContainer<RInstance,unsigned int,true,true>
 {
 public:
-	RInstances(long max,long inc) : RContainer<RInstance,long,true,true>(max,inc) {}
+	RInstances(long max,long inc) : RContainer<RInstance,unsigned int,true,true>(max,inc) {}
 	RInstance* GetInstance(const RString &name)  { return(GetInsertPtr<RString>(name)); }
 };
 
@@ -193,7 +193,7 @@ class RNet
 public:
   RString Name;
   RCell *Owner;
-  RContainer<RPortRef,long,true,false> *Refs;
+  RContainer<RPortRef,unsigned int,true,false> *Refs;
 
   RNet(const RString &name);
   int Compare(const RString &name) { return(Name.Compare(name)); }
@@ -204,10 +204,10 @@ public:
 
 
 //---------------------------------------------------------------------------
-class RNets : public RContainer<RNet,long,true,true>
+class RNets : public RContainer<RNet,unsigned int,true,true>
 {
 public:
-	RNets(long max,long inc) : RContainer<RNet,long,true,true>(max,inc) {}
+	RNets(long max,long inc) : RContainer<RNet,unsigned int,true,true>(max,inc) {}
 	RNet* GetNet(const RString &name)  { return(GetInsertPtr<RString>(name)); }
 };
 

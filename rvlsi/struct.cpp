@@ -40,10 +40,10 @@ using namespace RVLSI;
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
-RLibrary::RLibrary(const RString &name) throw(bad_alloc) : RealName(name),Name(name)
+RLibrary::RLibrary(const RString &name) throw(bad_alloc) : Name(name),RealName(name)
 {
   Name.StrUpr();
-  Cells=new RContainer<RCell,long,false,false>(20,10);
+  Cells=new RContainer<RCell,unsigned int,false,false>(20,10);
 }
 
 
@@ -70,7 +70,7 @@ RLibrary::~RLibrary(void)
 
 //---------------------------------------------------------------------------
 RLibraries::RLibraries(void) throw(bad_alloc)
-  : RContainer<RLibrary,long,true,true>(20,5)
+  : RContainer<RLibrary,unsigned int,true,true>(20,5)
 {
 }
 
@@ -97,10 +97,13 @@ RPort::RPort(const RString &name) throw(bad_alloc) : Name(name)
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
-RCell::RCell(const RString &name) throw(bad_alloc) : Name(name)
+RCell::RCell(const RString &name) throw(bad_alloc) : Name(name),Polygons()
 {
   Lib=NULL;
-  Ports=new RContainer<RPort,long,true,true>(10,5);
+	Ports=NULL;
+  Instances=NULL;
+  Nets=NULL;
+  Ports=new RContainer<RPort,unsigned int,true,true>(10,5);
   Instances=new RInstances(10,5);
   Nets=new RNets(10,5);
   Abstract=true;
@@ -128,9 +131,9 @@ RNet* RCell::InsertNet(const RString &name)
 //---------------------------------------------------------------------------
 RCell::~RCell(void)
 {
-  delete Ports;
-  delete Instances;
-  delete Nets;
+  if(Ports) delete Ports;
+  if(Instances) delete Instances;
+  if(Nets) delete Nets;
 }
 
 
@@ -142,7 +145,7 @@ RCell::~RCell(void)
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
-RCells::RCells(RStructure *s) throw(bad_alloc) : RContainer<RCell,long,true,true>(500,250)
+RCells::RCells(RStructure *s) throw(bad_alloc) : RContainer<RCell,unsigned int,true,true>(500,250)
 {
   Struct=s;
 }
@@ -167,7 +170,7 @@ RCells::RCells(RStructure *s) throw(bad_alloc) : RContainer<RCell,long,true,true
 //---------------------------------------------------------------------------
 RNet::RNet(const RString &name) : Name(name)
 {
-  Refs=new RContainer<RPortRef,long,true,false>(10,5);
+  Refs=new RContainer<RPortRef,unsigned int,true,false>(10,5);
 }
 
 

@@ -65,7 +65,7 @@ inline bool MustIncBuffer(char c)
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
-REDIFTag::REDIFTag(unsigned long id,REDIFFile *Owner,char *(&Buffer),unsigned &BufferLen)
+REDIFTag::REDIFTag(unsigned int id,REDIFFile *Owner,char *(&Buffer),unsigned &BufferLen)
   : RBaseNode<REDIFTag>(id,20,10)
 {
   static char Temp[200];
@@ -135,11 +135,13 @@ void REDIFTag::InsertInst(REDIFFile* owner)
   owner->CurrCell->InsertInst(Name,Ref);
 }
 
+
 //---------------------------------------------------------------------------
 void REDIFTag::InsertPortImp(REDIFFile* owner)
 {
 
 }
+
 
 //---------------------------------------------------------------------------
 void REDIFTag::InsertNet(REDIFFile* owner)
@@ -169,12 +171,13 @@ void REDIFTag::InsertNet(REDIFFile* owner)
   }
 }
 
+
 //---------------------------------------------------------------------------
 bool REDIFTag::Analyse(REDIFFile* owner)
 {
   REDIFTag **tag;
-  unsigned long i;
-  unsigned long TypeId;
+  unsigned int i;
+  unsigned int TypeId;
   bool bSub=true;
   char dir;
 
@@ -233,19 +236,19 @@ bool REDIFTag::Analyse(REDIFFile* owner)
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
-REDIFFile::REDIFFile(char* name) : RDataFile(name), CurrCell(NULL), CurrLib(NULL)
+REDIFFile::REDIFFile(const RString &name) : RDataFile(name), CurrCell(NULL), CurrLib(NULL)
 {
-  char *File,*Buffer;
-  unsigned BufferLen;
+/*  char *File,*Buffer;
+  unsigned int BufferLen;
   struct stat statbuf;
   int theHandle;
   REDIFTag *Top;
-	long CurrentId=1;
+	unsigned int CurrentId=1;
 	RStringId *ptr;
 	
   Type=cstEDIF2;
   Struct=new RTree<REDIFTag>(150,50);
-  Types=new RContainer<RStringId,long,true,true>(10,5);
+  Types=new RContainer<RStringId,unsigned int,true,true>(10,5);
   ptr=Types->GetInsertPtr<RString>("CELL");
   ptr->Id=CurrentId++;
   ptr=Types->GetInsertPtr<RString>("LIBRARY");
@@ -258,7 +261,7 @@ REDIFFile::REDIFFile(char* name) : RDataFile(name), CurrCell(NULL), CurrLib(NULL
   ptr->Id=CurrentId++;
   ptr=Types->GetInsertPtr<RString>("PORT");
   ptr->Id=CurrentId++;
-  theHandle=open(name,O_RDONLY);
+  theHandle=open(name(),O_RDONLY);
   fstat(theHandle, &statbuf);
   BufferLen=statbuf.st_size;
   Buffer=File=new char[statbuf.st_size+1];
@@ -267,7 +270,7 @@ REDIFFile::REDIFFile(char* name) : RDataFile(name), CurrCell(NULL), CurrLib(NULL
   close(theHandle);
   Top=new REDIFTag(Struct->NbPtr,this,Buffer,BufferLen);
   Struct->AddNode(NULL,Top);
-  delete[] File;
+  delete[] File;*/
 }
 
 

@@ -49,63 +49,63 @@ RDataFile::RDataFile(const RString &name)
 
 //---------------------------------------------------------------------------
 //
-// Class "RVLSIProject"
+// Class "RProject"
 //
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
 RProject::RProject(const RString &name) throw(bad_alloc)
-	: Name(name),RContainer<RDataFile,unsigned,true,true>(10,5), RStructure()
+	: RContainer<RDataFile,unsigned int,true,true>(10,5),RStructure(), Name(name), InputName(name),OutputName(name)
 {
 }
 
 
 //---------------------------------------------------------------------------
-void RProject::LoadProject(void)
+RProject::RProject(void) throw(bad_alloc)
+	: RContainer<RDataFile,unsigned int,true,true>(10,5),RStructure(), Name(200), InputName(200),OutputName(200)
+{
+}
+
+
+//---------------------------------------------------------------------------
+bool RProject::LoadProject(void)
 {
   FILE *f;
   static char Tmp[350];
   char *ptr;
 
-  cout<<"Open Project File "<<Name()<<" ...";
   // Open the file
-  #pragma warn -pia
-  if(!(f=fopen(Name(),"r")))
-  {
-    cout<<"Error"<<endl;
-    return;
-  }
-  #pragma warn .pia
-  cout<<endl;
+	#if __BORLANDC__
+  	#pragma warn -pia
+	#endif
+  if(!(f=fopen(Name(),"r"))) return(false);
+	#if __BORLANDC__
+	  #pragma warn .pia
+	#endif
 
   // Read in the File
   ReadLine(Tmp,350,f);    // Dta File
   ptr=strstr(Tmp,"=");
   (*ptr)=0;
   InputName=Tmp;
-  cout<<"  Input File: "<<Tmp<<endl;
   ReadLine(Tmp,350,f);    // Res File
   ptr=strstr(Tmp,"=");
   (*ptr)=0;
   OutputName=Tmp;
-  cout<<"  Output File: "<<Tmp<<endl;
   while(ReadLine(Tmp,350,f)) // Read GDSII and EDIF2 Files
   {
     ptr=strstr(Tmp,"=");
     (*(ptr++))=0;
     if(!strcmp(ptr,"GDSII"))
     {
-      cout<<"  Load GDSII "<<Tmp<<" ...";
       InsertFile(CreateFile(Tmp,"GDSII"));
-      cout<<"OK"<<endl;
     }
     if(!strcmp(ptr,"EDIF2"))
     {
-      cout<<"  Load EDIF2  "<<Tmp<<" ...";
       InsertFile(CreateFile(Tmp,"EDIF2"));
-      cout<<"OK"<<endl;
     }
   }
+	return(true);
 }
 
 
@@ -113,7 +113,7 @@ void RProject::LoadProject(void)
 bool RProject::Analyse(void)
 {
   RDataFile **file;
-  unsigned i;
+  unsigned int i;
 
   cout<<"Analysing Files ..."<<endl;
   for(i=NbPtr+1,file=Tab;--i;file++)

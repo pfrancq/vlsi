@@ -80,33 +80,41 @@ public:
   char Type;
 
   RDataFile(const RString &);
-  int Compare(RDataFile* file) { return(Type-file->Type); }
+  int Compare(RDataFile* file)
+	{
+		if(Type==file->Type)
+			return(Name.Compare(file->Name));
+		else
+		 return(Type-file->Type);
+ 	}
   int Compare(const RString &name) { return(Name.Compare(name)); }
   virtual char* StringType(void) {return("");}
   virtual char* TreeType(void) {return("");}
   virtual bool Analyse(void) {return(true);}
+	virtual ~RDataFile(void) {}
 };
 
 
 
 //---------------------------------------------------------------------------
 // A VLSI project
-class RProject : public RContainer<RDataFile,unsigned,true,true>, public RStructure
+class RProject : public RContainer<RDataFile,unsigned int,true,true>, public RStructure
 {
 public:
   RString Name;                                     // Name
   RString InputName,OutputName;
 
   RProject(const RString &) throw(bad_alloc);
+  RProject(void) throw(bad_alloc);
   inline void InsertFile(RDataFile *file)
   {
     InsertPtr(file);
     file->Proj=this;
   }
-  void LoadProject(void);      											// Only for Text interface !!!!
+  bool LoadProject(void);      											// Only for Text interface !!!!
   bool Analyse(void);         											// Only for Text interface !!!!
   virtual RDataFile* CreateFile(const RString &name,const RString &type) {return(NULL);};
-  ~RProject(void);
+  virtual ~RProject(void);
 };
 
 

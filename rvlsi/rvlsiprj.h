@@ -29,7 +29,7 @@
 
 //---------------------------------------------------------------------------
 #ifndef RVLSIPRJH
-#define RVLSIFRJH
+#define RVLSIPRJH
 
 
 //---------------------------------------------------------------------------
@@ -45,7 +45,6 @@ namespace RVLSI{
 //---------------------------------------------------------------------------
 
 
-
 //---------------------------------------------------------------------------
 // A VLSI project
 class RVLSIProject : public RProject
@@ -53,12 +52,13 @@ class RVLSIProject : public RProject
 public:
 
   RVLSIProject(const RString &name) throw(bad_alloc) : RProject(name) {}
+  RVLSIProject(void) throw(bad_alloc) : RProject() {}
   virtual RDataFile* CreateFile(const RString &name,const RString &type)
   {
   	if(type=="GDSII") return(new RGDSFile(name));
 		if(type=="EDIF2") return(new REDIFFile(name));
-		return(NULL°;		
-  };
+		return(NULL);		
+  }
 };
 
 

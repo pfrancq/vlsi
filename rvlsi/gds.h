@@ -33,10 +33,20 @@
 
 
 //---------------------------------------------------------------------------
-// Includes
+// include files for ANSI
 #ifdef unix
 	#include <unistd.h>
 #endif
+
+
+//---------------------------------------------------------------------------
+// include files for Rainbow
+#include "rstring.h"
+using namespace RStd;
+
+
+//---------------------------------------------------------------------------
+// include files for VLSI
 #include "files.h"
 using namespace RVLSI;
 
@@ -87,7 +97,7 @@ public:
       return(0);
   }
   int GetType2(int idx);
-  long GetType3(int idx);
+  int GetType3(int idx);
   double GetType4(int idx);
   double GetType5(int idx);
   char* GetType6(void);
@@ -100,7 +110,7 @@ public:
 
 //---------------------------------------------------------------------------
 // A GDSII data file
-class RGDSFile : public RDataFile, public RContainer<RGDSRecord,unsigned,true,false>
+class RGDSFile : public RDataFile, public RContainer<RGDSRecord,unsigned int,true,false>
 {
 private:
 	RCell *CurrCell;
@@ -109,7 +119,7 @@ public:
   char *LibName;
   double Units;
 
-  RGDSFile(char* name);
+  RGDSFile(const RString &name);
   virtual char* StringType(void) {return("=GDSII");}
   virtual char* TreeType(void) {return(" - GDSII File");}
   virtual bool Analyse(void);

@@ -84,9 +84,13 @@ int RGDSRecord::GetType2(int idx)
     nb2<<=8;
     nb2+=Buffer[1];
     nb2=~nb2;
-    #pragma warn -ngu
+		#ifdef __BORLANDC__
+	    #pragma warn -ngu
+		#endif
     nb=-(nb2+1);
-    #pragma warn .ngu
+		#ifdef __BORLANDC__
+	    #pragma warn .ngu
+		#endif
   }
   else
   {
@@ -99,7 +103,7 @@ int RGDSRecord::GetType2(int idx)
 
 
 //---------------------------------------------------------------------------
-long RGDSRecord::GetType3(int idx)
+int RGDSRecord::GetType3(int idx)
 {
   unsigned char *Buffer=&Data[idx*4];
   long nb,tmp;
@@ -116,9 +120,13 @@ long RGDSRecord::GetType3(int idx)
     tmp2<<=8;
     nb2+=tmp2+Buffer[3];
     nb2=~nb2;
-    #pragma warn -ngu
+		#ifdef __BORLANDC__
+	    #pragma warn -ngu
+		#endif
     nb=-(nb2+1);
-    #pragma warn .ngu
+		#ifdef __BORLANDC__
+	    #pragma warn .ngu
+		#endif
   }
   else
   {
@@ -286,7 +294,7 @@ char* RGDSRecord::GetRecDesc(void)
   char tmp2[30];
   unsigned char c,c2;
   int i,j;
-  long tmplong;
+  int tmplong;
   bool Ok;
 
   switch(RecType)
@@ -339,7 +347,7 @@ char* RGDSRecord::GetRecDesc(void)
 
     case 15:
       tmplong=GetType3(0);
-      sprintf(tmp,"%d Db Units",labs(tmplong));
+      sprintf(tmp,"%d Db Units",abs(tmplong));
       if(tmplong<0) strcat(tmp," (Absolute)");
       break;
 
@@ -370,13 +378,15 @@ char* RGDSRecord::GetRecDesc(void)
 
     case 23:
       c=Data[1];
-      #pragma warn -sig
+			#ifdef __BORLANDC__
+  	    #pragma warn -sig
+			#endif
       c2=(c&48)>>4;
-      #pragma warn .sig
       sprintf(tmp,"Font %d  -  Vertical: ",c2);
-      #pragma warn -sig
       c2=(c&12)>>2;
-      #pragma warn .sig
+			#ifdef __BORLANDC__
+    	  #pragma warn .sig
+			#endif
       switch(c2)
       {
         case 0: strcat(tmp,"Top"); break;
@@ -384,9 +394,13 @@ char* RGDSRecord::GetRecDesc(void)
         case 2: strcat(tmp,"Bottom"); break;
       }
       strcat(tmp,"  -  Horizontal: ");
-      #pragma warn -sig
+			#ifdef __BORLANDC__
+  	    #pragma warn -sig
+			#endif
       c2=(c&3);
-      #pragma warn .sig
+			#ifdef __BORLANDC__
+  	    #pragma warn .sig
+			#endif
       switch(c2)
       {
         case 0: strcat(tmp,"Left"); break;
@@ -409,18 +423,26 @@ char* RGDSRecord::GetRecDesc(void)
         Ok=true;
       }
       c=Data[1];
-      #pragma warn -sig
+			#ifdef __BORLANDC__
+  	    #pragma warn -sig
+			#endif
       c2=(c&4);
-      #pragma warn .sig
+			#ifdef __BORLANDC__
+  	    #pragma warn .sig
+			#endif
       if(c2)
       {
         if(Ok) strcat(tmp,"  -  ");
         strcat(tmp,"Absolute Magnification");
         Ok=true;
       }
-      #pragma warn -sig
+			#ifdef __BORLANDC__
+  	    #pragma warn -sig
+			#endif
       c2=(c&2);
-      #pragma warn .sig
+			#ifdef __BORLANDC__
+  	    #pragma warn .sig
+			#endif
       if(c2)
       {
         if(Ok) strcat(tmp,"  -  ");
@@ -462,16 +484,16 @@ RGDSRecord::~RGDSRecord(void)
 
 
 //---------------------------------------------------------------------------
-RGDSFile::RGDSFile(char* name) : RDataFile(name),RContainer<RGDSRecord,unsigned,true,false>(100,50)
+RGDSFile::RGDSFile(const RString &name) : RDataFile(name),RContainer<RGDSRecord,unsigned int,true,false>(100,50)
 {
-  unsigned char *File,*Buffer;
-  unsigned BufferLen,i;
+/*  unsigned char *File,*Buffer;
+  unsigned int BufferLen;
   struct stat statbuf;
   int theHandle;
   RGDSRecord *Rec;
 
   Type=cstGDSII;
-  theHandle=open(name,O_RDONLY/* | O_BINARY*/);
+  theHandle=open(name(),O_RDONLY);
   fstat(theHandle, &statbuf);
   BufferLen=statbuf.st_size;
   Buffer=File=new unsigned char[BufferLen];
@@ -485,7 +507,7 @@ RGDSFile::RGDSFile(char* name) : RDataFile(name),RContainer<RGDSRecord,unsigned,
     else
       delete Rec;
   }
-  delete[] File;
+  delete[] File;*/
 }
 
 //---------------------------------------------------------------------------
@@ -494,7 +516,7 @@ bool RGDSFile::Analyse(void)
   RGDSRecord **Rec;
   static char Tmp[200];
   char *ptr;
-  unsigned i,NbPts,j;
+  unsigned int i,NbPts,j;
   RCoord x,y;
   RPolygon *Poly=NULL;
 	
