@@ -104,14 +104,12 @@ bool RProject::LoadProject(void)
 //------------------------------------------------------------------------------
 bool RProject::Analyse(void)
 {
-	RDataFile** file;
-	unsigned int i;
-
 	cout<<"Analysing Files ..."<<endl;
-	for(i=NbPtr+1,file=Tab;--i;file++)
+	RCursor<RDataFile> file(*this);
+	for(file.Start();!file.End();file.Next())
 	{
-		cout<<"  "<<(*file)->Name()<<" ...";
-		(*file)->Analyse();
+		cout<<"  "<<file()->Name()<<" ...";
+		file()->Analyse();
 		cout<<"  OK"<<endl;
 	}
 	return(true);

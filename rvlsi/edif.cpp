@@ -109,7 +109,7 @@ REDIFTag::REDIFTag(unsigned int id,REDIFFile* Owner,char *(&Buffer),unsigned& Bu
 	while(MustIncBuffer(*Buffer)) Buffer++;
 	while((*Buffer)!=')')     // Verify if sub tag
 	{
-		CurrentSub=new REDIFTag(Owner->Struct->NbPtr,Owner,Buffer,BufferLen);
+		CurrentSub=new REDIFTag(Owner->Struct->GetNb(),Owner,Buffer,BufferLen);
 		Owner->Struct->AddNode(this,CurrentSub);
 	}
 	Buffer++;   // Read the ')'
@@ -147,21 +147,21 @@ void REDIFTag::InsertPortImp(REDIFFile*)
 void REDIFTag::InsertNet(REDIFFile* owner)
 {
 	RNet *net;
-	REDIFTag **ptr,*join,*sub;
-	tId i;
+	REDIFTag *join,*sub;
 	RString PortName(200),InstName(200);
 
 	if(!(owner->CurrCell)) return;
 	net=owner->CurrCell->InsertNet(Params);
 	join=GetPtr<const char*>("joined");
 	if(!join) return;
-	for(i=join->NbPtr+1,ptr=join->Tab;--i;ptr++)
+	RCursor<REDIFTag> ptr(*join);
+	for(ptr.Start();!ptr.End();ptr.Next())
 	{
-		if((*ptr)->TagName=="portRef") continue;
-		PortName=(*ptr)->Params;
-		if((*ptr)->NbPtr)
+		if(ptr()->TagName=="portRef") continue;
+		PortName=ptr()->Params;
+		if(ptr()->GetNb())
 		{
-			sub=(*((*ptr)->Tab));
+			sub=(*ptr())[0];
 			if(sub->TagName=="instanceRef") continue;
 			InstName=sub->Params;
 		}
@@ -175,8 +175,6 @@ void REDIFTag::InsertNet(REDIFFile* owner)
 //------------------------------------------------------------------------------
 bool REDIFTag::Analyse(REDIFFile* owner)
 {
-	REDIFTag **tag;
-	unsigned int i;
 	unsigned int TypeId;
 	bool bSub=true;
 	char dir;
@@ -205,16 +203,17 @@ bool REDIFTag::Analyse(REDIFFile* owner)
 			break;
 		case TYPEPORT:                // This is a port of the current Cell
 			dir=2;
-			if((*(Tab))->Params=="INPUT") dir=-1;
-			if((*(Tab))->Params=="OUTPUT") dir=+1;
-			if((*(Tab))->Params=="INOUT") dir=0;
+			if(((*this)[0])->Params=="INPUT") dir=-1;
+			if(((*this)[0])->Params=="OUTPUT") dir=+1;
+			if(((*this)[0])->Params=="INOUT") dir=0;
 			owner->CurrCell->InsertPort(Params,dir);
 			bSub=false;
 			break;
 	}
 	if(!bSub) return(true);
-	for(i=NbPtr+1,tag=Tab;--i;tag++)
-		(*tag)->Analyse(owner);
+	RCursor<REDIFTag> tag(*this);
+	for(tag.Start();!tag.End();tag.Next())
+		tag()->Analyse(owner);
 	switch(TypeId)
 	{
 		case TYPECELL:                // This is a cell
@@ -269,7 +268,7 @@ REDIFFile::REDIFFile(const RString& name)
 	read(theHandle,File,statbuf.st_size);
 	File[statbuf.st_size]=0;
 	close(theHandle);
-	Top=new REDIFTag(Struct->NbPtr,this,Buffer,BufferLen);
+	Top=new REDIFTag(Struct->GetNb(),this,Buffer,BufferLen);
 	Struct->AddNode(NULL,Top);
 	delete[] File;
 }
@@ -278,11 +277,9 @@ REDIFFile::REDIFFile(const RString& name)
 //------------------------------------------------------------------------------
 bool REDIFFile::Analyse(void)
 {
-	REDIFTag** tag;
-	tId i;
-
-	for(i=Struct->Top->NbPtr+1,tag=Struct->Top->Tab;--i;tag++)
-		if(!((*tag)->Analyse(this))) return(false);
+	RCursor<REDIFTag> tag(*Struct->Top);
+	for(tag.Start();!tag.End();tag.Next())
+		if(!(tag()->Analyse(this))) return(false);
 	return(true);
 }
 

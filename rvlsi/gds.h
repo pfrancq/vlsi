@@ -71,7 +71,7 @@ public:
 	unsigned char* Data;
 
 	RGDSRecord(RGDSFile*,unsigned char *(&Buffer),unsigned &BufferLen);
-	int Compare(RGDSRecord* rec) { return(0); }
+	int Compare(const RGDSRecord*) const { return(-1); }
 	inline int GetTypeLen(void)
 	{
 		switch(DataType)

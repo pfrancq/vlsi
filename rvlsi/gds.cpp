@@ -520,22 +520,22 @@ RGDSFile::RGDSFile(const RString& name) : RDataFile(name),RContainer<RGDSRecord,
 //---------------------------------------------------------------------------
 bool RGDSFile::Analyse(void)
 {
-	RGDSRecord **Rec;
 	static char Tmp[200];
 	char *ptr;
-	unsigned int i,NbPts,j;
+	unsigned int NbPts,j;
 	RCoord x,y;
 	RPolygon *Poly=0;
 
 	CurrCell=0;
 	CurrLib=0;
-	for(i=NbPtr+1,Rec=Tab;--i;Rec++)
+	RCursor<RGDSRecord> Rec(*this);
+	for(Rec.Start();!Rec.End();Rec.Next())
 	{
-		switch((*Rec)->RecType)
+		switch(Rec()->RecType)
 		{
 			case 2:
 				// Library Name
-				LibName=(*Rec)->GetType6();
+				LibName=Rec()->GetType6();
 				ptr=strchr(LibName,'.');
 				if(ptr) (*ptr)=0;
 				CurrLib=Proj->Libraries->InsertLib(LibName);
@@ -543,7 +543,7 @@ bool RGDSFile::Analyse(void)
 
 			case 3:
 				// Units
-				Units=(*Rec)->GetType5(0)/(*Rec)->GetType5(1);
+				Units=Rec()->GetType5(0)/Rec()->GetType5(1);
 				break;
 
 			case 4:
@@ -553,7 +553,7 @@ bool RGDSFile::Analyse(void)
 
 			case 6:
 				// Library Name
-				strcpy(Tmp,(*Rec)->GetType6());
+				strcpy(Tmp,Rec()->GetType6());
 				CurrCell=Proj->Cells->GetInsertPtr<RString>(Tmp);
 				break;
 
@@ -569,14 +569,14 @@ bool RGDSFile::Analyse(void)
 
 			case 16:
 				// A XY structure
-				NbPts=(*Rec)->GetMaxIndex()/2;
+				NbPts=Rec()->GetMaxIndex()/2;
 				if(Poly&&CurrCell)
 				{
 					j=0;
 					while(j<NbPts)
 					{
-						x=(*Rec)->GetType3(j*2);
-						y=(*Rec)->GetType3(j*2+1);
+						x=Rec()->GetType3(j*2);
+						y=Rec()->GetType3(j*2+1);
 						j++;
 						Poly->InsertPtr(new RPoint(x,y));
 					}
