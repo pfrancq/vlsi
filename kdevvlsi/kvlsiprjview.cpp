@@ -77,7 +77,7 @@ void KVLSIPrjView::createPrj(void)
 	for(doc->Problem.Connectors.Start();!doc->Problem.Connectors.End();doc->Problem.Connectors.Next())
 	{
 		connector=doc->Problem.Connectors();
-		item3=new QListViewItem(item2,item3,ToQt(connector->GetName()));
+		item3=new QListViewItem(item2,item3,ToQString(connector->GetName()));
 		for(unsigned int i=0;i<connector->NbPos;i++)
 		{
 			sprintf(tmp,"Pin at (%d,%d)",connector->Pos[i].X,connector->Pos[i].Y);
@@ -97,8 +97,7 @@ void KVLSIPrjView::createPrj(void)
 	{
 		obj=doc->Objs();
 		// Name of the object
-		sprintf(tmp,"%s (%u)",obj->Name.Latin1(),obj->GetId());
-		item2 = new QListViewItem(item,item2,tmp);
+		item2 = new QListViewItem(item,item2,ToQString(obj->Name)+" ("+QString::number(obj->GetId()));
 		item3=0;
 
 		// Vertices
@@ -116,7 +115,7 @@ void KVLSIPrjView::createPrj(void)
 		for(obj->Connectors.Start();!obj->Connectors.End();obj->Connectors.Next())
 		{
 			connector=obj->Connectors();
-			item4=new QListViewItem(item3,item4,ToQt(connector->GetName()));
+			item4=new QListViewItem(item3,item4,ToQString(connector->GetName()));
 			item5=0;
 			for(unsigned int i=0;i<connector->NbPos;i++)
 			{
@@ -139,8 +138,7 @@ void KVLSIPrjView::createPrj(void)
 			con=doc->Cons();
 			for(con->Connect.Start();!con->Connect.End();con->Connect.Next())
 			{
-				sprintf(tmp,"%s\t|\t%s",con->Connect()->Owner->Name.Latin1(),con->Connect()->Name.Latin1());
-				item3 = new QListViewItem(item2,item3,tmp);
+				item3 = new QListViewItem(item2,item3,ToQString(con->Connect()->Owner->Name)+"\t|\t"+ToQString(con->Connect()->Name));
 			}
 		}
 	}
