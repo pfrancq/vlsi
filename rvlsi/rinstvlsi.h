@@ -71,12 +71,30 @@ namespace RGA{
 
 
 //---------------------------------------------------------------------------
-class RInstVLSI : public RInst2D<RInstVLSI,RChromoVLSI,RFitness<double,false>,RGeoInfo>
+/** The instance of the VLSI problem.
+	* @author Pascal Francq
+	* @short VLSI GA Instance.
+	*/
+class RInstVLSI :	public RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>
 {
 public:
-  RInstVLSI(unsigned int popsize,RObj2D **objs,unsigned int nbobjs) throw(bad_alloc);
+	/** The maximum number of generations.*/
+	unsigned long MaxGen;
+
+	/** Construct the instance.
+		* @param popsize		The size of the population.
+		* @param objs				The objects to place.
+		* @param nbobjs			Number of objects to place.
+		* @param max				Maximal number of generations.
+		* @param limits			The limits for the placement.
+		*/
+  RInstVLSI(unsigned int max,unsigned int popsize,RObj2D **objs,unsigned int nbobjs,RPoint &limits) throw(bad_alloc);
+
+	/** This function determines if the GA must be stopped. Actually, it is the case
+		* when the maximal number of generation is calculated.
+		* @return	The function returns true if the GA must stop.
+		*/
 	virtual bool StopCondition(void);
-	virtual ~RInstVLSI(void);
 };
 
 

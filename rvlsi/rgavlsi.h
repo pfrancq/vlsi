@@ -72,6 +72,8 @@ namespace RGA
 {
 	class RInstVLSI;
 	class RChromoVLSI;
+	class RThreadDataVLSI;
+	class RFitnessVLSI;
 }
 
 
@@ -85,6 +87,48 @@ using namespace RGA;
 //---------------------------------------------------------------------------
 namespace RGA{
 //---------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------
+/** This class represent "thread-dependent" data for the VLSI GA.
+	* @author Pascal Francq
+	* @short VSLI GA "thread-dependent" Data.
+	*/
+class RThreadDataVLSI : public RThreadData2D<RInstVLSI,RChromoVLSI>
+{
+public:
+	/** Construct the data.
+		* @param owner	The instance of the problem.
+		*/
+	RThreadDataVLSI(RInstVLSI *owner) : RThreadData2D<RInstVLSI,RChromoVLSI>(owner) {}
+};
+
+
+//---------------------------------------------------------------------------
+/** This class represent the fitness for the VLSI GA.
+	* @author Pascal Francq
+	* @short VLSI Fitness.
+	*/
+class RFitnessVLSI : public RFitness<double,false>
+{
+public:
+	/** Construct the fitness.*/
+	RFitnessVLSI(void) : RFitness<double,false>() {}
+
+	/** Assignment operator with a fitness f.*/
+	RFitnessVLSI& operator=(const RFitnessVLSI &f)
+	{
+    RFitness<double,false>::operator=(f);
+		return(*this);
+	}
+
+	/** Assignment operator with a double value.*/
+	RFitnessVLSI& operator=(const double val)
+	{
+  	RFitness<double,false>::operator=(val);
+		return(*this);
+  }
+};
 
 
 }  //-------- End of namespace RGA ------------------------------------------

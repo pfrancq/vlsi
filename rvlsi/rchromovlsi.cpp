@@ -69,18 +69,19 @@ using namespace RGA;
 
 //---------------------------------------------------------------------------
 RChromoVLSI::RChromoVLSI(RInstVLSI *inst,unsigned int id) throw(bad_alloc)
-  : RChromo2D<RInstVLSI,RChromoVLSI,RFitness<double,false>,RGeoInfo>(inst,id),VLSIInfos(NULL)
+  : RChromo2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(inst,id),
+		VLSIInfos(NULL)
 {
 }
 
 
 //---------------------------------------------------------------------------
-void RChromoVLSI::Init(void) throw(bad_alloc)
+void RChromoVLSI::Init(RThreadDataVLSI *thData) throw(bad_alloc)
 {
 	RGeoInfo **infos;
 	unsigned int i;
 
-	RChromo2D<RInstVLSI,RChromoVLSI,RFitness<double,false>,RGeoInfo>::Init();
+	RChromo2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>::Init(thData);
 	VLSIInfos = new RGeoInfos(NbObjs);
 	for(i=NbObjs+1,infos=Infos;--i;infos++)
 		VLSIInfos->InsertPtr(*infos);
@@ -95,7 +96,7 @@ void RChromoVLSI::Evaluate(void)
 
 	VLSIInfos->Boundary(rect);
 	Num=double(rect.Pt2.X-rect.Pt1.X)*double(rect.Pt2.Y-rect.Pt1.Y);
-	Den=double(Limits.Pt2.X-Limits.Pt1.X)*double(Limits.Pt2.Y-Limits.Pt1.Y);
+	Den=double(Limits.X)*double(Limits.Y);
 	(*Fitness)=Num/Den;
 }
 

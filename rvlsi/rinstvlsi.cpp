@@ -69,8 +69,9 @@ using namespace RGA;
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
-RInstVLSI::RInstVLSI(unsigned int popsize,RObj2D **objs,unsigned int nbobjs) throw(bad_alloc)
-	: RInst2D<RInstVLSI,RChromoVLSI,RFitness<double,false>,RGeoInfo>(popsize,objs,nbobjs)
+RInstVLSI::RInstVLSI(unsigned int max,unsigned int popsize,RObj2D **objs,unsigned int nbobjs,RPoint &limits) throw(bad_alloc)
+	: RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(popsize,objs,nbobjs,limits),
+		MaxGen(max)
 {
 }
 
@@ -78,11 +79,5 @@ RInstVLSI::RInstVLSI(unsigned int popsize,RObj2D **objs,unsigned int nbobjs) thr
 //---------------------------------------------------------------------------
 bool RInstVLSI::StopCondition(void)
 {
-	return(Gen==500);
-}
-
-
-//---------------------------------------------------------------------------
-RInstVLSI::~RInstVLSI(void)
-{
+	return(Gen==MaxGen);
 }
