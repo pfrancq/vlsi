@@ -1,5 +1,305 @@
 #MIN_CONFIG(3)
 
+#--------------------- R LIB -----------------------------
+
+#VARIABLES USE :
+#	$R_LIB environnement variable used for developpment
+#	$R_INC_PATH = the path specified in the --with-r-includes
+#	$R_LIB_PATH = the path specified in the --with-r-libs
+#	$R_INC_DIR = the directory where the includes were found
+#	$R_LIB_DIR = the directory where the libraries were found
+
+#---------------------------------------------------------
+# ---- add configure option : --with-r-includes=DIR ----
+if test "x$R_LIB" != "x" ; then
+	R_INC_PATH=$R_LIB
+else
+	R_INC_PATH=" /usr/include /usr/include/r /usr/local /usr/local/include /usr/local/include/r ${prefix}/include/r"
+fi
+AC_ARG_WITH(r-includes,
+	AC_HELP_STRING(
+		[--with-r-includes=DIR],
+		[where the R includes are, like [/usr/include/r]. ]),
+	R_INC_PATH="$withval")
+
+# ---- end arg for configure ----
+
+# ---- add configure option : --with-r-libs=DIR ----
+if test "x$R_LIB" != "x" ; then
+	R_LIB_PATH=$R_LIB
+else
+	R_LIB_PATH="/usr/lib /usr/lib/r /usr/local/lib /usr/local/lib/r ${prefix}/lib/r"
+fi
+AC_ARG_WITH(r-libs,
+	AC_HELP_STRING(
+		[--with-r-libs=DIR],
+		[where the R libraries are installed, like [/usr/lib]. ]),
+	R_LIB_PATH="$withval")
+
+# ---- end arg for configure ----
+
+# ---- def function to check for a specific R library on the system
+AC_DEFUN(R_LIB_CHK,[
+	str="$1/lib$2.*"
+	R_LIB_DIR=""
+	for j in `echo $str`; do
+		if test -r $j; then
+		R_LIB_DIR=$1
+		break 2
+	fi
+	done
+])
+# --- end def function -----
+
+	
+# ---- def function to check for a specific R library on the system
+AC_DEFUN(RFRONTEND_LIB_CHK,[
+	str="$1/$2.*"
+	R_LIB_DIR=""
+	for j in `echo $str`; do
+		if test -r $j; then
+		R_LIB_DIR=$1
+		break 2
+	fi
+	done
+])
+# --- end def function -----
+	
+	
+# ---- def function to check for a specific R includes on the system
+AC_DEFUN(R_INC_CHK,[
+	R_INC_DIR=""
+	str="$1/$2"
+	for i in $R_INC_PATH ; do
+		test -f $i/$str                    && R_INC_DIR=$i/$1 && break
+		#test -f $i/r/$str              && R_INC_DIR=$i/r/$1 && break
+	done
+	AC_MSG_CHECKING(for $1/$2)
+	if test -z "$R_INC_DIR"; then
+		if test "x$R_INC_PATH" != "x"; then
+			AC_MSG_RESULT(no)
+			#check for missing frontend
+			if test "x$1" != "xfrontend/kde"; then
+				AC_MSG_ERROR(Cannot find $1 header files under $R_INC_PATH)
+			else
+				AC_MSG_ERROR(Cannot find $1 header files under $R_INC_PATH.
+Verify that R was installed
+using the --enable-kde=yes option !!!
+-------------------------------------)
+			fi
+		else
+			AC_MSG_RESULT(no)
+			#check for missing frontend
+			if test "x$1" != "xfrontend/kde"; then
+				AC_MSG_ERROR(Cannot find $2 headers.  Use --with-r-includes=DIR to specify non-default path.)
+			else
+				AC_MSG_ERROR(Cannot find $2 headers.
+Verify that R was installed
+using the --enable-kde=yes option !!!
+-------------------------------------)
+
+			fi
+		fi
+
+	else
+		AC_MSG_RESULT(yes in $R_INC_DIR)
+	fi
+
+	if test "x$i" != "x$PAST_R_INC_DIR"; then
+		CPPFLAGS="-I$i $CPPFLAGS"
+	fi
+	PAST_R_INC_DIR="$i"
+])
+# --- end def function -----
+
+# ---- check the presence of the includes for all the R libraries
+R_INC_CHK(rdb,rmysql.h)
+R_INC_CHK(rga,rga.h)
+R_INC_CHK(rga2d,rga2d.h)
+R_INC_CHK(rgga,rgga.h)
+R_INC_CHK(rmath,rgraph.h)
+R_INC_CHK(rprg,rprg.h)
+R_INC_CHK(rpromethee,rpromethee.h)
+R_INC_CHK(rstd,rcontainer.h)
+
+# ---- check the presence of the includes for all the R frontend libraries ----
+R_INC_CHK(frontend/kde,qgamonitor.h)
+
+# ---- check the presence of all R libraries
+for l in rdb rga rga2d rgga rmath rprg rpromethee rstd; do
+
+	#AC_MSG_CHECKING(for lib$l)
+	for i in $R_LIB_PATH ; do
+		R_LIB_CHK($i/$l,$l)  #check for local presence
+		R_LIB_CHK($i,$l)
+		R_LIB_CHK($i/r,$l)
+	done
+	AC_MSG_CHECKING(for lib$l)
+	if test -z "$R_LIB_DIR"; then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR(Cannot find lib$l)
+	else
+		AC_MSG_RESULT(yes in $R_LIB_DIR)
+	fi
+	if test "x$R_LIB_DIR" != "x$PAST_R_LIB_DIR"; then
+		LDFLAGS="-L$R_LIB_DIR $LDFLAGS"
+	fi
+	PAST_R_LIB_DIR="$R_LIB_DIR"
+	KDEVVLSI_ADD="$R_LIB_DIR/lib$l.la $KDEVVLSI_ADD"
+
+done
+
+
+# ---- check the presence of all frontend libraries ----
+# --------------------------------------------------------------
+for i in $R_LIB_PATH ; do
+	RFRONTEND_LIB_CHK($i/frontend/kde,libkde_r)
+	RFRONTEND_LIB_CHK($i,libkde_r)
+	RFRONTEND_LIB_CHK($i/r,libkde_r)
+done
+
+AC_MSG_CHECKING(for libkde_r)
+if test -z "$R_LIB_DIR"; then
+	AC_MSG_RESULT(no)
+	AC_MSG_ERROR(Cannot find libkde_r.
+No GUI will be available for r libraries.
+Verify that R was installed
+using the --enable-kde=yes option !!!
+-------------------------------------)
+
+else
+	AC_MSG_RESULT(yes in $R_LIB_DIR)
+
+	if test "x$R_LIB_DIR" != "x$PAST_R_LIB_DIR"; then
+
+		LDFLAGS="-L$R_LIB_DIR $LDFLAGS"
+	KDEVVLSI_ADD="$R_LIB_DIR/libkde_r.la $KDEVVLSI_ADD"
+	fi
+
+fi
+
+PAST_R_LIB_DIR="$R_LIB_DIR"
+
+
+#--------------------- END R LIB -----------------------------
+
+
+#--------------------- RVLSI LIB -----------------------------
+#VARIABLES USE :
+#	$RVLSI_LIB environnement variable used for developpment
+#	$RVLSI_INC_PATH = the path specified in the --with-vlsi-includes
+#	$RVLSI_LIB_PATH = the path specified in the --with-rvlsi-libs
+#	$RVLSI_INC_DIR = the directory where the includes were found
+#	$RVLSI_LIB_DIR = the directory where the libraries were found
+#	$KDEVVSLI_ADD = the library needed by KDEVVLSI_LDADD
+
+#---------------------------------------------------------
+# ---- add configure option : --with-rvlsi-includes=DIR ----
+if test "x$RVLSI_LIB" != "x" ; then
+	RVLSI_INC_PATH=$RVLSI_LIB
+else
+	RVLSI_INC_PATH=" /usr/include /usr/include/rvlsi /usr/local /usr/local/include /usr/local/include/rvlsi ${prefix}/include/rvlsi"
+fi
+AC_ARG_WITH(rvlsi-includes,
+	AC_HELP_STRING(
+		[--with-rvlsi-includes=DIR],
+		[where the RVLSI includes are, like [/usr/include/rvlsi]. ]),
+	RVLSI_INC_PATH="$withval")
+
+
+# ---- add configure option : --with-rvlsi-libs=DIR ----
+if test "x$RVLSI_LIB" != "x" ; then
+	RVLSI_LIB_PATH=$RVLSI_LIB
+else
+	RVLSI_LIB_PATH="/usr/lib /usr/lib/rvlsi /usr/local/lib /usr/local/lib/rvlsi ${prefix}/lib/rvlsi"
+fi
+AC_ARG_WITH(rvlsi-libs,
+	AC_HELP_STRING(
+		[--with-rvlsi-libs=DIR],
+		[where the RVLSI libraries are installed, like [/usr/lib]. ]),
+	RVLSI_LIB_PATH="$withval")
+
+
+# ---- end arg for configure ----
+
+# ---- end arg for configure ----
+
+# ---- def function to check for a specific RVLSI library on the system
+AC_DEFUN(RVLSI_LIB_CHK,[
+	str="$1/lib$2.*"
+	RVLSI_LIB_DIR=""
+	for j in `echo $str`; do
+		if test -r $j; then
+		RVLSI_LIB_DIR=$1
+		break 2
+	fi
+	done
+])
+# --- end def function -----
+
+
+# ---- def function to check for a specific RVLSI includes on the system
+AC_DEFUN(RVLSI_INC_CHK,[
+	RVLSI_INC_DIR=""
+	str="$1/$2"
+	for i in $RVLSI_INC_PATH ; do
+		test -f $i/$str                    && RVLSI_INC_DIR=$i/$1 && break
+		#test -f $i/rvlsi/$str              && RVLSI_INC_DIR=$i/rvlsi/$1 && break
+	done
+	AC_MSG_CHECKING(for $1/$2)
+	if test -z "$RVLSI_INC_DIR"; then
+		if test "x$RVLSI_INC_PATH" != "x"; then
+			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Cannot find $1 header files under $RVLSI_INC_PATH)
+		else
+			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Cannot find $2 headers.  Use --with-rvlsi-includes= to specify non-default path.)
+		fi
+	fi
+	AC_MSG_RESULT(yes in $RVLSI_INC_DIR)
+
+	if test "x$i" != "x$PAST_RVLSI_INC_DIR"; then
+		CPPFLAGS="-I$i $CPPFLAGS"
+	fi
+	PAST_RVLSI_INC_DIR="$i"
+
+])
+# --- end def function -----
+
+# ---- check the presence of the includes for the RVLSI library
+RVLSI_INC_CHK(rvlsi,rinstvlsi.h)
+
+
+# ---- check the presence of all R libraries
+for l in rvlsi; do
+
+	#AC_MSG_CHECKING(for lib$l)
+	for i in $RVLSI_LIB_PATH ; do
+		RVLSI_LIB_CHK($i/$l,$l)  #check for local presence
+		RVLSI_LIB_CHK($i,$l)
+		RVLSI_LIB_CHK($i/r,$l)
+	done
+	AC_MSG_CHECKING(for lib$l)
+	if test -z "$RVLSI_LIB_DIR"; then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR(Cannot find lib$l)
+	else
+		AC_MSG_RESULT(yes in $RVLSI_LIB_DIR)
+	fi
+	if test "x$RVLSI_LIB_DIR" != "x$PAST_RVLSI_LIB_DIR"; then
+		LDFLAGS="-L$RVLSI_LIB_DIR $LDFLAGS"
+	fi
+	PAST_RVLSI_LIB_DIR="$RVLSI_LIB_DIR"
+	KDEVVLSI_ADD="$RVLSI_LIB_DIR/lib$l.la $KDEVVLSI_ADD"
+
+done
+
+#--------------------- END RVLSI LIB -----------------------------
+
+
+AC_SUBST(KDEVVLSI_ADD)
+
+
 AM_INIT_AUTOMAKE(kdevvlsi,0.2)
 
 dnl CXXFLAGS="$NOOPT_CXXFLAGS" dnl __kdevelop[noopt]__

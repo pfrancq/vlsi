@@ -6,11 +6,8 @@ bin_PROGRAMS = kdevvlsi
 kdevvlsi_SOURCES = kappoptions.ui kvlsiviewpolygons.cpp kvlsigaview.cpp \
 		 kvlsiheuristicview.cpp kvlsiprjview.cpp kdevvlsiview.cpp kdevvlsidoc.cpp \
 		 kdevvlsi.cpp main.cpp
-
-kdevvlsi_LDADD   = $(R_LIB)/rga2d/librga2d.la $(RVLSI_LIB)/rvlsi/librvlsi.la \
-		$(R_LIB)/rmath/librmath.la $(R_LIB)/rpromethee/librpromethee.la \
-		$(R_LIB)/rstd/librstd.la $(R_LIB)/rga/librga.la \
-		$(QTWIDGETS_LIB)/rga/libkde_rga.la $(QTWIDGETS_LIB)/rga2d/libkde_rga2d.la \
+kdevvlsi_LDFLAGS=$(all_libraries) -export-dynamic $(KDE_RPATH)
+kdevvlsi_LDADD   = $(KDEVVLSI_ADD) \
 		$(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
 
 SUBDIRS =
@@ -49,12 +46,10 @@ uninstall-local:
 # kde_wallpaperdir  Where general wallpapers should go to.
 
 # set the include path for X, qt and KDE
-INCLUDES= $(all_includes) -I$(R_LIB) -I$(RVLSI_LIB) -I$(QTWIDGETS_LIB)
+INCLUDES= $(all_includes)
 
 METASOURCES = AUTO
 
-# the library search path.
-kdevvlsi_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
 rcdir = $(kde_datadir)/kdevvlsi
 rc_DATA = kdevvlsiui.rc
