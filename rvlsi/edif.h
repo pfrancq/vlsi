@@ -38,11 +38,15 @@
 	#include <unistd.h>
 #endif
 
-
 //---------------------------------------------------------------------------
 // include files for Rainbow
+#include "rstring.h"
 #include "tree.h"
 using namespace RStd;
+
+
+//---------------------------------------------------------------------------
+// include files for VLSI
 #include "files.h"
 using namespace RVLSI;
 
@@ -87,7 +91,7 @@ public:
   RString TypeName;
   RString Params;
 
-  REDIFTag(unsigned long ,REDIFFile*,char *(&Buffer),unsigned &BufferLen);
+  REDIFTag(unsigned int,REDIFFile*,char *(&Buffer),unsigned &BufferLen);
   virtual int Compare(REDIFTag*) {return(0);}
   virtual int Compare(RBaseNode<REDIFTag>*) {return(0);}
   virtual int Compare(char* name) { return(TagName.Compare(name)); }
@@ -107,9 +111,9 @@ class REDIFFile : public RDataFile
 	RLibrary *CurrLib;
 public:
   RTree<REDIFTag> *Struct;
-	RContainer<RStringId,long,true,true> *Types;
+	RContainer<RStringId,unsigned int,true,true> *Types;
 	
-  REDIFFile(char* name);
+  REDIFFile(const RString &name);
   virtual char* StringType(void) {return("=EDIF2");}
   virtual char* TreeType(void) {return(" - EDIF2 File");}
   virtual bool Analyse(void);
