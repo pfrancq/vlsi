@@ -76,11 +76,12 @@ RProject::RProject(void) throw(bad_alloc)
 //------------------------------------------------------------------------------
 bool RProject::LoadProject(void)
 {
-	RTextFile f(Name,Read);
+	RTextFile f(Name);
 	RString Tmp;
 	unsigned int pos;
 
 	// Read in the File
+	f.Open(Read);
 	Tmp=f.GetLine();    // Dta File
 	pos=Tmp.Find('=');
 	InputName=Tmp.Mid(0,pos);
