@@ -238,7 +238,7 @@ bool REDIFTag::Analyse(REDIFFile* owner)
 //---------------------------------------------------------------------------
 REDIFFile::REDIFFile(const RString &name) : RDataFile(name), CurrCell(NULL), CurrLib(NULL)
 {
-/*  char *File,*Buffer;
+  char *File,*Buffer;
   unsigned int BufferLen;
   struct stat statbuf;
   int theHandle;
@@ -270,7 +270,7 @@ REDIFFile::REDIFFile(const RString &name) : RDataFile(name), CurrCell(NULL), Cur
   close(theHandle);
   Top=new REDIFTag(Struct->NbPtr,this,Buffer,BufferLen);
   Struct->AddNode(NULL,Top);
-  delete[] File;*/
+  delete[] File;
 }
 
 
