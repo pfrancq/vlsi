@@ -81,7 +81,7 @@ bool RProject::LoadProject(void)
 	unsigned int pos;
 
 	// Read in the File
-	f.Open(Read);
+	f.Open(RIO::Read);
 	Tmp=f.GetLine();    // Dta File
 	pos=Tmp.Find('=');
 	InputName=Tmp.Mid(0,pos);
