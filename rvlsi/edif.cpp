@@ -262,7 +262,7 @@ REDIFFile::REDIFFile(const RString& name)
 	ptr->Id=CurrentId++;
 	ptr=Types->GetInsertPtr<RString>("PORT");
 	ptr->Id=CurrentId++;
-	theHandle=open(name,O_RDONLY);
+	theHandle=open(const_cast<RString&>(name).Latin1(),O_RDONLY);
 	fstat(theHandle, &statbuf);
 	BufferLen=statbuf.st_size;
 	Buffer=File=new char[statbuf.st_size+1];
