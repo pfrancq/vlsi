@@ -1,6 +1,6 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
-SUBDIRS = kdevvlsi po doc 
+SUBDIRS = kdevvlsi 
 
 EXTRA_DIST = kdevvlsi.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO kdevvlsi.lsm 
 
@@ -29,3 +29,11 @@ EXTRA_DIST = admin
 dist-hook:
 	cd $(top_distdir) && perl admin/am_edit -padmin
 	cd $(top_distdir) && $(MAKE) -f admin/Makefile.common subdirs
+
+
+
+
+
+
+
+

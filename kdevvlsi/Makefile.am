@@ -1,10 +1,11 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 bin_PROGRAMS = kdevvlsi
-kdevvlsi_SOURCES = kdevvlsiview.cpp kdevvlsidoc.cpp kdevvlsi.cpp main.cpp 
-kdevvlsi_LDADD   =  -lkfile -lkdeui -lkdecore $(LIB_QT) $(LIBSOCKET)
+kdevvlsi_SOURCES = qdrawpolygons.cpp kvlsiheuristicview.cpp kvlsiprjview.cpp qdlgoptionsdata.cpp qdlgoptions.cpp kdevvlsiview.cpp kdevvlsidoc.cpp kdevvlsi.cpp main.cpp 
+kdevvlsi_LDADD   = ./rainbow/rstd/librstd.a ./rainbow/rgeometry/librgeometry.a ./rainbow/rmath/librmath.a ./rainbow/rga/librga.a -lkfile -lkdeui -lkdecore $(LIB_QT) $(LIBSOCKET)
 
+SUBDIRS = rainbow 
 
-EXTRA_DIST = main.cpp kdevvlsi.cpp kdevvlsi.h kdevvlsidoc.cpp kdevvlsidoc.h kdevvlsiview.cpp kdevvlsiview.h kdevvlsiui.rc kdevvlsi.desktop kdevvlsi.xpm mini-kdevvlsi.xpm 
+EXTRA_DIST = main.cpp kdevvlsi.cpp kdevvlsi.h kdevvlsidoc.cpp kdevvlsidoc.h kdevvlsiview.cpp kdevvlsiview.h kdevvlsiui.rc kdevvlsi.desktop kdevvlsi.xpm mini-kdevvlsi.xpm options.kdevdlg qdlgoptions.cpp qdlgoptions.h qdlgoptionsdata.cpp kvlsiprjview.cpp kvlsiprjview.h kvlsiheuristicview.cpp kvlsiheuristicview.h qdrawpolygons.cpp qdrawpolygons.h 
 
 install-data-local:
 	$(mkinstalldirs) $(kde_appsdir)/Applications/
