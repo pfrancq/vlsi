@@ -221,7 +221,7 @@ void KVLSIHeuristicView::NextStep(void)
 	}
 	catch(RPlacementHeuristicException& e)
     {
-		KMessageBox::error(this,QString(e.Msg));
+		KMessageBox::error(this,e.Msg.Latin1());
 		draw->setChanged();
 		Stop=true;
     }
