@@ -2,9 +2,9 @@
 
   Edif.h
 
-  A EDIF File
+  EDIF File - Header.
 
-  By (c) P. Francq, 1999.
+  (C) 1999-2000 by P. Francq.
 
   Version $Revision$
 
@@ -37,7 +37,7 @@
 #if unix
 	#include <unistd.h>
 #endif
-#include "rstd/tree.h"
+#include "tree.h"
 using namespace RStd;
 #include "files.h"
 using namespace RVLSI;

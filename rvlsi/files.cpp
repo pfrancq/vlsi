@@ -1,10 +1,10 @@
 /*
 
-  Files
+  Files.cpp
 
-  Representing VLSI input and output Files
+  VLSI input and output Files - Implementation.
 
-  By (c) P. Francq, 1999.
+  (C) 1999-2000 by P. Francq.
 
   Version $Revision$
 

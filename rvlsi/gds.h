@@ -2,9 +2,9 @@
 
   GGS.h
 
-  A GDS file
+  GDS file - Header.
 
-  By (c) P. Francq, 1999.
+  (C) 1999-2000 by P. Francq.
 
   Version $Revision$
 

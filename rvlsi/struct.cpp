@@ -2,9 +2,9 @@
 
   SchemaStruct
 
-  The structure of the VLSI schema
+  VLSI Structure - Implementation.
 
-  By (c) P. Francq, 1999.
+  (C) 1999-2000 by P. Francq.
 
   Version $Date$
 

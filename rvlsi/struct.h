@@ -2,9 +2,9 @@
 
   Struct.h
 
-  The structure of the VLSI
+  VLSI Structure - Header.
 
-  By (c) P. Francq, 1999.
+  (C) 1999-2000 by P. Francq.
 
   Version $Revision$
 
@@ -34,9 +34,9 @@
 
 //---------------------------------------------------------------------------
 // Includes
-#include "rstd/rcontainer.h"
-#include "rstd/rstring.h"
-#include "geometry/polygons.h"
+#include "rcontainer.h"
+#include "rstring.h"
+#include "polygons.h"
 using namespace RStd;
 
 

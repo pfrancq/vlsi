@@ -1,10 +1,10 @@
 /*
 
-  Files
+  Files.h
 
-  Representing VLSI input and output Files
+  VLSI input and output Files - Header.
 
-  By (c) P. Francq, 1999.
+  (C) 1999-2000 by P. Francq.
 
   Version $Revision$
 
@@ -45,8 +45,8 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <math.h>
-#include "rstd/rstring.h"
-#include "rstd/rfunc.h"
+#include "rstring.h"
+#include "rfunc.h"
 using namespace RStd;
 #include "struct.h"
 using namespace RVLSI;
