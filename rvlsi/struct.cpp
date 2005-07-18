@@ -30,7 +30,7 @@
 
 
 //------------------------------------------------------------------------------
-#include <rvlsi/struct.h>
+#include <struct.h>
 using namespace R;
 using namespace std;
 

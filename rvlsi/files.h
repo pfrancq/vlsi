@@ -50,9 +50,9 @@
 
 //------------------------------------------------------------------------------
 // include files for R Project
-#include <rstd/rstring.h>
-#include <rstd/rstd.h>
-#include <rvlsi/struct.h>
+#include <rstring.h>
+#include <rstd.h>
+#include <struct.h>
 
 
 //------------------------------------------------------------------------------

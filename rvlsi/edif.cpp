@@ -31,7 +31,7 @@
 
 //------------------------------------------------------------------------------
 // include files for R Project
-#include <rvlsi/edif.h>
+#include <edif.h>
 using namespace R;
 using namespace std;
 

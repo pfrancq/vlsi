@@ -35,9 +35,9 @@
 
 //------------------------------------------------------------------------------
 // Include files for R Project
-#include <rvlsi/files.h>
-#include <rvlsi/edif.h>
-#include <rvlsi/gds.h>
+#include <files.h>
+#include <edif.h>
+#include <gds.h>
 
 
 //------------------------------------------------------------------------------

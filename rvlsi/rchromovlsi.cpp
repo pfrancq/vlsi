@@ -32,8 +32,8 @@
 
 //------------------------------------------------------------------------------
 // include files for R Project
-#include <rvlsi/rchromovlsi.h>
-#include <rvlsi/rinstvlsi.h>
+#include <rchromovlsi.h>
+#include <rinstvlsi.h>
 using namespace R;
 using namespace std;
 

@@ -43,14 +43,14 @@
 
 //------------------------------------------------------------------------------
 // include files for R Project
-#include <rstd/rstring.h>
-#include <rstd/rtree.h>
-#include <rstd/rnode.h>
+#include <rstring.h>
+#include <rtree.h>
+#include <rnode.h>
 
 
 //------------------------------------------------------------------------------
 // include files for VLSI
-#include <rvlsi/files.h>
+#include <files.h>
 
 
 //------------------------------------------------------------------------------

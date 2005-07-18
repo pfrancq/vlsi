@@ -37,8 +37,8 @@
 
 //------------------------------------------------------------------------------
 // include files for Rainbow
-#include <rvlsi/rgavlsi.h>
-#include <rga/rinst2d.h>
+#include <rgavlsi.h>
+#include <rinst2d.h>
 
 
 //------------------------------------------------------------------------------

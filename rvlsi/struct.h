@@ -33,9 +33,9 @@
 
 //------------------------------------------------------------------------------
 // include files for R Project
-#include <rstd/rcontainer.h>
-#include <rstd/rstring.h>
-#include <rmath/rpolygons.h>
+#include <rcontainer.h>
+#include <rstring.h>
+#include <rpolygons.h>
 
 
 //------------------------------------------------------------------------------

@@ -32,5 +32,5 @@
 
 //------------------------------------------------------------------------------
 // include files for R Project
-#include <rvlsi/rgavlsi.h>
+#include <rgavlsi.h>
 using namespace R;

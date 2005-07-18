@@ -43,8 +43,8 @@
 
 //------------------------------------------------------------------------------
 // include files for R Project
-#include <rstd/rstring.h>
-#include <rvlsi/files.h>
+#include <rstring.h>
+#include <files.h>
 
 
 //------------------------------------------------------------------------------

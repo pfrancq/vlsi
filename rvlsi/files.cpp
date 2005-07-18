@@ -31,8 +31,8 @@
 
 //------------------------------------------------------------------------------
 // include files for R Project
-#include <rstd/rtextfile.h>
-#include <rvlsi/files.h>
+#include <rtextfile.h>
+#include <files.h>
 using namespace R;
 using namespace std;
 

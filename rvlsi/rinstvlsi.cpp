@@ -6,7 +6,7 @@
 
 	Instance for VLSI placement GA - Implementation
 
-	Copyright 1999-2003 by the Université Libre de Bruxelles.
+	Copyright 1999-2003 by the Universitï¿½Libre de Bruxelles.
 
 	Authors:
 		Pascal Francq (pfrancq@ulb.ac.be).
@@ -32,8 +32,8 @@
 
 //------------------------------------------------------------------------------
 // include files for R Project
-#include <rvlsi/rinstvlsi.h>
-#include <rvlsi/rchromovlsi.h>
+#include <rinstvlsi.h>
+#include <rchromovlsi.h>
 using namespace R;
 using namespace std;
 
