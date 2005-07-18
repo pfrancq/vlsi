@@ -7,7 +7,7 @@ kdevvlsi_SOURCES = kappoptions.ui kvlsiviewpolygons.cpp kvlsigaview.cpp \
 		 kvlsiheuristicview.cpp kvlsiprjview.cpp kdevvlsiview.cpp kdevvlsidoc.cpp \
 		 kdevvlsi.cpp main.cpp
 kdevvlsi_LDFLAGS=$(all_libraries) -export-dynamic $(KDE_RPATH)
-kdevvlsi_LDADD   = $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET) $(LIB_RVLSI)
+kdevvlsi_LDADD   = $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET) $(LIB_RVLSI) $(LIBKDE_R)
 
 SUBDIRS =
 
