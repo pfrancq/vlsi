@@ -36,8 +36,8 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rpromethee/rpromcriterion.h>
-#include <rga/rga2d.h>
+#include <rpromcriterion.h>
+#include <rga2d.h>
 using namespace R;
 
 

@@ -31,7 +31,7 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rmath/rpolygon.h>
+#include <rpolygon.h>
 using namespace R;
 
 
@@ -42,7 +42,7 @@ using namespace R;
 
 //-----------------------------------------------------------------------------
 // include files for Qt Widgets
-#include <frontend/kde/qdrawpolygons.h>
+#include <qdrawpolygons.h>
 
 
 //-----------------------------------------------------------------------------

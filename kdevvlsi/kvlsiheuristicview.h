@@ -31,10 +31,10 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rga/rgeoinfo.h>
-#include <rga/rgeoinfos.h>
-#include <rga/rconnections.h>
-#include <rga/rplacementheuristic.h>
+#include <rgeoinfo.h>
+#include <rgeoinfos.h>
+#include <rconnections.h>
+#include <rplacementheuristic.h>
 using namespace R;
 
 
@@ -46,7 +46,7 @@ using namespace R;
 
 //-----------------------------------------------------------------------------
 // include files for Qt Widgets
-#include <frontend/kde/qdrawpolygons.h>
+#include <qdrawpolygons.h>
 
 
 //-----------------------------------------------------------------------------

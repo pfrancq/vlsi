@@ -37,7 +37,7 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rga/rproblem2d.h>
+#include <rproblem2d.h>
 using namespace R;
 
 

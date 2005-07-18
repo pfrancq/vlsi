@@ -31,11 +31,11 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rmath/rrect.h>
-#include <rga/robj2dcontainer.h>
-#include <rga/rplacementbottomleft.h>
-#include <rga/rplacementedge.h>
-#include <rga/rplacementcenter.h>
+#include <rrect.h>
+#include <robj2dcontainer.h>
+#include <rplacementbottomleft.h>
+#include <rplacementedge.h>
+#include <rplacementcenter.h>
 using namespace R;
 
 

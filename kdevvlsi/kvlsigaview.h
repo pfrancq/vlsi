@@ -31,8 +31,8 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rga/rgasignals.h>
-#include <rvlsi/rgavlsi.h>
+#include <rgasignals.h>
+#include <rgavlsi.h>
 using namespace R;
 
 
@@ -44,9 +44,9 @@ using namespace R;
 
 //-----------------------------------------------------------------------------
 // include files for QtWidgets
-#include <frontend/kde/qgamonitor.h>
-#include <frontend/kde/qxmlcontainer.h>
-#include <frontend/kde/qdrawpolygons.h>
+#include <qgamonitor.h>
+#include <qxmlcontainer.h>
+#include <qdrawpolygons.h>
 
 
 //-----------------------------------------------------------------------------

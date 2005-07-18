@@ -1,130 +1,101 @@
 #MIN_CONFIG(3)
 
 #--------------- Check R and GALILEI ------------------
-R_CHK(kde)
-
-
-#--------------------- CHECK FOR RDEBUG ----------------------
-if test "$enable_debug" != "no"; then
-	CXXFLAGS="$CXXFLAGS -D_RDEBUG"
-fi
+R_CHK("rcore rmath roptimization",kde)
 
 
 #--------------------- RVLSI LIB -----------------------------
-#VARIABLES USE :
-#	$RVLSI_LIB environnement variable used for developpment
-#	$RVLSI_INC_PATH = the path specified in the --with-vlsi-includes
-#	$RVLSI_LIB_PATH = the path specified in the --with-rvlsi-libs
-#	$RVLSI_INC_DIR = the directory where the includes were found
-#	$RVLSI_LIB_DIR = the directory where the libraries were found
-#	$KDEVVSLI_ADD = the library needed by KDEVVLSI_LDADD
-
-#---------------------------------------------------------
-# ---- add configure option : --with-rvlsi-includes=DIR ----
-if test "x$RVLSI_LIB" != "x" ; then
-	RVLSI_INC_PATH=$RVLSI_LIB
-else
-	RVLSI_INC_PATH=" /usr/include /usr/include/rvlsi /usr/local /usr/local/include /usr/local/include/rvlsi ${prefix}/include/rvlsi"
-fi
-AC_ARG_WITH(rvlsi-includes,
-	AC_HELP_STRING(
-		[--with-rvlsi-includes=DIR],
-		[where the RVLSI includes are, like [/usr/include/rvlsi]. ]),
-	RVLSI_INC_PATH="$withval")
-
-
-# ---- add configure option : --with-rvlsi-libs=DIR ----
-if test "x$RVLSI_LIB" != "x" ; then
-	RVLSI_LIB_PATH=$RVLSI_LIB
-else
-	RVLSI_LIB_PATH="/usr/lib /usr/lib/rvlsi /usr/local/lib /usr/local/lib/rvlsi ${prefix}/lib/rvlsi"
-fi
-AC_ARG_WITH(rvlsi-libs,
-	AC_HELP_STRING(
-		[--with-rvlsi-libs=DIR],
-		[where the RVLSI libraries are installed, like [/usr/lib]. ]),
-	RVLSI_LIB_PATH="$withval")
-
-
-# ---- end arg for configure ----
-
-# ---- end arg for configure ----
-
-# ---- def function to check for a specific RVLSI library on the system
-AC_DEFUN(RVLSI_LIB_CHK,[
-	str="$1/lib$2.*"
-	RVLSI_LIB_DIR=""
-	for j in `echo $str`; do
-		if test -r $j; then
-		RVLSI_LIB_DIR=$1
-		break 2
-	fi
-	done
-])
-# --- end def function -----
-
-
 # ---- def function to check for a specific RVLSI includes on the system
 AC_DEFUN(RVLSI_INC_CHK,[
 	RVLSI_INC_DIR=""
-	str="$1/$2"
 	for i in $RVLSI_INC_PATH ; do
-		test -f $i/$str                    && RVLSI_INC_DIR=$i/$1 && break
-		#test -f $i/rvlsi/$str              && RVLSI_INC_DIR=$i/rvlsi/$1 && break
+		if test -f $i/$1/$2 ; then
+			RVLSI_INC_DIR="-I$i/$1"
+			add="$i/$1"
+			break
+		fi
+		if test -f $i/rvlsi/$2 ; then
+			RVLSI_INC_DIR="-I$i/rvlsi"
+			RVLSI_INSTALL="yes"
+			add="$i/rvlsi"
+			break
+		fi
+		if test -f $i/$2 ; then
+			RVLSI_INC_DIR="-I$i"
+			RVLSI_INSTALL="yes"
+			add="$i"
+			break
+		fi
 	done
-	AC_MSG_CHECKING(for $1/$2)
 	if test -z "$RVLSI_INC_DIR"; then
 		if test "x$RVLSI_INC_PATH" != "x"; then
-			AC_MSG_RESULT(no)
-			AC_MSG_ERROR(Cannot find $1 header files under $RVLSI_INC_PATH)
+			AC_MSG_ERROR($3)
 		else
-			AC_MSG_RESULT(no)
-			AC_MSG_ERROR(Cannot find $2 headers.  Use --with-rvlsi-includes= to specify non-default path.)
+			AC_MSG_ERROR($3 Use --with-rvlsi-includes=DIR to specify non-default path.)
 		fi
 	fi
-	AC_MSG_RESULT(yes in $RVLSI_INC_DIR)
-
-	if test "x$i" != "x$PAST_RVLSI_INC_DIR"; then
-		CPPFLAGS="-I$i $CPPFLAGS"
+	if test "x$add" != "x$PAST_RVLSI_INC_DIR"; then
+		CPPFLAGS="$RVLSI_INC_DIR $CPPFLAGS"
 	fi
-	PAST_RVLSI_INC_DIR="$i"
-
+	PAST_RVLSI_INC_DIR="$add"
 ])
-# --- end def function -----
 
-# ---- check the presence of the includes for the RVLSI library
-RVLSI_INC_CHK(rvlsi,rinstvlsi.h)
+	AC_MSG_CHECKING(for RVLSI)
 
-
-# ---- check the presence of all R libraries
-for l in rvlsi; do
-
-	#AC_MSG_CHECKING(for lib$l)
-	for i in $RVLSI_LIB_PATH ; do
-		RVLSI_LIB_CHK($i/$l,$l)  #check for local presence
-		RVLSI_LIB_CHK($i,$l)
-		RVLSI_LIB_CHK($i/r,$l)
-	done
-	AC_MSG_CHECKING(for lib$l)
-	if test -z "$RVLSI_LIB_DIR"; then
-		AC_MSG_RESULT(no)
-		AC_MSG_ERROR(Cannot find lib$l)
+	# ---- add configure option : --with-RVLSI-libs=DIR ----
+	if test "x$RVLSI_LIB" != "x" ; then
+		RVLSI_LIB_PATH=$RVLSI_LIB
 	else
-		AC_MSG_RESULT(yes in $RVLSI_LIB_DIR)
+		RVLSI_LIB_PATH="/usr/lib /usr/local/lib ${prefix}/lib"
 	fi
-	if test "x$RVLSI_LIB_DIR" != "x$PAST_RVLSI_LIB_DIR"; then
-		LDFLAGS="-L$RVLSI_LIB_DIR $LDFLAGS"
+	AC_ARG_WITH(RVLSI-libs,
+		AC_HELP_STRING(
+			[--with-RVLSI-libs=DIR],
+			[where the RVLSI libraries are installed, default: [/usr/lib]. ]),
+		RB_LIB_PATH="$withval")
+
+	# ---- end arg for configure ----
+
+	# ---- check the presence of all RVLSI libraries
+	RVLSI_LIB_DIR=""
+	for i in $RVLSI_LIB_PATH ; do
+		for t in $i/rvlsi $i; do
+			str="$t/librvlsi.*"
+			for j in `echo $str`; do
+				echo "$j"
+				if test -r $j; then
+					RVLSI_LIB_DIR=$j
+					break 2
+				fi
+			done
+		done
+		if test -z "$RVLSI_LIB_DIR"; then
+			AC_MSG_ERROR(Cannot find RVLSI libraries)
+		fi
+		if test "x$RVLSI_LIB_DIR" != "x$PAST_RVLSI_LIB_DIR"; then
+			LDFLAGS="-L$RVLSI_LIB_DIR $LDFLAGS"
+		fi
+		PAST_RVLSI_LIB_DIR="$RVLSI_LIB_DIR"
+		LIB_RVLSI="$RVLSI_LIB_DIR $LIB_RVLSI"
+	done
+	MSG="libraries $i"
+
+	if test "x$RVLSI_LIB" != "x" ; then
+		RVLSI_INC_PATH=$RVLSI_LIB
+	else
+		RVLSI_INC_PATH=" /usr/include /usr/local/include ${prefix}/include/rvlsi"
 	fi
-	PAST_RVLSI_LIB_DIR="$RVLSI_LIB_DIR"
-	KDEVVLSI_ADD="$RVLSI_LIB_DIR/lib$l.la $KDEVVLSI_ADD"
+	AC_ARG_WITH(RVLSI-includes,
+		AC_HELP_STRING(
+			[--with-RVLSI-includes=DIR],
+			[where the RVLSI includes are, like [/usr/include/RVLSI]. ]),
+		RVLSI_INC_PATH="$withval")
+	RVLSI_INC_CHK(rvlsi,rgavlsi.h,Cannot find RVLSI headers.)
 
-done
-
+	MSG="$MSG, headers $i"
+	AC_MSG_RESULT($MSG)
+	AC_SUBST(LIB_RVLSI)
 #--------------------- END RVLSI LIB -----------------------------
-
-
-AC_SUBST(KDEVVLSI_ADD)
-
 
 AM_INIT_AUTOMAKE(kdevvlsi,0.2)
 
