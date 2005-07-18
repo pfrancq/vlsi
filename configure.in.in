@@ -62,7 +62,6 @@ AC_DEFUN(RVLSI_INC_CHK,[
 		for t in $i/rvlsi $i; do
 			str="$t/librvlsi.*"
 			for j in `echo $str`; do
-				echo "$j"
 				if test -r $j; then
 					RVLSI_LIB_DIR=$j
 					break 2
