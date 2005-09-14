@@ -88,7 +88,7 @@ public:
 /**
 * @short EDIF Tag
 */
-class REDIFTag : public RNode<REDIFTag,false>
+class REDIFTag : public RNode<REDIFTag,true,false>
 {
 public:
 	RString TagName;
@@ -98,12 +98,13 @@ public:
 
 	REDIFTag(unsigned int,REDIFFile*,char *(&Buffer),unsigned &BufferLen);
 	virtual int Compare(const REDIFTag&) const {return(0);}
-	virtual int Compare(const RNode<REDIFTag,false>&) const {return(0);}
+	virtual int Compare(const RNode<REDIFTag,true,false>&) const {return(0);}
 	virtual int Compare(const char* name) const { return(TagName.Compare(name)); }
 	void InsertInst(REDIFFile*);
 	void InsertPortImp(REDIFFile*);
 	void InsertNet(REDIFFile*);
 	bool Analyse(REDIFFile*);
+	virtual ~REDIFTag(void) {}
 };
 
 

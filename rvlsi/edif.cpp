@@ -63,7 +63,7 @@ inline bool MustIncBuffer(char c)
 
 //------------------------------------------------------------------------------
 REDIFTag::REDIFTag(unsigned int id,REDIFFile* Owner,char *(&Buffer),unsigned& BufferLen)
-	: RNode<REDIFTag,false>(20,10), Id(id)
+	: RNode<REDIFTag,true,false>(Owner->Struct), Id(id)
 {
 	static char Temp[200];
 	char* ptr=Temp;
@@ -109,8 +109,8 @@ REDIFTag::REDIFTag(unsigned int id,REDIFFile* Owner,char *(&Buffer),unsigned& Bu
 	while(MustIncBuffer(*Buffer)) Buffer++;
 	while((*Buffer)!=')')     // Verify if sub tag
 	{
-		CurrentSub=new REDIFTag(Owner->Struct->GetNb(),Owner,Buffer,BufferLen);
-		Owner->Struct->AddNode(this,CurrentSub);
+		CurrentSub=new REDIFTag(Owner->Struct->GetNbNodes(),Owner,Buffer,BufferLen);
+		Owner->Struct->InsertNode(this,CurrentSub);
 	}
 	Buffer++;   // Read the ')'
 
@@ -125,12 +125,12 @@ void REDIFTag::InsertInst(REDIFFile* owner)
 	RString Name(200),Ref(200);
 	REDIFTag* ptr;
 
-	ptr=GetPtr<const char*>("name");
+	ptr=GetNode("name");
 	if(!ptr) return;
 	Name=ptr->Params;
-	ptr=GetPtr<const char*>("viewRef");
+	ptr=GetNode("viewRef");
 	if(!ptr) return;
-	ptr=ptr->GetPtr<const char*>("cellRef");
+	ptr=ptr->GetNode("cellRef");
 	if(!ptr) return;
 	Ref=ptr->Params;
 	owner->CurrCell->InsertInst(Name,Ref);
@@ -152,16 +152,18 @@ void REDIFTag::InsertNet(REDIFFile* owner)
 
 	if(!(owner->CurrCell)) return;
 	net=owner->CurrCell->InsertNet(Params);
-	join=GetPtr<const char*>("joined");
+	join=GetNode("joined");
 	if(!join) return;
-	RCursor<REDIFTag> ptr(*join);
+	RCursor<REDIFTag> ptr(join->GetNodes());
 	for(ptr.Start();!ptr.End();ptr.Next())
 	{
 		if(ptr()->TagName=="portRef") continue;
 		PortName=ptr()->Params;
-		if(ptr()->GetNb())
+		RCursor<REDIFTag> Cur(ptr()->GetNodes());
+		Cur.Start();
+		if(!Cur.End())
 		{
-			sub=(*ptr())[0];
+			sub=Cur();
 			if(sub->TagName=="instanceRef") continue;
 			InstName=sub->Params;
 		}
@@ -203,15 +205,20 @@ bool REDIFTag::Analyse(REDIFFile* owner)
 			break;
 		case TYPEPORT:                // This is a port of the current Cell
 			dir=2;
-			if(((*this)[0])->Params=="INPUT") dir=-1;
-			if(((*this)[0])->Params=="OUTPUT") dir=+1;
-			if(((*this)[0])->Params=="INOUT") dir=0;
-			owner->CurrCell->InsertPort(Params,dir);
-			bSub=false;
+			RCursor<REDIFTag> Cur(GetNodes());
+			Cur.Start();
+			if(!Cur.End())
+			{
+				if(Cur()->Params=="INPUT") dir=-1;
+				if(Cur()->Params=="OUTPUT") dir=+1;
+				if(Cur()->Params=="INOUT") dir=0;
+				owner->CurrCell->InsertPort(Params,dir);
+				bSub=false;
+			}
 			break;
 	}
 	if(!bSub) return(true);
-	RCursor<REDIFTag> tag(*this);
+	RCursor<REDIFTag> tag(GetNodes());
 	for(tag.Start();!tag.End();tag.Next())
 		tag()->Analyse(owner);
 	switch(TypeId)
@@ -268,8 +275,8 @@ REDIFFile::REDIFFile(const RString& name)
 	read(theHandle,File,statbuf.st_size);
 	File[statbuf.st_size]=0;
 	close(theHandle);
-	Top=new REDIFTag(Struct->GetNb(),this,Buffer,BufferLen);
-	Struct->AddNode(NULL,Top);
+	Top=new REDIFTag(Struct->GetNbNodes(),this,Buffer,BufferLen);
+	Struct->InsertNode(NULL,Top);
 	delete[] File;
 }
 
@@ -277,7 +284,7 @@ REDIFFile::REDIFFile(const RString& name)
 //------------------------------------------------------------------------------
 bool REDIFFile::Analyse(void)
 {
-	RCursor<REDIFTag> tag(*Struct->Top);
+	RCursor<REDIFTag> tag(Struct->GetTop()->GetNodes());
 	for(tag.Start();!tag.End();tag.Next())
 		if(!(tag()->Analyse(this))) return(false);
 	return(true);
