@@ -87,7 +87,7 @@ void KDevVLSIDoc::removeView(KDevVLSIView *view)
 
 //-----------------------------------------------------------------------------
 void KDevVLSIDoc::changedViewList(void)
-{	
+{
 	KDevVLSIView *w;
 
 	if((int)pViewList->count()==1)
@@ -183,7 +183,7 @@ bool KDevVLSIDoc::openDocument(const KURL &url, const char* /*format*/ /*=0*/) t
 
 	// Remove file
 	KIO::NetAccess::removeTempFile(tmpfile);
-	doc_url=url;	
+	doc_url=url;
 	modified=false;
 	return true;
 }
@@ -219,7 +219,7 @@ bool KDevVLSIDoc::canCloseFrame(KDevVLSIView* pFrame)
 {
 	if(!isLastView())
 		return true;
-		
+
 	bool ret=false;
 	if(isModified())
 	{
@@ -236,7 +236,7 @@ bool KDevVLSIDoc::canCloseFrame(KDevVLSIView* pFrame)
 				}
 				else
 					saveURL=URL();
-					
+
 				if(!saveDocument(saveURL))
 				{
 					switch(KMessageBox::warningYesNo(pFrame,i18n("Could not save the current document !\n"

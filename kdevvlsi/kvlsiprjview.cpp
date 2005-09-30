@@ -107,7 +107,7 @@ void KVLSIPrjView::createPrj(void)
 			sprintf(tmp,"(%d,%d)",Cur()->X,Cur()->Y);
 			item4=new QListViewItem(item3,item4,tmp);
 		}
-		
+
 		// Connectors
 		item3=new QListViewItem(item2,item3,"Terminals");
 		item4=0;
