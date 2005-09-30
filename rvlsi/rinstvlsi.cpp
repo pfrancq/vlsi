@@ -61,7 +61,7 @@ RThreadDataVLSI::RThreadDataVLSI(RInstVLSI *owner)
 
 //------------------------------------------------------------------------------
 RInstVLSI::RInstVLSI(unsigned int max,unsigned int popsize,RProblem2D* prob,HeuristicType h,RDebug* debug) throw(bad_alloc)
-	: RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(popsize,prob,h,debug),
+	: RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(popsize,prob,h,"VLSI",debug),
 		MaxGen(max)
 {
 }
