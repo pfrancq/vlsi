@@ -6,10 +6,8 @@
 
 	Instance for VLSI placement GA - Implementation
 
-	Copyright 1999-2003 by the Universit�Libre de Bruxelles.
-
-	Authors:
-		Pascal Francq (pfrancq@ulb.ac.be).
+	Copyright 1998-2009 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2003 by the Université Libre de Bruxelles (ULB).
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -60,7 +58,7 @@ RThreadDataVLSI::RThreadDataVLSI(RInstVLSI *owner)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-RInstVLSI::RInstVLSI(unsigned int max,unsigned int popsize,RProblem2D* prob,HeuristicType h,RDebug* debug) throw(bad_alloc)
+RInstVLSI::RInstVLSI(size_t max,size_t popsize,RProblem2D* prob,const RString& h,RDebug* debug)
 	: RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(popsize,prob,h,"VLSI",debug),
 		MaxGen(max)
 {
@@ -70,5 +68,5 @@ RInstVLSI::RInstVLSI(unsigned int max,unsigned int popsize,RProblem2D* prob,Heur
 //------------------------------------------------------------------------------
 bool RInstVLSI::StopCondition(void)
 {
-	return(Gen==MaxGen);
+	return(GetGen()==MaxGen);
 }

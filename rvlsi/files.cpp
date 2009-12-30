@@ -6,10 +6,8 @@
 
 	VLSI input and output Files - Implementation.
 
-	Copyright 1999-2003 by the Universit�Libre de Bruxelles.
-
-	Authors:
-		Pascal Francq (pfrancq@ulb.ac.be).
+	Copyright 1998-2009 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2003 by the Université Libre de Bruxelles (ULB).
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -60,15 +58,15 @@ RDataFile::RDataFile(const RString& name)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-RProject::RProject(const RString &name) throw(bad_alloc)
+RProject::RProject(const RString &name)
 	: RContainer<RDataFile,true,true>(10,5),RStructure(), Name(name), InputName(name),OutputName(name)
 {
 }
 
 
 //------------------------------------------------------------------------------
-RProject::RProject(void) throw(bad_alloc)
-	: RContainer<RDataFile,true,true>(10,5),RStructure(), Name(200), InputName(200),OutputName(200)
+RProject::RProject(void)
+	: RContainer<RDataFile,true,true>(10,5), RStructure()
 {
 }
 
@@ -88,7 +86,7 @@ bool RProject::LoadProject(void)
 	Tmp=f.GetLine();    // Res File
 	pos=Tmp.Find('=');
 	OutputName=Tmp.Mid(0,pos);
-	while(!f.Eof()) // Read GDSII and EDIF2 Files
+	while(!f.End()) // Read GDSII and EDIF2 Files
 	{
 		Tmp=f.GetLine();
 		pos=Tmp.Find('=');

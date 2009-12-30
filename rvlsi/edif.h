@@ -6,10 +6,8 @@
 
 	EDIF File - Header.
 
-	Copyright 1999-2003 by the Universit�Libre de Bruxelles.
-
-	Authors:
-		Pascal Francq (pfrancq@ulb.ac.be).
+	Copyright 1998-2009 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2003 by the Université Libre de Bruxelles (ULB).
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -88,7 +86,7 @@ public:
 /**
 * @short EDIF Tag
 */
-class REDIFTag : public RNode<REDIFTag,true,false>
+class REDIFTag : public RNode<REDIFFile,REDIFTag,true>
 {
 public:
 	RString TagName;
@@ -98,13 +96,15 @@ public:
 
 	REDIFTag(unsigned int,REDIFFile*,char *(&Buffer),unsigned &BufferLen);
 	virtual int Compare(const REDIFTag&) const {return(0);}
-	virtual int Compare(const RNode<REDIFTag,true,false>&) const {return(0);}
+	virtual int Compare(const RNode<REDIFFile,REDIFTag,true>&) const {return(0);}
 	virtual int Compare(const char* name) const { return(TagName.Compare(name)); }
 	void InsertInst(REDIFFile*);
 	void InsertPortImp(REDIFFile*);
 	void InsertNet(REDIFFile*);
 	bool Analyse(REDIFFile*);
 	virtual ~REDIFTag(void) {}
+
+	friend class REDIFFile;
 };
 
 
@@ -113,14 +113,13 @@ public:
 /**
 * @short EDIF2 data file
 */
-class REDIFFile : public RDataFile
+class REDIFFile : public RDataFile, public RTree<REDIFFile,REDIFTag,true>
 {
 	RCell *CurrCell;
 	RLibrary *CurrLib;
-public:
-	RTree<REDIFTag,true,false> *Struct;
-	RContainer<RStringId,true,true> *Types;
+	RContainer<RStringId,true,true> Types;
 
+public:
 	REDIFFile(const RString& name);
 	virtual const char* StringType(void) {return("=EDIF2");}
 	virtual const char* TreeType(void) {return(" - EDIF2 File");}

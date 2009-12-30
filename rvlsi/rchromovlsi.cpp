@@ -6,10 +6,8 @@
 
 	Chromosome for VLSI placement GA - Implementation
 
-	Copyright 1999-2003 by the Université Libre de Bruxelles.
-
-	Authors:
-		Pascal Francq (pfrancq@ulb.ac.be).
+	Copyright 1998-2009 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2003 by the UniversitÃ© Libre de Bruxelles (ULB).
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -46,14 +44,14 @@ using namespace std;
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-RChromoVLSI::RChromoVLSI(RInstVLSI *inst,unsigned int id) throw(bad_alloc)
+RChromoVLSI::RChromoVLSI(RInstVLSI *inst,unsigned int id)
   : RChromo2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(inst,id)
 {
 }
 
 
 //------------------------------------------------------------------------------
-void RChromoVLSI::Evaluate(void) throw(eGA)
+void RChromoVLSI::Evaluate(void)
 {
 	double Num,Den;
 

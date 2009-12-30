@@ -6,10 +6,8 @@
 
 	Instance for VLSI placement GA - Header
 
-	Copyright 1999-2003 by the Universit�Libre de Bruxelles.
-
-	Authors:
-		Pascal Francq (pfrancq@ulb.ac.be).
+	Copyright 1998-2009 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2003 by the Université Libre de Bruxelles (ULB).
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -87,7 +85,7 @@ public:
 	* @param h              The type of heuristic to be used.
 	* @param debug          Debugger.
 	*/
-	RInstVLSI(unsigned int max,unsigned int popsize,RProblem2D* prob,HeuristicType h,RDebug* debug=0) throw(std::bad_alloc);
+	RInstVLSI(size_t max,size_t popsize,RProblem2D* prob,const RString& h,RDebug* debug=0);
 
 	/**
 	* This function determines if the GA must be stopped. Actually, it is the case
