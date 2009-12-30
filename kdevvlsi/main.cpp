@@ -1,92 +1,97 @@
 /*
 
-  main.cpp
+	Main.cpp
 
-  Description - Implementation.
+	Main program - Implementation.
 
-  (c) 2000 by P. Francq.
+	Copyright 2000-2009 by Pascal Francq (pascal@francq.info).
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  any later version.
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
 
 
 
 //-----------------------------------------------------------------------------
+// include files for ANSI C/C++
+#include <stdexcept>
+#include <iostream>
+using namespace std;
+
+
+//-----------------------------------------------------------------------------
 // include files for KDE
-#include <kcmdlineargs.h>
+#include <kapplication.h>
 #include <kaboutdata.h>
-#include <klocale.h>
+#include <kcmdlineargs.h>
+#include <KDE/KLocale>
 
 
 //-----------------------------------------------------------------------------
 // include file for current application
-#include "kdevvlsi.h"
+#include <kdevvlsi.h>
 
 
 //-----------------------------------------------------------------------------
+// Description of the application
 static const char *description =
-	I18N_NOOP("KDevVLSI\nDevelopment Application for VLSI Placement");
-
-
-//-----------------------------------------------------------------------------
-static KCmdLineOptions options[] =
-{
-	{ "+[File]", I18N_NOOP("file to open"), 0 },
-	{ 0, 0, 0 }
-	// INSERT YOUR COMMANDLINE OPTIONS HERE
-};
-
-
-//-----------------------------------------------------------------------------
-KDevVLSIApp* theApp;
+	"Development Application for VLSI Placement.";
 
 
 //-----------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
-	KAboutData aboutData( "kdevvlsi", I18N_NOOP("KDevVLSI"),
-		VERSION, description, KAboutData::License_GPL,
-		"(c) 1999-2001, Université Libre de Bruxelles",0,"http://www.ulb.ac.be","pfrancq@ulb.ac.be");
-	aboutData.addAuthor("Pascal Francq",I18N_NOOP("Project Manager"), "pfrancq@ulb.ac.be");
-	aboutData.addCredit("Thomas L'Eglise",I18N_NOOP("PROMETHEE Developper"), "leglise@ulb.ac.be");
-	
+	setlocale(LC_CTYPE,"");
+
+    // Information about the application
+	KAboutData aboutData("kdevvlsi",0,ki18n("KDevVLSI"),"1.89",ki18n(description),
+			KAboutData::License_GPL,ki18n("(C) 2000-2009 by Pascal Francq\n"),
+			KLocalizedString(),"http://www.otlet-institute.org", "pascal@francq.info");
+	aboutData.addAuthor(ki18n("Pascal Francq"),ki18n("Project Manager"),"pascal@francq.info");
+
+	// Init
 	KCmdLineArgs::init( argc, argv, &aboutData );
-	KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
+    KCmdLineOptions options;
+	KCmdLineArgs::addCmdLineOptions(options);
 
-	KApplication app;
-
-	if (app.isRestored())
+	// Run
+	try
 	{
-		RESTORE(KDevVLSIApp);
-	}
-	else
-	{
-		theApp = new KDevVLSIApp();
-		theApp->show();
-
-		KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-		
-		if(args->count())	// Must be files
+		KApplication app;
+		KDevVLSI* Center=new KDevVLSI(argc,argv);
+		if(app.isSessionRestored())
 		{
-			for(int i=0;i<args->count();i++)
-			{
-				theApp->openDocumentFile(args->arg(i));
-			}
+//			RESTORE(Center);
 		}
-		args->clear();
+		else
+		{
+			Center->show();
+		}
+		return(app.exec());
 	}
-	return app.exec();
+	catch(RException& e)
+	{
+		cout<<e.GetMsg()<<endl;
+	}
+	catch(exception& e)
+	{
+		cout<<e.what()<<endl;
+	}
+	catch(...)
+	{
+		cout<<"Unknown problem"<<endl;
+	}
+ 	return(0);
 }  

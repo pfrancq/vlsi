@@ -1,944 +1,517 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
-<class>KAppOptions</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>KAppOptions</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>499</width>
-            <height>558</height>
-        </rect>
-    </property>
-    <property name="sizePolicy">
-        <sizepolicy>
-            <hsizetype>1</hsizetype>
-            <vsizetype>1</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-    </property>
-    <property name="minimumSize">
-        <size>
-            <width>0</width>
-            <height>0</height>
-        </size>
-    </property>
-    <property name="baseSize">
-        <size>
-            <width>200</width>
-            <height>300</height>
-        </size>
-    </property>
-    <property name="caption">
-        <string>Options</string>
-    </property>
-    <property name="sizeGripEnabled">
-        <bool>false</bool>
-    </property>
-    <widget class="Line">
-        <property name="name">
-            <cstring>Line1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>0</x>
-                <y>490</y>
-                <width>490</width>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>KAppOptions</class>
+ <widget class="QWidget" name="KAppOptions">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>550</width>
+    <height>538</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTabWidget" name="MainTab">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>GA</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>GA Parameters</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="TextLabel1_4">
+              <property name="text">
+               <string>Population size</string>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="PopSize"/>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
                 <height>20</height>
-            </rect>
-        </property>
-        <property name="frameShape">
-            <enum>HLine</enum>
-        </property>
-        <property name="frameShadow">
-            <enum>Sunken</enum>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-    </widget>
-    <widget class="QLayoutWidget">
-        <property name="name">
-            <cstring>Layout1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>0</x>
-                <y>510</y>
-                <width>490</width>
-                <height>28</height>
-            </rect>
-        </property>
-        <hbox>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-            <property name="margin">
-                <number>0</number>
-            </property>
-            <property name="spacing">
-                <number>6</number>
-            </property>
-            <spacer>
-                <property name="name">
-                    <cstring>Spacer1</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>20</width>
-                        <height>20</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>btnOK</cstring>
-                </property>
-                <property name="text">
-                    <string>OK</string>
-                </property>
-                <property name="autoResize">
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <spacer>
-                <property name="name">
-                    <cstring>Spacer3</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>20</width>
-                        <height>20</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>btnCancel</cstring>
-                </property>
-                <property name="text">
-                    <string>Cancel</string>
-                </property>
-                <property name="autoResize">
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <spacer>
-                <property name="name">
-                    <cstring>Spacer2</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>20</width>
-                        <height>20</height>
-                    </size>
-                </property>
-            </spacer>
-        </hbox>
-    </widget>
-    <widget class="QTabWidget">
-        <property name="name">
-            <cstring>TabWidget</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>490</width>
-                <height>490</height>
-            </rect>
-        </property>
-        <property name="sizePolicy">
-            <sizepolicy>
-                <hsizetype>7</hsizetype>
-                <vsizetype>7</vsizetype>
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-            </sizepolicy>
-        </property>
-        <property name="backgroundOrigin">
-            <enum>ParentOrigin</enum>
-        </property>
-        <widget class="QWidget">
-            <property name="name">
-                <cstring>tab</cstring>
-            </property>
-            <attribute name="title">
-                <string>GA</string>
-            </attribute>
-            <widget class="QGroupBox">
-                <property name="name">
-                    <cstring>GroupBox11</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>110</y>
-                        <width>470</width>
-                        <height>60</height>
-                    </rect>
-                </property>
-                <property name="title">
-                    <string>GA</string>
-                </property>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>txtStepGen</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>425</x>
-                            <y>20</y>
-                            <width>40</width>
-                            <height>22</height>
-                        </rect>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>TextLabel2_4_2</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>330</x>
-                            <y>20</y>
-                            <width>90</width>
-                            <height>20</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>Step generation</string>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>TextLabel2_4</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>10</x>
-                            <y>20</y>
-                            <width>120</width>
-                            <height>20</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>Maximum generation</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>txtMaxGen</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>140</x>
-                            <y>20</y>
-                            <width>40</width>
-                            <height>22</height>
-                        </rect>
-                    </property>
-                </widget>
-            </widget>
-            <widget class="QGroupBox">
-                <property name="name">
-                    <cstring>GroupBox19</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>180</y>
-                        <width>470</width>
-                        <height>50</height>
-                    </rect>
-                </property>
-                <property name="title">
-                    <string>Run Mode</string>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>cbStep</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>10</x>
-                            <y>20</y>
-                            <width>94</width>
-                            <height>20</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>Step Mode</string>
-                    </property>
-                </widget>
-            </widget>
-            <widget class="QGroupBox">
-                <property name="name">
-                    <cstring>GroupBox10</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>5</y>
-                        <width>480</width>
-                        <height>95</height>
-                    </rect>
-                </property>
-                <property name="title">
-                    <string></string>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>TextLabel1_4</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>10</x>
-                            <y>20</y>
-                            <width>85</width>
-                            <height>16</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>Population size</string>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>TextLaba</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>10</x>
-                            <y>60</y>
-                            <width>60</width>
-                            <height>20</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>Heuristic</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>txtPopSize</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>105</x>
-                            <y>15</y>
-                            <width>40</width>
-                            <height>22</height>
-                        </rect>
-                    </property>
-                </widget>
-                <widget class="QComboBox">
-                    <item>
-                        <property name="text">
-                            <string>Bottom-Left</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Edge</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Center</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>cbGAHeuristicType</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>70</x>
-                            <y>60</y>
-                            <width>140</width>
-                            <height>22</height>
-                        </rect>
-                    </property>
-                </widget>
-            </widget>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLabel" name="TextLaba">
+              <property name="text">
+               <string>Heuristic</string>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="Heuristic">
+              <item>
+               <property name="text">
+                <string>Bottom-Left</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Edge</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Center</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLabel" name="TextLabel2_4">
+              <property name="text">
+               <string>Maximum generation</string>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="MaxGen"/>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </widget>
-        <widget class="QWidget">
-            <property name="name">
-                <cstring>tab</cstring>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Debug Mode</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QCheckBox" name="Step">
+            <property name="text">
+             <string>Step Mode</string>
             </property>
-            <attribute name="title">
-                <string>General</string>
-            </attribute>
-            <widget class="QGroupBox">
-                <property name="name">
-                    <cstring>NoName_2</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>40</y>
-                        <width>470</width>
-                        <height>60</height>
-                    </rect>
-                </property>
-                <property name="title">
-                    <string>Free Polygons</string>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>cbComputePoly</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>10</x>
-                            <y>20</y>
-                            <width>90</width>
-                            <height>30</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>Ca&amp;lculation</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>cbUsePoly</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>130</x>
-                            <y>20</y>
-                            <width>50</width>
-                            <height>30</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Use</string>
-                    </property>
-                </widget>
-            </widget>
-            <widget class="QCheckBox">
-                <property name="name">
-                    <cstring>cbAllOris</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>8</x>
-                        <y>6</y>
-                        <width>140</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Test &amp;all Orientations</string>
-                </property>
-            </widget>
-            <widget class="QGroupBox">
-                <property name="name">
-                    <cstring>NoName_5</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>110</y>
-                        <width>470</width>
-                        <height>170</height>
-                    </rect>
-                </property>
-                <property name="title">
-                    <string>PROMETHEE parameters for the heuristics</string>
-                </property>
-                <widget class="QGroupBox">
-                    <property name="name">
-                        <cstring>NoName_6</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>10</x>
-                            <y>20</y>
-                            <width>220</width>
-                            <height>140</height>
-                        </rect>
-                    </property>
-                    <property name="title">
-                        <string>Area Criterion</string>
-                    </property>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>NoName_8</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>10</x>
-                                <y>60</y>
-                                <width>140</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Preference threshold (q)</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>NoName_11</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>100</x>
-                                <y>100</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Weight</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>NoName_9</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>10</x>
-                                <y>20</y>
-                                <width>140</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Indifference threshold (p)</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>txtHeurAreaP</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>160</x>
-                                <y>20</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>txtHeurAreaQ</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>160</x>
-                                <y>60</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>txtHeurAreaW</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>160</x>
-                                <y>100</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                    </widget>
-                </widget>
-                <widget class="QGroupBox">
-                    <property name="name">
-                        <cstring>NoName_13</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>240</x>
-                            <y>20</y>
-                            <width>220</width>
-                            <height>140</height>
-                        </rect>
-                    </property>
-                    <property name="title">
-                        <string>Dist Criterion</string>
-                    </property>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>NoName_15</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>10</x>
-                                <y>60</y>
-                                <width>140</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Preference threshold (q)</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>NoName_16</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>10</x>
-                                <y>20</y>
-                                <width>140</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Indifference threshold (p)</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>NoName_18</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>100</x>
-                                <y>100</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Weight</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>txtHeurDistQ</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>160</x>
-                                <y>60</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>txtHeurDistW</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>160</x>
-                                <y>100</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>txtHeurDistP</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>160</x>
-                                <y>20</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                    </widget>
-                </widget>
-            </widget>
-            <widget class="QGroupBox">
-                <property name="name">
-                    <cstring>NoName_5_2</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>290</y>
-                        <width>470</width>
-                        <height>170</height>
-                    </rect>
-                </property>
-                <property name="title">
-                    <string>PROMETHEE parameters for the selection</string>
-                </property>
-                <widget class="QGroupBox">
-                    <property name="name">
-                        <cstring>NoName_13_2</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>240</x>
-                            <y>20</y>
-                            <width>220</width>
-                            <height>140</height>
-                        </rect>
-                    </property>
-                    <property name="title">
-                        <string>Dist Criterion</string>
-                    </property>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>NoName_15_2</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>10</x>
-                                <y>60</y>
-                                <width>140</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Preference threshold (q)</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>NoName_16_2</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>10</x>
-                                <y>20</y>
-                                <width>140</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Indifference threshold (p)</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>NoName_18_2</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>100</x>
-                                <y>100</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Weight</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>txtSelectDistP</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>160</x>
-                                <y>20</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>txtSelectDistQ</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>160</x>
-                                <y>60</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>txtSelectDistW</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>160</x>
-                                <y>100</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                    </widget>
-                </widget>
-                <widget class="QGroupBox">
-                    <property name="name">
-                        <cstring>NoName_6_2</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>10</x>
-                            <y>20</y>
-                            <width>220</width>
-                            <height>140</height>
-                        </rect>
-                    </property>
-                    <property name="title">
-                        <string>Weight Criterion</string>
-                    </property>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>NoName_8_2</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>10</x>
-                                <y>60</y>
-                                <width>140</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Preference threshold (q)</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>NoName_11_2</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>100</x>
-                                <y>100</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Weight</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>NoName_9_2</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>10</x>
-                                <y>20</y>
-                                <width>140</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Indifference threshold (p)</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>txtSelectWeightP</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>160</x>
-                                <y>20</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>txtSelectWeightQ</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>160</x>
-                                <y>60</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>txtSelectWeightW</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>160</x>
-                                <y>100</y>
-                                <width>50</width>
-                                <height>30</height>
-                            </rect>
-                        </property>
-                    </widget>
-                </widget>
-            </widget>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="TextLabel2_4_2">
+              <property name="text">
+               <string>Step generation</string>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="StepGen"/>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>General</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_9">
+       <item>
+        <widget class="QCheckBox" name="AllOrientations">
+         <property name="text">
+          <string>Test &amp;all Orientations</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Free Polygons</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <widget class="QCheckBox" name="ComputeFreePolygons">
+            <property name="text">
+             <string>Ca&amp;lculation</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="UseFreePolygons">
+            <property name="text">
+             <string>&amp;Use</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>PROMETHEE parameters for the heuristics</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <item>
+           <widget class="QGroupBox" name="groupBox_5">
+            <property name="title">
+             <string>Area Criterion</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_5">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <item>
+                <widget class="QLabel" name="NoName_9">
+                 <property name="text">
+                  <string>Indifference threshold (p)</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KDoubleNumInput" name="HeurAreaP"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <item>
+                <widget class="QLabel" name="NoName_8">
+                 <property name="text">
+                  <string>Preference threshold (q)</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KDoubleNumInput" name="HeurAreaQ"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <item>
+                <widget class="QLabel" name="NoName_11">
+                 <property name="text">
+                  <string>Weight</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KDoubleNumInput" name="HeurAreaWeight"/>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_6">
+            <property name="title">
+             <string>Distance Criterion</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <item>
+                <widget class="QLabel" name="NoName_16">
+                 <property name="text">
+                  <string>Indifference threshold (p)</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KDoubleNumInput" name="HeurDistP"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_10">
+               <item>
+                <widget class="QLabel" name="NoName_15">
+                 <property name="text">
+                  <string>Preference threshold (q)</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KDoubleNumInput" name="HeurDistQ"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_11">
+               <item>
+                <widget class="QLabel" name="NoName_18">
+                 <property name="text">
+                  <string>Weight</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KDoubleNumInput" name="HeurDistWeight"/>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_7">
+         <property name="title">
+          <string>PROMETHEE parameters for the selection</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_19">
+          <item>
+           <widget class="QGroupBox" name="groupBox_8">
+            <property name="title">
+             <string>Weight Criterion</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_7">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_13">
+               <item>
+                <widget class="QLabel" name="NoName_9_2">
+                 <property name="text">
+                  <string>Indifference threshold (p)</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KDoubleNumInput" name="SelectWeightP"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_14">
+               <item>
+                <widget class="QLabel" name="NoName_8_2">
+                 <property name="text">
+                  <string>Preference threshold (q)</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KDoubleNumInput" name="SelectWeightQ"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_15">
+               <item>
+                <widget class="QLabel" name="NoName_11_2">
+                 <property name="text">
+                  <string>Weight</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KDoubleNumInput" name="SelectWeightWeight"/>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_9">
+            <property name="title">
+             <string>Distance Criterion</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_8">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_16">
+               <item>
+                <widget class="QLabel" name="NoName_16_2">
+                 <property name="text">
+                  <string>Indifference threshold (p)</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KDoubleNumInput" name="SelectDistP"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_17">
+               <item>
+                <widget class="QLabel" name="NoName_15_2">
+                 <property name="text">
+                  <string>Preference threshold (q)</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KDoubleNumInput" name="SelectDistQ"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_18">
+               <item>
+                <widget class="QLabel" name="NoName_18_2">
+                 <property name="text">
+                  <string>Weight</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KDoubleNumInput" name="SelectDistWeight"/>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
-</widget>
-<connections>
-    <connection>
-        <sender>btnOK</sender>
-        <signal>clicked()</signal>
-        <receiver>KAppOptions</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>btnCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>KAppOptions</receiver>
-        <slot>reject()</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>txtPopSize</tabstop>
-    <tabstop>cbGAHeuristicType</tabstop>
-    <tabstop>txtMaxGen</tabstop>
-    <tabstop>txtStepGen</tabstop>
-    <tabstop>cbStep</tabstop>
-    <tabstop>cbAllOris</tabstop>
-    <tabstop>cbComputePoly</tabstop>
-    <tabstop>cbUsePoly</tabstop>
-    <tabstop>txtHeurAreaP</tabstop>
-    <tabstop>txtHeurAreaQ</tabstop>
-    <tabstop>txtHeurAreaW</tabstop>
-    <tabstop>txtHeurDistP</tabstop>
-    <tabstop>txtHeurDistQ</tabstop>
-    <tabstop>txtHeurDistW</tabstop>
-    <tabstop>txtSelectWeightP</tabstop>
-    <tabstop>txtSelectWeightQ</tabstop>
-    <tabstop>txtSelectWeightW</tabstop>
-    <tabstop>txtSelectDistP</tabstop>
-    <tabstop>txtSelectDistQ</tabstop>
-    <tabstop>txtSelectDistW</tabstop>
-    <tabstop>btnOK</tabstop>
-    <tabstop>btnCancel</tabstop>
-    <tabstop>TabWidget</tabstop>
-</tabstops>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KDoubleNumInput</class>
+   <extends>QWidget</extends>
+   <header>knuminput.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

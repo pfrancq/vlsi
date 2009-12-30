@@ -1,9 +1,12 @@
 <!DOCTYPE kpartgui>
 <kpartgui name="kdevvlsi" version="0.1">
 <MenuBar>
-	<Action name="window_menu"/>
-	<Menu name="settings">
-		<Action name="settings_options"/>
+	<Menu name="file">
+		<Action name="openFile"/>
+		<Separator/>
+		<Action name="closeFile"/>
+		<Separator/>
+		<Action name="applicationQuit"/>
 	</Menu>
 	<Menu name="heuristic_menu"><text>He&amp;uristic</text>
 		<Action name="heuristic_bl"/>
@@ -26,5 +29,14 @@
 	<Menu name="tools_menu"><text>&amp;Tools</text>
 		<Action name="tools_view_polygons"/>
 	</Menu>
+	<Menu name="window"><text>&amp;Window</text>
+		<Action name="window_closeall"/>
+		<Separator/>
+		<Action name="window_tile" />
+		<Action name="window_cascade"/>
+	</Menu>	
 </MenuBar>
+<ToolBar fullWidth="true" name="mainToolBar">
+	<Action name="applicationQuit"/>
+</ToolBar>
 </kpartgui>
