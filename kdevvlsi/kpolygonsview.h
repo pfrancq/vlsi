@@ -31,7 +31,7 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rgeoinfos.h>
+#include <rlayout.h>
 using namespace R;
 
 
@@ -54,9 +54,9 @@ class KPolygonsView : public QMdiSubWindow, public Ui_KPolygonsView
 	Q_OBJECT
 
 	/**
-	* Geometric Information for this heuristic.
+	* Layout.
 	*/
-	RGeoInfos* Infos;
+	RLayout* Layout;
 
 public:
 

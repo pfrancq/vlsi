@@ -67,13 +67,13 @@ KGAView::KGAView(void)
 	try
 	{
 		Gen=0;
-		Instance=new RInstVLSI(VLSIApp->MaxGen,VLSIApp->PopSize,VLSIApp->GetSession(),VLSIApp->Heuristic,Debug);
+		Instance=new RInstVLSI(VLSIApp->MaxGen,VLSIApp->PopSize,VLSIApp->GetSession(),VLSIApp->Heuristic,
+				VLSIApp->HeurDist,VLSIApp->HeurArea,VLSIApp->SelectDist,VLSIApp->SelectWeight,
+				Debug);
 		Instance->Init();
 		reinterpret_cast<RObject*>(this)->InsertObserver(reinterpret_cast<tNotificationHandler>(&KGAView::Generation),"RInst::Generation",Instance);
+		reinterpret_cast<RObject*>(this)->InsertObserver(reinterpret_cast<tNotificationHandler>(&KGAView::BestChromo),"RInst::Best",Instance);
 		reinterpret_cast<RObject*>(this)->InsertObserver(reinterpret_cast<tNotificationHandler>(&KGAView::Interact),"RInst::Interact",Instance);
-		Instance->SetAreaParams(VLSIApp->HeurArea);
-		Instance->SetDistParams(VLSIApp->HeurDist);
-		VLSIApp->GetSession()->Cons.SetParams(VLSIApp->SelectDist,VLSIApp->SelectWeight,Instance->Random);
 	}
 	catch(RException& e)
 	{
@@ -90,6 +90,8 @@ KGAView::KGAView(void)
 		KMessageBox::error(this,"Unknown Problem");
 		Instance=0;
 	}
+
+	Main->setTabText(2,"Solution ("+QString::number(CurId)+"/"+QString::number(Instance->GetPopSize()-1)+")");
 }
 
 
@@ -146,9 +148,15 @@ void KGAView::StopGA(void)
 //---------------------------------------------------------------------------
 void KGAView::Generation(const R::RNotification& notification)
 {
-	Monitor->setGenInfo(GetData<size_t>(notification),Instance->GetAgeBest(),Instance->BestChromosome->Fitness->Value);
-	Best->setInfos(Instance->BestChromosome,VLSIApp->GetSession()->GlobalLimits,VLSIApp->GetSession()->Translation);
-	Sol->setInfos(Instance->Chromosomes[CurId],VLSIApp->GetSession()->GlobalLimits,VLSIApp->GetSession()->Translation);
+	Monitor->setGenInfo(GetData<size_t>(notification),Instance->GetAgeBest(),Instance->GetBestChromosome()->Fitness->Value);
+	Sol->setLayout(Instance->Chromosomes[CurId]);
+}
+
+
+//---------------------------------------------------------------------------
+void KGAView::BestChromo(const R::RNotification&)
+{
+	Best->setLayout(Instance->GetBestChromosome());
 }
 
 
@@ -172,13 +180,13 @@ void KGAView::keyReleaseEvent(QKeyEvent* e)
 		case Qt::Key_PageUp:
 			if(CurId<Instance->GetPopSize()-1) CurId++; else CurId=0;
 			Main->setTabText(2,"Solution ("+QString::number(CurId)+"/"+QString::number(Instance->GetPopSize()-1)+")");
-			Sol->setInfos(Instance->Chromosomes[CurId],VLSIApp->GetSession()->GlobalLimits,VLSIApp->GetSession()->Translation);
+			Sol->setLayout(Instance->Chromosomes[CurId]);
 			break;
 
 		case Qt::Key_PageDown:
 			if(CurId>0) CurId--; else CurId=Instance->GetPopSize()-1;
 			Main->setTabText(2,"Solution ("+QString::number(CurId)+"/"+QString::number(Instance->GetPopSize()-1)+")");
-			Sol->setInfos(Instance->Chromosomes[CurId],VLSIApp->GetSession()->GlobalLimits,VLSIApp->GetSession()->Translation);
+			Sol->setLayout(Instance->Chromosomes[CurId]);
 			break;
 
 		default:

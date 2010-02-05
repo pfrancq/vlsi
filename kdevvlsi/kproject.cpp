@@ -42,14 +42,14 @@
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-KProject::KProject(RProblem2D* session)
+KProject::KProject(RProblem2D* session,const QString& uri)
 	: QMdiSubWindow(), Ui_KProject(), Session(session)
 {
 	QWidget* ptr=new QWidget();
 	setupUi(ptr);
 	setWidget(ptr);
 	setAttribute(Qt::WA_DeleteOnClose);
-	setWindowTitle(ToQString(Session->GetURI()()));
+	setWindowTitle(uri);
 	createPrj();
 }
 
@@ -58,76 +58,62 @@ KProject::KProject(RProblem2D* session)
 void KProject::createPrj(void)
 {
 	QTreeWidgetItem* item=0,*item2=0,*item3=0,*item4=0,*item5=0;
-	size_t i;
 
 	// Problem
 	item=new QTreeWidgetItem(Elements,QStringList()<<"Problem");
 
 	// Limits
-	item2=new QTreeWidgetItem(item,QStringList()<<"Limits ("+QString::number(Session->Limits.X)+","+QString::number(Session->Limits.Y)+")");
+	item2=new QTreeWidgetItem(item,QStringList()<<"Limits ("+QString::number(Session->GetLimits().GetWidth())+","+QString::number(Session->GetLimits().GetHeight())+")");
 	item2=new QTreeWidgetItem(item,item2);
-	item2->setText(0,"Global Limits ("+QString::number(Session->GlobalLimits.X)+","+QString::number(Session->GlobalLimits.Y)+")");
-
-	// Vertices
-	item2=new QTreeWidgetItem(item,item2);
-	item2->setText(0,"Vertices");
-	RCursor<RPoint> Cur(Session->Problem.Polygon);
-	for(Cur.Start(),item3=0;!Cur.End();Cur.Next())
-	{
-		if(item3)
-		{
-			item3=new QTreeWidgetItem(item2,item3);
-			item3->setText(0,"("+QString::number(Cur()->X)+","+QString::number(Cur()->Y)+")");
-		}
-		else
-			item3=new QTreeWidgetItem(item2,QStringList()<<"("+QString::number(Cur()->X)+","+QString::number(Cur()->Y)+")");
-	}
+	item2->setText(0,"Global Limits ("+QString::number(Session->GetBoard().GetWidth())+","+QString::number(Session->GetBoard().GetHeight())+")");
 
 	// Terminals
 	item2=new QTreeWidgetItem(item,item2);
 	item2->setText(0,"Terminals");
-	RCursor<RObj2DConnector> Cur2(Session->Problem.Connectors);
+	RCursor<RObj2DConfigConnector> Cur2(Session->GetDefaultConfig()->GetConnectors());
 	for(Cur2.Start(),item3=0;!Cur2.End();Cur2.Next())
 	{
 		if(item3)
 		{
 			item3=new QTreeWidgetItem(item2,item3);
-			item3->setText(0,ToQString(Cur2()->GetName()));
+			item3->setText(0,ToQString(Cur2()->GetConnector()->GetName()));
 		}
 		else
-			item3=new QTreeWidgetItem(item2,QStringList()<<ToQString(Cur2()->GetName()));
+			item3=new QTreeWidgetItem(item2,QStringList()<<ToQString(Cur2()->GetConnector()->GetName()));
 
-		for(i=0,item4=0;i<Cur2()->NbPos;i++)
+		RCursor<RObj2DConfigPin> Cur3(*Cur2());
+		for(Cur3.Start(),item4=0;!Cur3.End();Cur3.Next())
 		{
+			RRect rect(Cur3()->GetRect());
 			if(item4)
 			{
 				item4=new QTreeWidgetItem(item3,item4);
-				item4->setText(0,"Pin at ("+QString::number(Cur2()->Pos[i].X)+","+QString::number(Cur2()->Pos[i].Y)+")");
+				item4->setText(0,"Pin at ("+QString::number(rect.GetX1())+","+QString::number(rect.GetY1())+","+QString::number(rect.GetX2())+","+QString::number(rect.GetY2())+")");
 			}
 			else
-				item4=new QTreeWidgetItem(item3,QStringList()<<"Pin at ("+QString::number(Cur2()->Pos[i].X)+","+QString::number(Cur2()->Pos[i].Y)+")");
+				item4=new QTreeWidgetItem(item3,QStringList()<<"Pin at ("+QString::number(rect.GetX1())+","+QString::number(rect.GetY1())+","+QString::number(rect.GetX2())+","+QString::number(rect.GetY2())+")");
 
 		}
 	}
 
 	// Construct Objects
 	item=new QTreeWidgetItem(Elements,item);
-	item->setText(0,"Objects ("+QString::number(Session->Objs.GetNb())+")");
-	RCursor<RObj2D> Objs(Session->Objs);
+	item->setText(0,"Objects ("+QString::number(Session->GetNbObjs())+")");
+	RCursor<RObj2D> Objs(Session->GetObjs());
 	for(Objs.Start(),item2=0;!Objs.End();Objs.Next())
 	{
 		// Name of the object
 		if(item2)
 		{
 			item2=new QTreeWidgetItem(item,item2);
-			item2->setText(0,ToQString(Objs()->Name)+" ("+QString::number(Objs()->GetId())+")");
+			item2->setText(0,ToQString(Objs()->GetName())+" ("+QString::number(Objs()->GetId())+")");
 		}
 		else
-			item2=new QTreeWidgetItem(item,QStringList()<<ToQString(Objs()->Name)+" ("+QString::number(Objs()->GetId())+")");
+			item2=new QTreeWidgetItem(item,QStringList()<<ToQString(Objs()->GetName())+" ("+QString::number(Objs()->GetId())+")");
 
 		// Vertices
 		item3=new QTreeWidgetItem(item2,QStringList()<<"Vertices");
-		Cur.Set(Objs()->Polygon);
+		RCursor<RPoint> Cur(Objs()->GetDefaultConfig()->GetPolygon());
 		for(Cur.Start(),item4=0;!Cur.End();Cur.Next())
 		{
 			if(item4)
@@ -143,56 +129,69 @@ void KProject::createPrj(void)
 		// Connectors
 		item3=new QTreeWidgetItem(item2,item3);
 		item3->setText(0,"Terminals");
-		Cur2.Set(Objs()->Connectors);
+		Cur2=Objs()->GetDefaultConfig()->GetConnectors();
 		for(Cur2.Start(),item4=0;!Cur2.End();Cur2.Next())
 		{
 			if(item4)
 			{
 				item4=new QTreeWidgetItem(item3,item4);
-				item4->setText(0,ToQString(Cur2()->GetName()));
+				item4->setText(0,ToQString(Cur2()->GetConnector()->GetName()));
 			}
 			else
-				item4=new QTreeWidgetItem(item3,QStringList()<<ToQString(Cur2()->GetName()));
-
-			for(i=0,item5=0;i<Cur2()->NbPos;i++)
+				item4=new QTreeWidgetItem(item3,QStringList()<<ToQString(Cur2()->GetConnector()->GetName()));
+			RCursor<RObj2DConfigPin> Cur3(*Cur2());
+			for(Cur3.Start();!Cur3.End();Cur3.Next())
 			{
+				RRect rect(Cur3()->GetRect());
 				if(item5)
 				{
 					item5=new QTreeWidgetItem(item4,item5);
-					item5->setText(0,"Pin at ("+QString::number(Cur2()->Pos[i].X)+","+QString::number(Cur2()->Pos[i].Y)+")");
+					item5->setText(0,"Pin at ("+QString::number(rect.GetX1())+","+QString::number(rect.GetY1())+","+QString::number(rect.GetX2())+","+QString::number(rect.GetY2())+")");
 				}
 				else
-					item5=new QTreeWidgetItem(item4,QStringList()<<"Pin at ("+QString::number(Cur2()->Pos[i].X)+","+QString::number(Cur2()->Pos[i].Y)+")");
+					item5=new QTreeWidgetItem(item4,QStringList()<<"Pin at ("+QString::number(rect.GetX1())+","+QString::number(rect.GetY1())+","+QString::number(rect.GetX2())+","+QString::number(rect.GetY2())+")");
 			}
 		}
 	}
 
 	// Construct Connections
-	if(Session->Cons.GetNb())
+	if(Session->GetNbConnections())
 	{
 		item=new QTreeWidgetItem(Elements,item);
-		item->setText(0,"Nets ("+QString::number(Session->Cons.GetNb())+")");
-		RCursor<RConnection> Cons(Session->Cons);
+		item->setText(0,"Nets ("+QString::number(Session->GetNbConnections())+")");
+		RCursor<RConnection> Cons(Session->GetConnections());
 		for(Cons.Start(),item2=0;!Cons.End();Cons.Next())
 		{
 			if(item2)
 			{
 				item2=new QTreeWidgetItem(item,item2);
-				item2->setText(0,"Net");
+				item2->setText(0,"Net "+QString(Cons()->GetName()));
 			}
 			else
-				item2=new QTreeWidgetItem(item,QStringList()<<"Net");
+				item2=new QTreeWidgetItem(item,QStringList()<<"Net "+QString(Cons()->GetName()));
 
-			Cur2.Set(Cons()->Connect);
+			RCursor<RObj2DConnector> Cur2(Cons()->GetConnectors());
 			for(Cur2.Start(),item3=0;!Cur2.End();Cur2.Next())
 			{
 				if(item3)
 				{
 					item3=new QTreeWidgetItem(item2,item3);
-					item3->setText(0,ToQString(Cur2()->Owner->Name)+"\t|\t"+ToQString(Cur2()->Name));
+					QString Tmp;
+					if(Cur2()->GetObj())
+						Tmp=ToQString(Cur2()->GetObj()->GetName());
+					else
+						Tmp="Board";
+					item3->setText(0,Tmp+"\t|\t"+ToQString(Cur2()->GetName()));
 				}
 				else
-					item3=new QTreeWidgetItem(item2,QStringList()<<ToQString(Cur2()->Owner->Name)+"\t|\t"+ToQString(Cur2()->Name));
+				{
+					QString Tmp;
+					if(Cur2()->GetObj())
+						Tmp=ToQString(Cur2()->GetObj()->GetName());
+					else
+						Tmp="Board";
+					item3=new QTreeWidgetItem(item2,QStringList()<<Tmp+"\t|\t"+ToQString(Cur2()->GetName()));
+				}
 			}
 		}
 	}

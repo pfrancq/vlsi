@@ -64,9 +64,10 @@ public:
 	/**
 	* Construct the project view.
 	* @param session         VLSI Session.
+	* @param uri             URI of the project.
 	*
 	*/
-	KProject(RProblem2D* session);
+	KProject(RProblem2D* session,const QString& uri);
 
 	/**
 	* Destruct the project view.

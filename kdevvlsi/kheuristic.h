@@ -32,8 +32,7 @@
 //-----------------------------------------------------------------------------
 // include files for R Project
 #include <rgeoinfo.h>
-#include <rgeoinfos.h>
-#include <rconnections.h>
+#include <rlayout.h>
 #include <rplacementheuristic.h>
 using namespace R;
 
@@ -55,7 +54,7 @@ using namespace R;
 * specific heuristic.
 * @author Pascal Francq
 */
-class KHeuristic : public QMdiSubWindow, public Ui_KHeuristic, public RGeoInfos
+class KHeuristic : public QMdiSubWindow, public Ui_KHeuristic, public RLayout
 {
 	Q_OBJECT
 

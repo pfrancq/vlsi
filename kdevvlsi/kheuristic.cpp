@@ -67,29 +67,26 @@ using namespace R;
 
 //-----------------------------------------------------------------------------
 KHeuristic::KHeuristic(RProblem2D* session,const RString& heuristic)
-	: QMdiSubWindow(), Ui_KHeuristic(), RGeoInfos(session,true), Session(session), Random(RRandom::Create(RRandom::Good,12345)), Grid(session->Limits),
-	  Free(0), PlacementHeuristic(0), NbFree(0), Step(VLSIApp->Step), Heuristic(heuristic)
+	: QMdiSubWindow(), Ui_KHeuristic(), RLayout(session,true), Session(session), Random(RRandom::Create(RRandom::Good,12345)),
+	  Grid(session->GetLimits()), Free(0), PlacementHeuristic(0), NbFree(0), Step(VLSIApp->Step), Heuristic(heuristic)
 {
 	// Set the widget part
 	QWidget* ptr=new QWidget();
 	setupUi(ptr);
 	setWidget(ptr);
 	setAttribute(Qt::WA_DeleteOnClose);
-	Draw->setInfos(this,Session->GlobalLimits,Session->Translation);
+	Draw->setLayout(this);
 	setWindowTitle(ToQString(Heuristic));
 
 	// Create the Heuristic
 	if(Heuristic=="Bottom-Left")
-		PlacementHeuristic = new RPlacementBottomLeft(Session->GetNbObjs(),VLSIApp->ComputeFreePolygons,VLSIApp->UseFreePolygons,Random,VLSIApp->AllOrientations);
+		PlacementHeuristic = new RPlacementBottomLeft(Session->GetNbObjs(),VLSIApp->ComputeFreePolygons,VLSIApp->UseFreePolygons,Random,VLSIApp->HeurArea,VLSIApp->HeurDist,VLSIApp->AllOrientations);
 	else if(Heuristic=="Edge")
-		PlacementHeuristic = new RPlacementEdge(Session->GetNbObjs(),VLSIApp->ComputeFreePolygons,VLSIApp->UseFreePolygons,Random,VLSIApp->AllOrientations);
+		PlacementHeuristic = new RPlacementEdge(Session->GetNbObjs(),VLSIApp->ComputeFreePolygons,VLSIApp->UseFreePolygons,Random,VLSIApp->HeurArea,VLSIApp->HeurDist,VLSIApp->AllOrientations);
 	else if(Heuristic=="Center")
-		PlacementHeuristic = new RPlacementCenter(Session->GetNbObjs(),VLSIApp->ComputeFreePolygons,VLSIApp->UseFreePolygons,Random,VLSIApp->AllOrientations);
+		PlacementHeuristic = new RPlacementCenter(Session->GetNbObjs(),VLSIApp->ComputeFreePolygons,VLSIApp->UseFreePolygons,Random,VLSIApp->HeurArea,VLSIApp->HeurDist,VLSIApp->AllOrientations);
 	else
 		ThrowRException("'"+Heuristic+"' is not a valid heuristic type");
-
-	PlacementHeuristic->SetAreaParams(VLSIApp->HeurArea);
-	PlacementHeuristic->SetDistParams(VLSIApp->HeurDist);
 	PlacementHeuristic->Init(Session,this,&Grid);
 	Free=PlacementHeuristic->GetFreePolygons();
 	Draw->setPolys(Free);
@@ -130,7 +127,7 @@ void KHeuristic::NextStep(void)
 		// test if the end
 		if(PlacementHeuristic->IsEnd())
 		{
-			PlacementHeuristic->PostRun(Session->Limits);
+			PlacementHeuristic->PostRun();
 			RRect Rect=PlacementHeuristic->GetResult();
 			RPoint ActLimits;
 			ActLimits.X=Rect.GetWidth();
@@ -187,17 +184,17 @@ void KHeuristic::RunToEnd(void)
 //-----------------------------------------------------------------------------
 void KHeuristic::SelectObjects(void)
 {
-	RObj2DContainer Temp(GetNb()+1,"Temporary Object",GetNb());
-
-	memset(Selected,0,Session->Objs.GetNb()*sizeof(bool));
-	Session->Cons.SetParams(VLSIApp->SelectDist,VLSIApp->SelectWeight,Random);
-	GetSetInfos(&Temp,&Grid,Selected);
-	for(size_t i=0;i<Session->Objs.GetNb();i++)
-	{
-		if(Selected[i])
-			((*this)[i])->SetSelect();
-	}
+	RPromKernel Kernel("PlacementCenter",Session->GetNbObjs(),2);
+	Kernel.AddCriterion(new RPromLinearCriterion(RPromCriterion::Maximize,VLSIApp->SelectWeight,"Weight"));
+	Kernel.AddCriterion(new RPromLinearCriterion(RPromCriterion::Minimize,VLSIApp->SelectDist,"Distance"));
+	RObj2DContainer* Temp(GetNewAggregator());
+	bool* Selected;
+	Selected=new bool [Session->GetNbObjs()];
+	memset(Selected,0,Session->GetNbObjs()*sizeof(bool));
+	FillAggregator(Temp,Selected,&Kernel,Random);
 	Draw->repaint();
+	delete[] Selected;
+	DestroyAggregators();
 }
 
 

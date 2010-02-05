@@ -43,7 +43,7 @@
 
 //-----------------------------------------------------------------------------
 KPolygonsView::KPolygonsView(void)
-	: QMdiSubWindow(), Ui_KPolygonsView(), Infos(0)
+	: QMdiSubWindow(), Ui_KPolygonsView(), Layout(0)
 {
 	// Set the widget part
 	QWidget* ptr=new QWidget();
@@ -91,5 +91,5 @@ void KPolygonsView::Load(KUrl& /*url*/)
 //-----------------------------------------------------------------------------
 KPolygonsView::~KPolygonsView(void)
 {
-	delete Infos;
+	delete Layout;
 }

@@ -187,13 +187,13 @@ void KDevVLSI::openDocumentFile(const KUrl& url)
 		DestroyDoc=true;
 		Doc=CreateSession(FromQString(url.path()));
 		DestroyDoc=false;
-		aFileOpenRecent->addUrl(url);
-		KProject* ptr(new KProject(Doc));
+		KProject* ptr(new KProject(Doc,url.path()));
 		Desktop->addSubWindow(ptr);
 		ptr->adjustSize();
 		ptr->show();
 		fileOpened(true);
 		Status->setPixmap(QPixmap(KIconLoader::global()->loadIcon("project-open",KIconLoader::Small)));
+		aFileOpenRecent->addUrl(url);
 		statusMsg(i18n("Connected"));
 	}
 	catch(RException& e)

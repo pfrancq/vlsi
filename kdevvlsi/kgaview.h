@@ -106,6 +106,11 @@ protected:
 	void Generation(const R::RNotification& notification);
 
 	/**
+	 * catch a best notification.
+	 */
+	void BestChromo(const R::RNotification& notification);
+
+	/**
 	 * catch a interact notification.
 	 */
 	void Interact(const R::RNotification& notification);
@@ -113,7 +118,7 @@ protected:
 	/**
 	* Key release event method. The implementation is needed to change the
 	* chromosome to show when the user uses the keys "Page Up" and "Page Down".
-	* With "Ctrl-G", a dialog box appears to select directly the identificator.
+	* With "Ctrl-G", a dialog box appears to select directly the identifier.
 	*/
 	virtual void keyReleaseEvent(QKeyEvent* e);
 
