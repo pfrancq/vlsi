@@ -55,7 +55,7 @@ void RChromoVLSI::Evaluate(void)
 {
 	double Num,Den;
 
-	Num=(static_cast<double>(ActLimits.X)*static_cast<double>(ActLimits.Y));
-	Den=(static_cast<double>(Limits.X)*static_cast<double>(Limits.Y));
+	Num=(static_cast<double>(ActLimits.GetWidth())*static_cast<double>(ActLimits.GetHeight()));
+	Den=(static_cast<double>(Problem->GetLimits().GetWidth())*static_cast<double>(Problem->GetLimits().GetHeight()));
 	(*Fitness)=Num/Den;
 }

@@ -57,7 +57,7 @@ public:
 	/**
 	* Construct the chromosome.
 	* @param inst           The instance of the problem.
-	* @param id             The identificator of the chromosome.
+	* @param id             The identifier of the chromosome.
 	*/
 	RChromoVLSI(RInstVLSI* inst,unsigned int id);
 

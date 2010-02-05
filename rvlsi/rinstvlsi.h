@@ -83,9 +83,17 @@ public:
 	* @param popsize        The size of the population.
 	* @param prob           The problem.
 	* @param h              The type of heuristic to be used.
+	* @param heurdist       Distance criteria parameters for the heuristic.
+	* @param heurarea       Area criteria parameters for the heuristic.
+	* @param selectdist     Distance criteria parameters for the objects
+	*                       selection.
+	* @param selectweight   Weight criteria parameters for the objects
+	*                       selection.
 	* @param debug          Debugger.
 	*/
-	RInstVLSI(size_t max,size_t popsize,RProblem2D* prob,const RString& h,RDebug* debug=0);
+	RInstVLSI(size_t max,size_t popsize,RProblem2D* prob,const RString& h,
+			RParamStruct* heurdist,RParamStruct* heurarea,RParamStruct* selectdist,RParamStruct* selectweight,
+			RDebug* debug=0);
 
 	/**
 	* This function determines if the GA must be stopped. Actually, it is the case

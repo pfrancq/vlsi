@@ -58,8 +58,11 @@ RThreadDataVLSI::RThreadDataVLSI(RInstVLSI *owner)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-RInstVLSI::RInstVLSI(size_t max,size_t popsize,RProblem2D* prob,const RString& h,RDebug* debug)
-	: RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(popsize,prob,h,"VLSI",debug),
+RInstVLSI::RInstVLSI(size_t max,size_t popsize,RProblem2D* prob,const RString& h,
+		RParamStruct* heurdist,RParamStruct* heurarea,RParamStruct* selectdist,RParamStruct* selectweight,
+		RDebug* debug)
+	: RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(popsize,prob,h,"VLSI",
+			heurdist,heurarea,selectdist,selectweight,debug),
 		MaxGen(max)
 {
 }
