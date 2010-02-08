@@ -1,6 +1,6 @@
 /*
 
-	R Project Library
+	RVLSI Project Library
 
 	RInstVLSI.h
 
@@ -28,20 +28,24 @@
 
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #ifndef RInstVLSI_H
 #define RInstVLSI_H
 
 
-//------------------------------------------------------------------------------
-// include files for Rainbow
-#include <rgavlsi.h>
+//-----------------------------------------------------------------------------
+// include files for R Project
 #include <rinst2d.h>
 
 
-//------------------------------------------------------------------------------
-namespace R{
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+// include files for RVLSI Project
+#include <rgavlsi.h>
+
+
+//-----------------------------------------------------------------------------
+namespace RVLSI{
+//-----------------------------------------------------------------------------
 
 
 //------------------------------------------------------------------------------
@@ -50,7 +54,7 @@ namespace R{
 * @author Pascal Francq
 * @short VSLI GA "thread-dependent" Data.
 */
-class RThreadDataVLSI : public RThreadData2D<RInstVLSI,RChromoVLSI>
+class RThreadDataVLSI : public R::RThreadData2D<RInstVLSI,RChromoVLSI>
 {
 public:
 
@@ -68,14 +72,14 @@ public:
 * @author Pascal Francq
 * @short VLSI GA Instance.
 */
-class RInstVLSI : public RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>
+class RInstVLSI : public R::RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,R::RGeoInfo>
 {
 public:
 
 	/**
 	* The maximum number of generations.
 	*/
-	unsigned long MaxGen;
+	size_t MaxGen;
 
 	/**
 	* Construct the instance.
@@ -91,9 +95,9 @@ public:
 	*                       selection.
 	* @param debug          Debugger.
 	*/
-	RInstVLSI(size_t max,size_t popsize,RProblem2D* prob,const RString& h,
-			RParamStruct* heurdist,RParamStruct* heurarea,RParamStruct* selectdist,RParamStruct* selectweight,
-			RDebug* debug=0);
+	RInstVLSI(size_t max,size_t popsize,R::RProblem2D* prob,const R::RString& h,
+			R::RParamStruct* heurdist,R::RParamStruct* heurarea,R::RParamStruct* selectdist,R::RParamStruct* selectweight,
+			R::RDebug* debug=0);
 
 	/**
 	* This function determines if the GA must be stopped. Actually, it is the case
@@ -104,8 +108,8 @@ public:
 };
 
 
-}  //-------- End of namespace R -----------------------------------------------
+}  //-------- End of namespace RVLSI ------------------------------------------
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #endif

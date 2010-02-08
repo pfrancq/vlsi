@@ -29,10 +29,11 @@
 
 
 //------------------------------------------------------------------------------
-// include files for R Project
+// include files for RVLSI Project
 #include <rinstvlsi.h>
 #include <rchromovlsi.h>
 using namespace R;
+using namespace RVLSI;
 using namespace std;
 
 

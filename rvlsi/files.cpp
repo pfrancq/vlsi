@@ -1,6 +1,6 @@
 /*
 
-	R Project Library
+	RVLSI Project Library
 
 	Files.cpp
 
@@ -30,8 +30,15 @@
 //------------------------------------------------------------------------------
 // include files for R Project
 #include <rtextfile.h>
+
+
+//------------------------------------------------------------------------------
+// include files for RVLSI Project
 #include <files.h>
+#include <edif.h>
+#include <gds.h>
 using namespace R;
+using namespace RVLSI;
 using namespace std;
 
 
@@ -43,10 +50,27 @@ using namespace std;
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-RDataFile::RDataFile(const RString& name)
+RDataFile::RDataFile(RProject* project,const RURI& uri)
+	: Project(project), URI(uri), Type(vdtNothing)
 {
-	Name=name;
-	Type=cstNothing;
+	if(!Project)
+		ThrowRException("Cannot have a null project");
+}
+
+
+//------------------------------------------------------------------------------
+int RDataFile::Compare(const RDataFile& file) const
+{
+	if(Type==file.Type)
+		return(URI.Compare(file.URI));
+	else
+	 return(Type-file.Type);
+}
+
+
+//------------------------------------------------------------------------------
+RDataFile::~RDataFile(void)
+{
 }
 
 
@@ -58,59 +82,131 @@ RDataFile::RDataFile(const RString& name)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-RProject::RProject(const RString &name)
-	: RContainer<RDataFile,true,true>(10,5),RStructure(), Name(name), InputName(name),OutputName(name)
+RProject::RProject(const RURI& uri)
+	: RContainer<RDataFile,true,true>(10,5), RStructure(), URI(uri)
 {
 }
 
 
 //------------------------------------------------------------------------------
-RProject::RProject(void)
-	: RContainer<RDataFile,true,true>(10,5), RStructure()
+void RProject::Analyse(void)
 {
-}
-
-
-//------------------------------------------------------------------------------
-bool RProject::LoadProject(void)
-{
-	RTextFile f(Name);
-	RString Tmp;
-	unsigned int pos;
-
-	// Read in the File
+	// Open the file
+	RTextFile f(URI);
+	f.SetRem("#");
+	f.SetRemStyle(RTextFile::SingleLineComment);
 	f.Open(RIO::Read);
-	Tmp=f.GetLine();    // Dta File
-	pos=Tmp.Find('=');
-	InputName=Tmp.Mid(0,pos);
-	Tmp=f.GetLine();    // Res File
-	pos=Tmp.Find('=');
-	OutputName=Tmp.Mid(0,pos);
-	while(!f.End()) // Read GDSII and EDIF2 Files
+
+	while(!f.End())
 	{
-		Tmp=f.GetLine();
-		pos=Tmp.Find('=');
-		if(Tmp=="GDSII")
-			InsertFile(CreateFile(Tmp,"GDSII"));
-		if(Tmp=="EDIF2")
-			InsertFile(CreateFile(Tmp,"EDIF2"));
+		// Each line is in the form : file=type
+		RString Line(f.GetLine());
+		int pos(Line.Find('='));
+		if(pos==-1)
+			ThrowRIOException(&f,"Each line must have the form : 'file'='type'");
+		RString Type(Line.Mid(pos+1));
+		RURI File(Line.Mid(0,pos));
+		if(Type=="PL2D")
+		{
+			if(!PL2D().IsEmpty())
+				ThrowRIOException(&f,"PL2D file already defined");
+			PL2D=File;
+		}
+		else if(Type=="LOG")
+		{
+			if(!LogName().IsEmpty())
+				ThrowRIOException(&f,"log file already defined");
+			LogName=File;
+		}
+		else if(Type=="GDSII")
+		{
+			if(!RFile::Exists(File))
+				ThrowRIOException(&f,"File '"+File()+"' does not exist");
+			InsertPtr(new RGDSFile(this,Line.Mid(0,pos)));
+		}
+		else if(Type=="EDIF2")
+		{
+			if(!RFile::Exists(File))
+				ThrowRIOException(&f,"File '"+File()+"' does not exist");
+			InsertPtr(new REDIFFile(this,Line.Mid(0,pos)));
+		}
+		else
+			ThrowRIOException(&f,"Type must be 'PL2D', 'LOG', 'GDSII' or 'EDIF2");
 	}
-	return(true);
-}
+	if(PL2D().IsEmpty())
+		ThrowRIOException(&f,"File does not contain a PL2D file");
 
+	// Log file
+	RTextFile* Log(0);
+	if(!LogName().IsEmpty())
+	{
+		Log=new RTextFile(LogName);
+		Log->Open(RIO::Create);
+	}
 
-//------------------------------------------------------------------------------
-bool RProject::Analyse(void)
-{
-	cout<<"Analysing Files ..."<<endl;
+	// Analyzing the files
 	RCursor<RDataFile> file(*this);
 	for(file.Start();!file.End();file.Next())
 	{
-		cout<<"  "<<file()->Name()<<" ...";
-		file()->Analyse();
-		cout<<"  OK"<<endl;
+//		cout<<"  "<<file()->GetURI()()<<" ...";
+		file()->Analyse(Log);
+//		cout<<"  OK"<<endl;
 	}
-	return(true);
+
+	// Create PL2D file
+	RTextFile Out(PL2D,"utf-8");
+	Out.Open(RIO::Create);
+	Out<<"<?xml version=\"1.0\"?>"<<endl;
+	Out<<"<!DOCTYPE vlsi>"<<endl;
+	Out<<"<vlsi xmlns=\"http://www.otlet-institute.org/vlsi\" xmlns:svg=\"http://www.w3.org/2000/svg\">"<<endl;
+	Out<<"\t<circuit>"<<endl;
+	Out<<"\t</circuit>"<<endl;
+	Out<<"\t<masters>"<<endl;
+	RCursor<RCell> Cell(Cells);
+	for(Cell.Start();!Cell.End();Cell.Next())
+	{
+		Out<<"\t\t<master id=\""+Cell()->GetName()+"\">"<<endl;
+		RCursor<RPolygon> Polygon(Cell()->GetPolygons());
+		for(Polygon.Start();!Polygon.End();Polygon.Next())
+		{
+			RString Tmp("\t\t\t<svg:polygon svg:points=\"");
+			RCursor<RPoint> Cur(*Polygon());
+			for(Cur.Start();!Cur.End();)
+			{
+				Tmp+=RString::Number(Cur()->X)+","+RString::Number(Cur()->Y);
+				Cur.Next();
+				if(!Cur.End())
+					Tmp+=" ";
+			}
+			Out<<Tmp+"\" />"<<endl;
+		}
+		RCursor<RPort> Port(Cell()->GetPorts());
+		for(Port.Start();!Port.End();Port.Next())
+		{
+			Out<<"\t\t\t<terminal id=\""+Port()->GetName()+"\">"<<endl;
+			/*<pin id="Pin1" layer="Met1">
+				<svg:polygon svg:points="3,3 4,4" />
+			</pin>*/
+			Out<<"\t\t\t</terminal>"<<endl;
+		}
+		Out<<"\t\t</master>"<<endl;
+	}
+	Out<<"\t</masters>"<<endl;
+	Out<<"\t<instances>"<<endl;
+	for(Cell.Start();!Cell.End();Cell.Next())
+	{
+		RCursor<RInstance> Inst(Cell()->GetInstances());
+		for(Inst.Start();!Inst.End();Inst.Next())
+		{
+		}
+	}
+	Out<<"\t</instances>"<<endl;
+	Out<<"\t<connections>"<<endl;
+	Out<<"\t</connections>"<<endl;
+	Out<<"</vlsi>";
+
+	if(Log)
+		delete Log;
 }
 
 

@@ -1,6 +1,6 @@
 /*
 
-	R Project Library
+	RVLSI Project Library
 
 	RGAVLSI.cpp
 
@@ -28,7 +28,38 @@
 
 
 
-//------------------------------------------------------------------------------
-// include files for R Project
+//-----------------------------------------------------------------------------
+// include files for RVLSI Project
 #include <rgavlsi.h>
 using namespace R;
+using namespace RVLSI;
+
+
+
+//-----------------------------------------------------------------------------
+//
+// class RFitnessVLSi
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+RFitnessVLSI::RFitnessVLSI(void)
+	: RFitness<double,false>()
+{
+}
+
+
+//-----------------------------------------------------------------------------
+RFitnessVLSI& RFitnessVLSI::operator=(const RFitnessVLSI &f)
+{
+	RFitness<double,false>::operator=(f);
+	return(*this);
+}
+
+
+//-----------------------------------------------------------------------------
+RFitnessVLSI& RFitnessVLSI::operator=(const double val)
+{
+	RFitness<double,false>::operator=(val);
+	return(*this);
+}

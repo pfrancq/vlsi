@@ -26,62 +26,62 @@
 
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #ifndef RVLSIAppH
 #define RVLSIAppH
 
 
-//------------------------------------------------------------------------------
-// include files for R
+//-----------------------------------------------------------------------------
+// include files for R Project
 #include <rapplication.h>
 #include <rdebug.h>
 #include <rproblem2d.h>
 
 
-//------------------------------------------------------------------------------
-namespace R{
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+namespace RVLSI{
+//-----------------------------------------------------------------------------
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 /**
 * The RVLSIApp class represents a generic application running a session.
 * @short RVLSI Application
 * @author Pascal Francq
 */
-class RVLSIApp : public RApplication
+class RVLSIApp : public R::RApplication
 {
 protected:
 
 	/**
 	* A log file.
 	*/
-	RTextFile* Log;
+	R::RTextFile* Log;
 
 	/**
 	* Debug file.
 	*/
-	RDebugXML* Debug;
+	R::RDebugXML* Debug;
 
 	/**
 	* The Session.
 	*/
-	RProblem2D* Session;
+	R::RProblem2D* Session;
 
 	/**
 	* The Log file.
 	*/
-	RString LogFileName;
+	R::RString LogFileName;
 
 	/**
 	* The debug file.
 	*/
-	RString DebugFileName;
+	R::RString DebugFileName;
 
 	/**
 	* Main configuration of VSLI.
 	*/
-	RConfig VLSIConfig;
+	R::RConfig VLSIConfig;
 
 public:
 
@@ -108,27 +108,27 @@ public:
 	/**
 	* PROMETHEE Parameters for Heuristic Distance.
 	*/
-	RParamStruct* HeurDist;
+	R::RParamStruct* HeurDist;
 
 	/**
 	* PROMETHEE Parameters for Heuristic Area.
 	*/
-	RParamStruct* HeurArea;
+	R::RParamStruct* HeurArea;
 
 	/**
 	* PROMETHEE Parameters for Selection Distance.
 	*/
-	RParamStruct* SelectDist;
+	R::RParamStruct* SelectDist;
 
 	/**
 	* PROMETHEE Parameters for Selection Weight.
 	*/
-	RParamStruct* SelectWeight;
+	R::RParamStruct* SelectWeight;
 
 	/**
 	* Heuristic to used for the GA.
 	*/
-	RString Heuristic;
+	R::RString Heuristic;
 
 	/**
 	* Maximum number of generation.
@@ -153,12 +153,12 @@ public:
 	* @param argc            Number of arguments.
 	* @param argv            Arguments.
 	*/
-	RVLSIApp(const RString& name,int argc, char *argv[]);
+	RVLSIApp(const R::RString& name,int argc, char *argv[]);
 
 	/**
 	* Get a pointer over the configuration of GALILEI.
 	*/
-	RConfig* GetVLSIConfig(void) {return(&VLSIConfig);}
+	R::RConfig* GetVLSIConfig(void) {return(&VLSIConfig);}
 
 	/**
 	* Create the configuration structure. New parameters can be added by
@@ -175,12 +175,12 @@ public:
 	* Create the session.
 	* @param file            File containing the VLSI session.
 	*/
-	RProblem2D* CreateSession(const RString& file);
+	R::RProblem2D* CreateSession(const R::RString& file);
 
 	/**
 	 * Get the session.
 	 */
-	RProblem2D* GetSession(void) const {return(Session);}
+	R::RProblem2D* GetSession(void) const {return(Session);}
 
 	/**
 	* Delete the session.
@@ -190,24 +190,24 @@ public:
 	/**
 	* Get the name of the log file.
 	*/
-	RString GetLogFileName(void) const {return(LogFileName);}
+	R::RString GetLogFileName(void) const {return(LogFileName);}
 
 	/**
 	* Set the name of the log file.
 	* @param name            Name.
 	*/
-	void SetLogFileName(const RString& name) {LogFileName=name;}
+	void SetLogFileName(const R::RString& name) {LogFileName=name;}
 
 	/**
 	* @return the name of the debug file.
 	*/
-	RString GetDebugFileName(void) const {return(DebugFileName);}
+	R::RString GetDebugFileName(void) const {return(DebugFileName);}
 
 	/**
 	* Set the name of the debug file.
 	* @param name            Name.
 	*/
-	void SetDebugFileName(const RString& name) {DebugFileName=name;}
+	void SetDebugFileName(const R::RString& name) {DebugFileName=name;}
 
 	/**
 	 * Write to the log file something (if a log file is defined).
@@ -226,7 +226,7 @@ public:
 };
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Global variables
 /**
 * Pointer to the current application running a VLSI session.
@@ -234,8 +234,8 @@ public:
 extern RVLSIApp* VLSIApp;
 
 
-}  //-------- End of namespace R -----------------------------------------------
+}  //-------- End of namespace RVLSI ------------------------------------------
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #endif

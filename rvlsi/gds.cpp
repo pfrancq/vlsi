@@ -1,6 +1,6 @@
 /*
 
-	R Project Library
+	RVLSI Project Library
 
 	GDS.cpp
 
@@ -28,19 +28,79 @@
 
 
 //------------------------------------------------------------------------------
+// include files for ANSI C/C++
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#if defined(_BSD_SOURCE) || defined(__GNUC__) || defined(__APPLE_)
+	#include <unistd.h>
+#else
+	#include <io.h>
+#endif
+#include <fcntl.h>
+
+
+
+//------------------------------------------------------------------------------
+// include files for RVLSI Project
 #include <gds.h>
 using namespace R;
+using namespace RVLSI;
+using namespace std;
 
 
 
 //------------------------------------------------------------------------------
 //
-// Class RGDSRecord
+// Class RGDSFile::Rec
 //
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-RGDSRecord::RGDSRecord(RGDSFile*,unsigned char *(&Buffer),unsigned& BufferLen)
+class RGDSFile::Rec
+{
+public:
+	int Len;
+	unsigned char RecType;
+	unsigned char DataType;
+	unsigned char* Data;
+
+	Rec(RGDSFile*,unsigned char *(&Buffer),unsigned &BufferLen);
+	int Compare(const Rec&) const { return(-1); }
+	inline int GetTypeLen(void)
+	{
+		switch(DataType)
+		{
+			case 2: return(2);
+			case 3:
+			case 4: return(4);
+			case 5: return(8);
+			case 6: return(Len-4);
+		}
+		return(0);
+	}
+	inline int GetMaxIndex(void)
+	{
+		int i=GetTypeLen();
+
+		if(i)
+			return((Len-4)/i);
+		else
+			return(0);
+	}
+	int GetType2(int idx);
+	int GetType3(int idx);
+	double GetType4(int idx);
+	double GetType5(int idx);
+	char* GetType6(void);
+	char* GetRecType(void);
+	char* GetRecDesc(void);
+	~Rec(void);
+};
+
+
+//------------------------------------------------------------------------------
+RGDSFile::Rec::Rec(RGDSFile*,unsigned char *(&Buffer),unsigned& BufferLen)
 {
 	unsigned char tmp;
 
@@ -72,7 +132,7 @@ RGDSRecord::RGDSRecord(RGDSFile*,unsigned char *(&Buffer),unsigned& BufferLen)
 
 
 //------------------------------------------------------------------------------
-int RGDSRecord::GetType2(int idx)
+int RGDSFile::Rec::GetType2(int idx)
 {
 	unsigned char *Buffer=&Data[idx*2];
 	int nb;
@@ -103,7 +163,7 @@ int RGDSRecord::GetType2(int idx)
 
 
 //------------------------------------------------------------------------------
-int RGDSRecord::GetType3(int idx)
+int RGDSFile::Rec::GetType3(int idx)
 {
 	unsigned char *Buffer=&Data[idx*4];
 	long nb,tmp;
@@ -144,7 +204,7 @@ int RGDSRecord::GetType3(int idx)
 
 
 //------------------------------------------------------------------------------
-double RGDSRecord::GetType4(int idx)
+double RGDSFile::Rec::GetType4(int idx)
 {
 	double Mult=2,Sum=0,Exp16;
 	int Act,Sign,i,j;
@@ -184,7 +244,7 @@ double RGDSRecord::GetType4(int idx)
 
 
 //------------------------------------------------------------------------------
-double RGDSRecord::GetType5(int idx)
+double RGDSFile::Rec::GetType5(int idx)
 {
 	double Mult=2,Sum=0,Exp16;
 	int Act,Sign,i,j;
@@ -224,7 +284,7 @@ double RGDSRecord::GetType5(int idx)
 
 
 //------------------------------------------------------------------------------
-char* RGDSRecord::GetType6(void)
+char* RGDSFile::Rec::GetType6(void)
 {
 	static char Tmp[500];
 
@@ -235,7 +295,7 @@ char* RGDSRecord::GetType6(void)
 
 
 //------------------------------------------------------------------------------
-char* RGDSRecord::GetRecType(void)
+char* RGDSFile::Rec::GetRecType(void)
 {
 	static char tmp[200];
 
@@ -285,14 +345,14 @@ char* RGDSRecord::GetRecType(void)
 		case 54: strcpy(tmp,"Format of Stream"); break;
 		case 55: strcpy(tmp,"Mask"); break;
 		case 56: strcpy(tmp,"End Mask"); break;
-		default: strcpy(tmp,"Unknow"); break;
+		default: strcpy(tmp,"Unknown"); break;
 	}
 	return(tmp);
 }
 
 
 //------------------------------------------------------------------------------
-char* RGDSRecord::GetRecDesc(void)
+char* RGDSFile::Rec::GetRecDesc(void)
 {
 	static char tmp[200];
 	char tmp2[30];
@@ -473,7 +533,7 @@ char* RGDSRecord::GetRecDesc(void)
 
 
 //------------------------------------------------------------------------------
-RGDSRecord::~RGDSRecord(void)
+RGDSFile::Rec::~Rec(void)
 {
 	if(Data)
 		delete[] Data;
@@ -487,36 +547,37 @@ RGDSRecord::~RGDSRecord(void)
 //
 //------------------------------------------------------------------------------
 
-
 //------------------------------------------------------------------------------
-RGDSFile::RGDSFile(const RString& name) : RDataFile(name),RContainer<RGDSRecord,true,false>(100,50)
+RGDSFile::RGDSFile(RProject* project,const RURI& uri)
+	: RDataFile(project,uri), Recs(100,50)
 {
-/*  unsigned char *File,*Buffer;
-  unsigned int BufferLen;
-  struct stat statbuf;
-  int theHandle;
-  RGDSRecord *Rec;
+	unsigned char *File,*Buffer;
+	unsigned int BufferLen;
+	struct stat statbuf;
+	int theHandle;
+	Rec* rec;
 
-  Type=cstGDSII;
-  theHandle=open(name(),O_RDONLY);
-  fstat(theHandle, &statbuf);
-  BufferLen=statbuf.st_size;
-  Buffer=File=new unsigned char[BufferLen];
-  read(theHandle,File,BufferLen);
-  close(theHandle);
-  while(BufferLen)
-  {
-    Rec=new RGDSRecord(this,Buffer,BufferLen);
-    if(Rec->Len)
-      InsertPtr(Rec);
-    else
-      delete Rec;
-  }
-  delete[] File;*/
+	Type=vdtGDSII;
+	theHandle=open(uri.GetPath(),O_RDONLY);
+	fstat(theHandle, &statbuf);
+	BufferLen=statbuf.st_size;
+	Buffer=File=new unsigned char[BufferLen];
+	read(theHandle,File,BufferLen);
+	close(theHandle);
+	while(BufferLen)
+	{
+		rec=new Rec(this,Buffer,BufferLen);
+		if(rec->Len)
+			Recs.InsertPtr(rec);
+		else
+			delete rec;
+	}
+	delete[] File;
 }
 
+
 //---------------------------------------------------------------------------
-bool RGDSFile::Analyse(void)
+void RGDSFile::Analyse(R::RTextFile* log)
 {
 	static char Tmp[200];
 	char *ptr;
@@ -526,22 +587,28 @@ bool RGDSFile::Analyse(void)
 
 	CurrCell=0;
 	CurrLib=0;
-	RCursor<RGDSRecord> Rec(*this);
-	for(Rec.Start();!Rec.End();Rec.Next())
+	RCursor<Rec> Cur(Recs);
+	for(Cur.Start();!Cur.End();Cur.Next())
 	{
-		switch(Rec()->RecType)
+		if(log)
+		{
+			RString Desc(Cur()->GetRecDesc());
+			if(Desc.GetLen())
+				log->WriteLog(Desc);
+		}
+		switch(Cur()->RecType)
 		{
 			case 2:
 				// Library Name
-				LibName=Rec()->GetType6();
-				ptr=strchr(LibName,'.');
+				LibName=Cur()->GetType6();
+				ptr=const_cast<char*>(strchr(LibName,'.'));
 				if(ptr) (*ptr)=0;
-				CurrLib=Proj->Libraries->InsertLib(LibName);
+				CurrLib=Project->GetLibrary(LibName);
 				break;
 
 			case 3:
 				// Units
-				Units=Rec()->GetType5(0)/Rec()->GetType5(1);
+				Units=Cur()->GetType5(0)/Cur()->GetType5(1);
 				break;
 
 			case 4:
@@ -551,8 +618,8 @@ bool RGDSFile::Analyse(void)
 
 			case 6:
 				// Library Name
-				strcpy(Tmp,Rec()->GetType6());
-				CurrCell=Proj->Cells->GetInsertPtr<RString>(Tmp);
+				strcpy(Tmp,Cur()->GetType6());
+				CurrCell=Project->GetCell(Tmp);
 				break;
 
 			case 7:
@@ -567,14 +634,14 @@ bool RGDSFile::Analyse(void)
 
 			case 16:
 				// A XY structure
-				NbPts=Rec()->GetMaxIndex()/2;
+				NbPts=Cur()->GetMaxIndex()/2;
 				if(Poly&&CurrCell)
 				{
 					j=0;
 					while(j<NbPts)
 					{
-						x=Rec()->GetType3(j*2);
-						y=Rec()->GetType3(j*2+1);
+						x=Cur()->GetType3(j*2);
+						y=Cur()->GetType3(j*2+1);
 						j++;
 						Poly->InsertPtr(new RPoint(x,y));
 					}
@@ -585,11 +652,10 @@ bool RGDSFile::Analyse(void)
 				// End Element
 				if(Poly)
 				{
-					if(CurrCell) CurrCell->Polygons.InsertPtr(Poly);
+					if(CurrCell) CurrCell->InsertPolygon(Poly);
 					Poly=0;
 				}
 				break;
 		}
  	}
-	return(true);
 }

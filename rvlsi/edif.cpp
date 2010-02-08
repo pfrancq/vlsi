@@ -1,6 +1,6 @@
 /*
 
-	R Project Library
+	RVLSI Project Library
 
 	Edif.cpp
 
@@ -28,9 +28,23 @@
 
 
 //------------------------------------------------------------------------------
-// include files for R Project
+// include files for ANSI C/C++
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#if defined(_BSD_SOURCE) || defined(__GNUC__) || defined(__APPLE_)
+	#include <unistd.h>
+#else
+	#include <io.h>
+#endif
+#include <fcntl.h>
+
+
+//------------------------------------------------------------------------------
+// include files for RVLSI Project
 #include <edif.h>
 using namespace R;
+using namespace RVLSI;
 using namespace std;
 
 
@@ -55,72 +69,134 @@ inline bool MustIncBuffer(char c)
 
 //------------------------------------------------------------------------------
 //
+// Declarations
+//
+//------------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+class REDIFFile::StringId : public RString
+{
+public:
+	/**
+	 * Type of the EDIF element treated.
+	 */
+	enum tType
+	{
+		tUnknown,            /** Unknown.*/
+		tCell,               /** Cell. */
+		tLibrary,            /** Library.*/
+		tInstance,           /** Instance.*/
+		tPortImp,            /** Port implementation.*/
+		tNet,                /** Net.*/
+		tPort                /** Port.*/
+	};
+
+	tType Type;
+
+	StringId(const RString& str,tType type) : RString(str), Type(type) {}
+};
+
+
+//-----------------------------------------------------------------------------
+class REDIFFile::EDIFNode : public RNode<REDIFFile::EDIFTree,EDIFNode,true>
+{
+public:
+	RString TagName;
+	StringId::tType Type;
+	RString Params;
+
+	EDIFNode(REDIFFile::EDIFTree& owner,EDIFNode* parent,RTextFile& in);
+	virtual int Compare(const EDIFNode&) const {return(-1);}
+	virtual int Compare(const RNode<REDIFFile::EDIFTree,EDIFNode,true>&) const {return(0);}
+	virtual int Compare(const RString& name) const { return(TagName.Compare(name)); }
+	void InsertInst(REDIFFile*);
+	void InsertPortImp(REDIFFile*);
+	void InsertNet(REDIFFile*);
+	void Analyse(REDIFFile*);
+};
+
+
+//------------------------------------------------------------------------------
+class REDIFFile::EDIFTree : public RTree<REDIFFile::EDIFTree,REDIFFile::EDIFNode,true>
+{
+public:
+	RContainer<StringId,true,true>& Types;
+
+	EDIFTree(REDIFFile* owner) : RTree<EDIFTree,REDIFFile::EDIFNode,true>(50), Types(owner->Types) {}
+};
+
+
+
+//------------------------------------------------------------------------------
+//
 // Class REDIFTag
 //
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-REDIFTag::REDIFTag(unsigned int id,REDIFFile* Owner,char *(&Buffer),unsigned& BufferLen)
-	: RNode<REDIFFile,REDIFTag,true>(Owner), Id(id)
+REDIFFile::EDIFNode::EDIFNode(REDIFFile::EDIFTree& owner,EDIFNode* parent,RTextFile& in)
+	: RNode<REDIFFile::EDIFTree,EDIFNode,true>(&owner)
 {
-	static char Temp[200];
-	char* ptr=Temp;
-	REDIFTag* CurrentSub;
-	bool Parent=true;
+	// Insert it
+	owner.InsertNode(parent,this);
 
-	Buffer++;   // Past '('
-	while((!Parent)||(Parent&&((*Buffer)!=')')&&((*Buffer)!='('))&&((*Buffer)!=' ')&&((*Buffer)!='\n')&&((*Buffer)!='\t')&&((*Buffer)!='\r'))
+	// First character must be a (
+	if(in.GetChar()!='(')
+		ThrowRIOException(&in,"'(' expected");
+	in.SkipSpaces();
+
+	// Read the Tag name
+	TagName=in.GetToken("()");
+	StringId* Ptr(owner.Types.GetPtr(TagName.ToUpper()));
+	if(Ptr)
+		Type=Ptr->Type;
+	else
+		Type=StringId::tUnknown;
+	in.SkipSpaces();
+
+	// Look if the next character is ( or )
+	bool LookParent(true);
+	while((!in.End())&&((!LookParent)||(LookParent&&(in.GetNextChar()!='(')&&(in.GetNextChar()!=')'))))
 	{
-		if((*Buffer)=='\"')
-		{
-			if(Parent) Parent=false; else Parent=true;
-		}
-		(*(ptr++))=(*(Buffer++));
-	}
-	(*(ptr--))=0;
-	TagName=Temp;
-//  TagName.StrUpr(Temp);
-	while((*ptr)==' ') (*(ptr--))=0;
-	TypeName=Temp;
-	TypeName=TypeName.ToUpper();
+		if(in.GetNextChar()=='"')
+			LookParent=!LookParent;
 
-	// Point to the next entity
-	while(MustIncBuffer(*Buffer)) Buffer++;
-	if(((*Buffer)!=')')&&((*Buffer)!='('))
+		// Some parameters to read
+		Params+=in.GetChar();
+	}
+	Params=Params.Trim();
+
+	// There must be something
+	if(in.End())
+		ThrowRIOException(&in,"')' or '(' expected");
+
+	RChar Car(in.GetNextChar());
+
+	// if ')' -> no child tags
+	if(Car==')')
 	{
-		ptr=Temp;
-		while((!Parent)||(Parent&&((*Buffer)!=')')&&((*Buffer)!='('))&&((*Buffer)!='\n')&&((*Buffer)!='\t')&&((*Buffer)!='\r'))
-		{
-			if((*Buffer)=='\"')
-			{
-				if(Parent) Parent=false; else Parent=true;
-			}
-			(*(ptr++))=(*(Buffer++));
-		}
-		(*(ptr--))=0;
-		while((*ptr)==' ') (*(ptr--))=0;
-		Params=Temp;
-//    Params.StrUpr(Temp);
+		in.GetChar(); // Read ')'
+		in.SkipSpaces();
+		return;
 	}
+	if(Car!='(')
+		ThrowRIOException(&in,"')' or '(' expected");
 
-	// Point to the next entity
-	while(MustIncBuffer(*Buffer)) Buffer++;
-	while((*Buffer)!=')')     // Verify if sub tag
-	{
-		CurrentSub=new REDIFTag(Owner->GetNbNodes(),Owner,Buffer,BufferLen);
-		Owner->InsertNode(this,CurrentSub);
-	}
-	Buffer++;   // Read the ')'
+	// Read the child nodes
+	while((!in.End())&&(in.GetNextChar()!=')'))
+		new EDIFNode(owner,this,in);
 
-	// Point to the next entity
-	while(MustIncBuffer(*Buffer)) Buffer++;
+	if(in.End()||(in.GetChar()!=')'))
+		ThrowRIOException(&in,"')' expected");
+
+	in.SkipSpaces();
 }
 
 
 //------------------------------------------------------------------------------
-void REDIFTag::InsertInst(REDIFFile* owner)
+void REDIFFile::EDIFNode::InsertInst(REDIFFile* owner)
 {
-	REDIFTag* ptr(GetNode("name"));
+	EDIFNode* ptr(GetNode("name"));
 	if(!ptr) return;
 	RString Name(ptr->Params);
 	ptr=GetNode("viewRef");
@@ -128,76 +204,74 @@ void REDIFTag::InsertInst(REDIFFile* owner)
 	ptr=ptr->GetNode("cellRef");
 	if(!ptr) return;
 	RString Ref(ptr->Params);
-	owner->CurrCell->InsertInst(Name,Ref);
+	owner->CurrCell->InsertInstance(Name,Ref);
 }
 
 
 //------------------------------------------------------------------------------
-void REDIFTag::InsertPortImp(REDIFFile*)
+void REDIFFile::EDIFNode::InsertPortImp(REDIFFile*)
 {
 }
 
 
 //------------------------------------------------------------------------------
-void REDIFTag::InsertNet(REDIFFile* owner)
+void REDIFFile::EDIFNode::InsertNet(REDIFFile* owner)
 {
 	if(!(owner->CurrCell)) return;
 	RNet* net(owner->CurrCell->InsertNet(Params));
-	REDIFTag* join(GetNode("joined"));
+	EDIFNode* join(GetNode("joined"));
 	if(!join) return;
-	RCursor<REDIFTag> ptr(join->GetNodes());
+	RCursor<EDIFNode> ptr(join->GetNodes());
 	for(ptr.Start();!ptr.End();ptr.Next())
 	{
 		if(ptr()->TagName=="portRef") continue;
 		RString PortName(ptr()->Params);
-		RCursor<REDIFTag> Cur(ptr()->GetNodes());
+		RCursor<EDIFNode> Cur(ptr()->GetNodes());
 		Cur.Start();
 		RString InstName;
 		if(!Cur.End())
 		{
-			REDIFTag* sub(Cur());
+			EDIFNode* sub(Cur());
 			if(sub->TagName=="instanceRef") continue;
 			InstName=sub->Params;
 		}
 		else
-			InstName=owner->CurrCell->Name;
+			InstName=owner->CurrCell->GetName();
 		net->InsertRef(PortName,InstName);
 	}
 }
 
 
 //------------------------------------------------------------------------------
-bool REDIFTag::Analyse(REDIFFile* owner)
+void REDIFFile::EDIFNode::Analyse(REDIFFile* owner)
 {
-	unsigned int TypeId;
 	bool bSub=true;
 	char dir;
 
-	TypeId=(owner->Types.GetPtr(TypeName))->Id;
-	switch(TypeId)
+	switch(Type)
 	{
-		case TYPECELL:                // This is a cell
-			owner->CurrCell=owner->Proj->Cells->InsertCell(Params,owner->CurrLib);
+		case StringId::tCell:                // This is a cell
+			owner->CurrCell=owner->Project->CreateCell(Params,owner->CurrLib);
 			break;
-		case TYPELIBRARY:             // This is a library
-			owner->CurrLib=owner->Proj->Libraries->InsertLib(Params);
-     		break;
-		case TYPEINSTANCE:                // This is a instance of the current Cell
+		case StringId::tLibrary:             // This is a library
+			owner->CurrLib=owner->Project->GetLibrary(Params);
+			break;
+		case StringId::tInstance:                // This is a instance of the current Cell
 			InsertInst(owner);
-			owner->CurrCell->Abstract=false;
+			owner->CurrCell->SetAbstract(false);
 			bSub=false;
 			break;
-		case TYPEPORTIMP:
+		case StringId::tPortImp:
 			InsertPortImp(owner);
 			bSub=false;
 			break;
-		case TYPENET:
+		case StringId::tNet:
 			InsertNet(owner);
 			bSub=false;
 			break;
-		case TYPEPORT:                // This is a port of the current Cell
+		case StringId::tPort:                // This is a port of the current Cell
 			dir=2;
-			RCursor<REDIFTag> Cur(GetNodes());
+			RCursor<EDIFNode> Cur(GetNodes());
 			Cur.Start();
 			if(!Cur.End())
 			{
@@ -209,20 +283,21 @@ bool REDIFTag::Analyse(REDIFFile* owner)
 			}
 			break;
 	}
-	if(!bSub) return(true);
-	RCursor<REDIFTag> tag(GetNodes());
+
+	if(!bSub) return;
+	RCursor<EDIFNode> tag(GetNodes());
 	for(tag.Start();!tag.End();tag.Next())
 		tag()->Analyse(owner);
-	switch(TypeId)
+
+	switch(Type)
 	{
-		case TYPECELL:                // This is a cell
-			owner->CurrCell=NULL;
+		case StringId::tCell:                // This is a cell
+			owner->CurrCell=0;
 			break;
-		case TYPELIBRARY:             // This is a library
-			owner->CurrLib=NULL;
+		case StringId::tLibrary:             // This is a library
+			owner->CurrLib=0;
 			break;
 	}
-	return(true);
 }
 
 
@@ -234,51 +309,33 @@ bool REDIFTag::Analyse(REDIFFile* owner)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-REDIFFile::REDIFFile(const RString& name)
-	: RDataFile(name), RTree<REDIFFile,REDIFTag,true>(50), CurrCell(0), CurrLib(0),
+REDIFFile::REDIFFile(RProject* project,const RURI& uri)
+	: RDataFile(project,uri), CurrCell(0), CurrLib(0),
 	  Types(10)
 {
-	char *File,*Buffer;
-	unsigned int BufferLen;
-	struct stat statbuf;
-	int theHandle;
-	REDIFTag *Top;
-	unsigned int CurrentId=1;
-	RStringId *ptr;
-
-	Type=cstEDIF2;
-	ptr=Types.GetInsertPtr<RString>("CELL");
-	ptr->Id=CurrentId++;
-	ptr=Types.GetInsertPtr<RString>("LIBRARY");
-	ptr->Id=CurrentId++;
-	ptr=Types.GetInsertPtr<RString>("INSTANCE");
-	ptr->Id=CurrentId++;
-	ptr=Types.GetInsertPtr<RString>("PORTIMPLEMENTATION");
-	ptr->Id=CurrentId++;
-	ptr=Types.GetInsertPtr<RString>("NET");
-	ptr->Id=CurrentId++;
-	ptr=Types.GetInsertPtr<RString>("PORT");
-	ptr->Id=CurrentId++;
-	theHandle=open(const_cast<RString&>(name).Latin1(),O_RDONLY);
-	fstat(theHandle, &statbuf);
-	BufferLen=statbuf.st_size;
-	Buffer=File=new char[statbuf.st_size+1];
-	read(theHandle,File,statbuf.st_size);
-	File[statbuf.st_size]=0;
-	close(theHandle);
-	Top=new REDIFTag(GetNbNodes(),this,Buffer,BufferLen);
-	InsertNode(0,Top);
-	delete[] File;
+	Type=vdtEDIF2;
+	Types.InsertPtr(new StringId("CELL",StringId::tCell));
+	Types.InsertPtr(new StringId("LIBRARY",StringId::tLibrary));
+	Types.InsertPtr(new StringId("INSTANCE",StringId::tInstance));
+	Types.InsertPtr(new StringId("PORTIMPLEMENTATION",StringId::tPortImp));
+	Types.InsertPtr(new StringId("NET",StringId::tNet));
+	Types.InsertPtr(new StringId("PORT",StringId::tPort));
 }
 
 
 //------------------------------------------------------------------------------
-bool REDIFFile::Analyse(void)
+void REDIFFile::Analyse(R::RTextFile*)
 {
-	RCursor<REDIFTag> tag(GetTop()->GetNodes());
-	for(tag.Start();!tag.End();tag.Next())
-		if(!(tag()->Analyse(this))) return(false);
-	return(true);
+	// Read the file
+	RTextFile In(URI);
+	In.Open(RIO::Read);
+	EDIFTree Tree(this);
+	new EDIFNode(Tree,0,In);
+
+	// Analyze the nodes
+	RCursor<EDIFNode> Nodes(Tree.GetTop()->GetNodes());
+	for(Nodes.Start();!Nodes.End();Nodes.Next())
+		Nodes()->Analyse(this);
 }
 
 

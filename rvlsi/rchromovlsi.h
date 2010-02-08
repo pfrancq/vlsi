@@ -1,6 +1,6 @@
 /*
 
-	R Project Library
+	RVLSI Project Library
 
 	RChromoVLSI.h
 
@@ -28,38 +28,42 @@
 
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #ifndef RChromoVLSI_H
 #define RChromoVLSI_H
 
 
-//------------------------------------------------------------------------------
-// include files for Rainbow
-#include <rgavlsi.h>
+//-----------------------------------------------------------------------------
+// include files for R Project
 #include <rchromo2d.h>
 
 
-//------------------------------------------------------------------------------
-namespace R{
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+// include files for RVLSI Project
+#include <rgavlsi.h>
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+namespace RVLSI{
+//-----------------------------------------------------------------------------
+
+
+//-----------------------------------------------------------------------------
 /**
-* The chromosome for the VLSI GA.
-* @author Pascal Francq
-* @short VLSI GA Chromosome.
-*/
-class RChromoVLSI : public RChromo2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>
+ * The chromosome for the VLSI GA.
+ * @author Pascal Francq
+ * @short VLSI GA Chromosome.
+ */
+class RChromoVLSI : public R::RChromo2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,R::RGeoInfo>
 {
 public:
 
 	/**
 	* Construct the chromosome.
-	* @param inst           The instance of the problem.
-	* @param id             The identifier of the chromosome.
+	* @param inst           Instance of the problem.
+	* @param id             Identifier of the chromosome.
 	*/
-	RChromoVLSI(RInstVLSI* inst,unsigned int id);
+	RChromoVLSI(RInstVLSI* inst,size_t id);
 
 	/**
 	* Evaluate the chromosome, by comparing the area of the boundary rectangle,
@@ -69,8 +73,8 @@ public:
 };
 
 
-}  //-------- End of namespace R -----------------------------------------------
+}  //-------- End of namespace RVLSI ------------------------------------------
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #endif

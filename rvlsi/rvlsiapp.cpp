@@ -1,6 +1,6 @@
 /*
 
-	RVLSIApp.cpp
+	RVLSI Project Library
 
 	Application handling a VLSI Session - Implementing.
 
@@ -27,17 +27,22 @@
 
 
 //------------------------------------------------------------------------------
-// include files for RVLSI
+// include files for R Project
+#include <rxmlparser.h>
+
+
+//------------------------------------------------------------------------------
+// include files for RVLSI Project
 #include <rvlsiapp.h>
 #include <rxmlparser.h>
 using namespace R;
+using namespace RVLSI;
 using namespace std;
 
 
 //------------------------------------------------------------------------------
 // Global variables
-RVLSIApp* R::VLSIApp=0;
-
+RVLSIApp* RVLSI::VLSIApp=0;
 
 
 

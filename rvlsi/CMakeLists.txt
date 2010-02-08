@@ -2,25 +2,24 @@ PROJECT(rvlsi)
 INCLUDE_DIRECTORIES(.)
 
 SET(rvlsi_TARGET_SOURCES
-	edif.cpp
+	struct.cpp
 	files.cpp
+	edif.cpp
 	gds.cpp
 	rchromovlsi.cpp
 	rinstvlsi.cpp
-	rgavlsi.cpp
-	struct.cpp
+	rgavlsi.cpp	
 	rvlsiapp.cpp
 )
 
 SET(rvlsi_INST_INCLUDES
-	edif.h
+	struct.h
 	files.h
+	edif.h
 	gds.h
 	rchromovlsi.h
 	rinstvlsi.h
 	rgavlsi.h
-	rvlsiprj.h
-	struct.h
 	rvlsiapp.h
 )
 

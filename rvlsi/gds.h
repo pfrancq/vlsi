@@ -1,6 +1,6 @@
 /*
 
-	R Project Library
+	RVLSI Project Library
 
 	GDS.h
 
@@ -27,104 +27,75 @@
 
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #ifndef GDS_H
 #define GDS_H
 
 
-//------------------------------------------------------------------------------
-// include files for ANSI
-#ifdef unix
-	#include <unistd.h>
-#endif
-
-
-//------------------------------------------------------------------------------
-// include files for R Project
-#include <rstring.h>
+//-----------------------------------------------------------------------------
+// include files for RVLSI Project
 #include <files.h>
 
 
-//------------------------------------------------------------------------------
-namespace R{
-//------------------------------------------------------------------------------
-
-
-//------------------------------------------------------------------------------
-// Forward declarations
-class RGDSRecord;
-class RGDSFile;
+//-----------------------------------------------------------------------------
+namespace RVLSI{
+//-----------------------------------------------------------------------------
 
 
 //------------------------------------------------------------------------------
 /**
-* @short A GDS Record.
-*/
-class RGDSRecord
+ * The RGDSFile class represents a GDS data file.
+ * @author Pascal Francq
+ * @short GDS File.
+ */
+class RGDSFile : public RDataFile
 {
-public:
-	int Len;
-	unsigned char RecType;
-	unsigned char DataType;
-	unsigned char* Data;
+	class Rec;
 
-	RGDSRecord(RGDSFile*,unsigned char *(&Buffer),unsigned &BufferLen);
-	int Compare(const RGDSRecord*) const { return(-1); }
-	inline int GetTypeLen(void)
-	{
-		switch(DataType)
-		{
-			case 2: return(2);
-			case 3:
-			case 4: return(4);
-			case 5: return(8);
-			case 6: return(Len-4);
-		}
-		return(0);
-	}
-	inline int GetMaxIndex(void)
-	{
-		int i=GetTypeLen();
-
-		if(i)
-			return((Len-4)/i);
-		else
-			return(0);
-	}
-	int GetType2(int idx);
-	int GetType3(int idx);
-	double GetType4(int idx);
-	double GetType5(int idx);
-	char* GetType6(void);
-	char* GetRecType(void);
-	char* GetRecDesc(void);
-	~RGDSRecord(void);
-};
-
-
-
-//------------------------------------------------------------------------------
-/**
-* @short: A GDSII data file.
-*/
-class RGDSFile : public RDataFile, public RContainer<RGDSRecord,true,false>
-{
-private:
+	/**
+	 * Current cell treated.
+	 */
 	RCell* CurrCell;
-	RLibrary *CurrLib;
-public:
-	char* LibName;
-	double Units;
 
-	RGDSFile(const RString& name);
-	virtual const char* StringType(void) {return("=GDSII");}
-	virtual const char* TreeType(void) {return(" - GDSII File");}
-	virtual bool Analyse(void);
+	/**
+	 * Current library treated.
+	 */
+	RLibrary *CurrLib;
+
+	/**
+	 * Name of the library.
+	 */
+	R::RString LibName;
+
+	/**
+	 * Units of the library
+	 */
+	R::tCoord Units;
+
+	/**
+	 * Records.
+	 */
+	R::RContainer<Rec,true,false> Recs;
+
+public:
+
+	/**
+	 * Construct a GDS data file.
+	 * @param project        Project.
+	 * @param uri            URI of the file.
+	 */
+	RGDSFile(RProject* project,const R::RURI& uri);
+
+	/**
+	 * Analyze the file.
+	 * @param log            Log file (may be null).
+	 */
+	virtual void Analyse(R::RTextFile* log);
 };
 
 
-}  //-------- End of namespace R -----------------------------------------------
+}  //-------- End of namespace RVLSI ------------------------------------------
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #endif

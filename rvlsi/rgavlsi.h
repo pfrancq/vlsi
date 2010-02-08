@@ -1,6 +1,6 @@
 /*
 
-	R Project Library
+	RVLSI Project Library
 
 	RGAVLSI.h
 
@@ -28,22 +28,22 @@
 
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #ifndef RGAVLSI_H
 #define RGAVLSI_H
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // include files for R Project
 #include <rfitness.h>
 #include <rga2d.h>
 
 
-//------------------------------------------------------------------------------
-namespace R{
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+namespace RVLSI{
+//-----------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Forward class declaration
 class RInstVLSI;
 class RChromoVLSI;
@@ -51,43 +51,35 @@ class RThreadDataVLSI;
 class RFitnessVLSI;
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 /**
 * This class represent the fitness for the VLSI GA.
 * @author Pascal Francq
 * @short VLSI Fitness.
 */
-class RFitnessVLSI : public RFitness<double,false>
+class RFitnessVLSI : public R::RFitness<double,false>
 {
 public:
 
 	/**
 	* Construct the fitness.
 	*/
-	RFitnessVLSI(void) : RFitness<double,false>() {}
+	RFitnessVLSI(void);
 
 	/**
 	* Assignment operator with a fitness f.
 	*/
-	RFitnessVLSI& operator=(const RFitnessVLSI &f)
-	{
-		RFitness<double,false>::operator=(f);
-		return(*this);
-	}
+	RFitnessVLSI& operator=(const RFitnessVLSI &f);
 
 	/**
 	* Assignment operator with a double value.
 	*/
-	RFitnessVLSI& operator=(const double val)
-	{
-		RFitness<double,false>::operator=(val);
-		return(*this);
-	}
+	RFitnessVLSI& operator=(const double val);
 };
 
 
-}  //-------- End of namespace R -----------------------------------------------
+}  //-------- End of namespace RVLSI ------------------------------------------
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #endif

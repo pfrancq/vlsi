@@ -1,6 +1,6 @@
 /*
 
-	R Project Library
+	RVLSI Project Library
 
 	Struct.cpp
 
@@ -28,8 +28,10 @@
 
 
 //------------------------------------------------------------------------------
+// include files for RVLSI Project
 #include <struct.h>
 using namespace R;
+using namespace RVLSI;
 using namespace std;
 
 
@@ -41,37 +43,21 @@ using namespace std;
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-RLibrary::RLibrary(const RString& name) throw(bad_alloc)
-	: Name(name.ToUpper()),RealName(name)
+RLibrary::RLibrary(const RString& name)
+	: Name(name.ToUpper()), RealName(name), Cells(20,10)
 {
-	Cells=new RContainer<RCell,false,false>(20,10);
 }
 
 
 //------------------------------------------------------------------------------
 void RLibrary::InsertCell(RCell* cell)
 {
-	Cells->InsertPtr(cell);
+	Cells.InsertPtr(cell);
 }
 
 
 //------------------------------------------------------------------------------
 RLibrary::~RLibrary(void)
-{
-	delete Cells;
-}
-
-
-
-//------------------------------------------------------------------------------
-//
-// Class RLibraries
-//
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-RLibraries::RLibraries(void) throw(bad_alloc)
-	: RContainer<RLibrary,true,true>(20,5)
 {
 }
 
@@ -84,10 +70,9 @@ RLibraries::RLibraries(void) throw(bad_alloc)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-RPort::RPort(const RString &name) throw(bad_alloc)
-	: Name(name)
+RPort::RPort(const RString& name,char dir)
+	: Name(name), Owner(0), Dir(dir)
 {
-	Dir=0;
 }
 
 
@@ -99,24 +84,48 @@ RPort::RPort(const RString &name) throw(bad_alloc)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-RCell::RCell(const RString& name) throw(bad_alloc)
-	: Name(name), Polygons()
+RCell::RCell(const RString& name)
+	: Name(name), Lib(0), Struct(0), Ports(10,5), Instances(10,5), Nets(10,5),
+	  Polygons(), Abstract(true)
 {
- Lib=0;
-	Ports=0;
-	Instances=0;
-	Nets=0;
-	Ports=new RContainer<RPort,true,true>(10,5);
-	Instances=new RInstances(10,5);
-	Nets=new RNets(10,5);
-	Abstract=true;
 }
 
 
 //------------------------------------------------------------------------------
-void RCell::InsertInst(const RString& name,const RString& cellref)
+RCell::RCell(const RString& name,RStructure* s,RLibrary* lib)
+	: Name(name), Lib(lib), Struct(s), Ports(10,5), Instances(10,5), Nets(10,5),
+	  Polygons(), Abstract(true)
 {
-	(Instances->GetInstance(name))->CellRef=Owner->Struct->Cells->GetCell(cellref);
+	if(Lib)
+		Lib->InsertCell(this);
+}
+
+
+//------------------------------------------------------------------------------
+void RCell::SetAbstract(bool abstract)
+{
+	Abstract=abstract;
+}
+
+
+//------------------------------------------------------------------------------
+void RCell::InsertPolygon(R::RPolygon* poly)
+{
+	Polygons.InsertPtr(poly);
+}
+
+
+//------------------------------------------------------------------------------
+void RCell::InsertInstance(const RString& name,const RString& cell)
+{
+	Instances.InsertPtr(new RInstance(name,Struct->GetCell(cell)));
+}
+
+
+//------------------------------------------------------------------------------
+void RCell::InsertPort(const R::RString& name,const char dir)
+{
+	Ports.InsertPtr(new RPort(name,dir));
 }
 
 
@@ -124,9 +133,7 @@ void RCell::InsertInst(const RString& name,const RString& cellref)
 RNet* RCell::InsertNet(const RString& name)
 {
 	RNet *ptr;
-
-	ptr=Nets->GetNet(name);
-	ptr->Owner=this;
+	Nets.InsertPtr(ptr=new RNet(name,this));
 	return(ptr);
 }
 
@@ -134,24 +141,41 @@ RNet* RCell::InsertNet(const RString& name)
 //------------------------------------------------------------------------------
 RCell::~RCell(void)
 {
-	if(Ports) delete Ports;
-	if(Instances) delete Instances;
-	if(Nets) delete Nets;
 }
 
 
 
 //------------------------------------------------------------------------------
 //
-// Class RCells
+// Class RInstance
 //
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-RCells::RCells(RStructure* s) throw(bad_alloc)
-	: RContainer<RCell,true,true>(500,250)
+RInstance::RInstance(const RString& name)
+	: Name(name), Cell(0), PortRefs(0)
 {
-	Struct=s;
+}
+
+
+//------------------------------------------------------------------------------
+RInstance::RInstance(const R::RString& name,RCell* cell)
+	: Name(name), Cell(cell), PortRefs(0)
+{
+}
+
+
+
+//------------------------------------------------------------------------------
+//
+// Class RPortRef
+//
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+RPortRef::RPortRef(RPort* port,RInstance* inst)
+	: Port(port), Instance(inst)
+{
 }
 
 
@@ -163,32 +187,28 @@ RCells::RCells(RStructure* s) throw(bad_alloc)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-RNet::RNet(const RString& name)
-	: Name(name)
+RNet::RNet(const RString& name,RCell* owner)
+	: Name(name), Owner(owner), Refs(10,5)
 {
-	Refs=new RContainer<RPortRef,true,false>(10,5);
 }
 
 
 //------------------------------------------------------------------------------
 void RNet::InsertRef(const RString& port,const RString& instance)
 {
-	RPortRef *Ref=new RPortRef;
-
-	Ref->Port=Owner->GetPort(port);
-	Ref->Inst=Owner->Instances->GetInstance(instance);
-	if((!Ref->Port)&&Ref->Inst)
+	RPort* Port(Owner->GetPort(port));
+	RInstance* Inst(Owner->GetInstance(instance));
+	if((!Port)&&Inst)
 	{
-		Ref->Port=Ref->Inst->CellRef->GetPort(port);
+		Port=Inst->GetCell()->GetPort(port);
 	}
-	Refs->InsertPtr(Ref);
+	Refs.InsertPtr(new RPortRef(Port,Inst));
 }
 
 
 //------------------------------------------------------------------------------
 RNet::~RNet(void)
 {
-	delete Refs;
 }
 
 
@@ -201,30 +221,35 @@ RNet::~RNet(void)
 
 //------------------------------------------------------------------------------
 RStructure::RStructure(void)
+	: Libraries(10), Cells(20), Units(0.0)
 {
-	Libraries=new RLibraries();
-//  Instances=new RInstances();
-	Cells=new RCells(this);
-	Units=0;
+}
+
+
+//------------------------------------------------------------------------------
+RCell* RStructure::CreateCell(const RString& name,RLibrary* lib)
+{
+	RCell* ptr(new RCell(name,this,lib));
+	Cells.InsertPtr(ptr);
+	return(ptr);
+}
+
+
+//------------------------------------------------------------------------------
+RCell* RStructure::GetCell(const R::RString& name)
+{
+	return(Cells.GetInsertPtr(name));
+}
+
+
+//------------------------------------------------------------------------------
+RLibrary* RStructure::GetLibrary(const R::RString& name)
+{
+	return(Libraries.GetInsertPtr(name));
 }
 
 
 //------------------------------------------------------------------------------
 RStructure::~RStructure(void)
 {
-	if(Libraries)
-	{
-		delete Libraries;
-		Libraries=0;
-	}
-	if(Cells)
-	{
-		delete Cells;
-		Cells=0;
-	}
-/*	if(Instances)
-	{
-		delete Instances;
-		Instances=0;
-	}*/
 }

@@ -1,6 +1,6 @@
 /*
 
-	R Project Library
+	RVLSI Project Library
 
 	Edif.h
 
@@ -27,111 +27,82 @@
 
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #ifndef EDIF_H
 #define EDIF_H
 
 
-//------------------------------------------------------------------------------
-// include files for ANSI C/C++
-#ifdef _BSD_SOURCE
-	#include <unistd.h>
-#endif
-
-
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // include files for R Project
 #include <rstring.h>
 #include <rtree.h>
 #include <rnode.h>
 
 
-//------------------------------------------------------------------------------
-// include files for VLSI
+//-----------------------------------------------------------------------------
+// include files for VLSI Project
 #include <files.h>
 
 
-//------------------------------------------------------------------------------
-namespace R{
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+namespace RVLSI{
+//-----------------------------------------------------------------------------
 
 
-//------------------------------------------------------------------------------
-// Constances
-const long TYPECELL=1;
-const long TYPELIBRARY=2;
-const long TYPEINSTANCE=3;
-const long TYPEPORTIMP=4;
-const long TYPENET=5;
-const long TYPEPORT=6;
-
-
-//------------------------------------------------------------------------------
-// Forward declarations
-class REDIFTag;
-class REDIFFile;
-
-
-//------------------------------------------------------------------------------
-class RStringId : public RString
-{
-public:
-	long Id;
-
-	RStringId(const RString &str) : RString(str) { Id=-1; }
-};
-
-
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 /**
-* @short EDIF Tag
-*/
-class REDIFTag : public RNode<REDIFFile,REDIFTag,true>
-{
-public:
-	RString TagName;
-	RString TypeName;
-	RString Params;
-	unsigned int Id;
-
-	REDIFTag(unsigned int,REDIFFile*,char *(&Buffer),unsigned &BufferLen);
-	virtual int Compare(const REDIFTag&) const {return(0);}
-	virtual int Compare(const RNode<REDIFFile,REDIFTag,true>&) const {return(0);}
-	virtual int Compare(const char* name) const { return(TagName.Compare(name)); }
-	void InsertInst(REDIFFile*);
-	void InsertPortImp(REDIFFile*);
-	void InsertNet(REDIFFile*);
-	bool Analyse(REDIFFile*);
-	virtual ~REDIFTag(void) {}
-
-	friend class REDIFFile;
-};
-
-
-
-//------------------------------------------------------------------------------
-/**
+ * The REDIFFile class represents a EDIF2 data file.
 * @short EDIF2 data file
 */
-class REDIFFile : public RDataFile, public RTree<REDIFFile,REDIFTag,true>
+class REDIFFile : public RDataFile
 {
-	RCell *CurrCell;
-	RLibrary *CurrLib;
-	RContainer<RStringId,true,true> Types;
+	class EDIFTree;
+	class StringId;
+	class EDIFNode;
+
+	/**
+	 * Current cell treated.
+	 */
+	RCell* CurrCell;
+
+	/**
+	 * Current library treated.
+	 */
+	RLibrary* CurrLib;
+
+	/**
+	 * Types of the elements.
+	 */
+	R::RContainer<StringId,true,true> Types;
 
 public:
-	REDIFFile(const RString& name);
-	virtual const char* StringType(void) {return("=EDIF2");}
-	virtual const char* TreeType(void) {return(" - EDIF2 File");}
-	virtual bool Analyse(void);
+
+	/**
+	 * Construct a EDIF file.
+	 * @param project        Project.
+	 * @param uri            URI of the file.
+	 */
+	REDIFFile(RProject* project,const R::RURI& uri);
+
+	/**
+	 * Analyze the file.
+	 * @param log            Log file (may be null).
+	 */
+	virtual void Analyse(R::RTextFile* log);
+
+	/**
+	 * Destructor of the EDIF file.
+	 * @return
+	 */
 	~REDIFFile(void);
 
-	friend class REDIFTag;
+	friend class EDIFNode;
+	friend class EDIFTree;
 };
 
 
-}  //-------- End of namespace R -----------------------------------------------
+}  //-------- End of namespace RVLSI ------------------------------------------
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #endif

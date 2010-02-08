@@ -1,6 +1,6 @@
 /*
 
-	R Project Library
+	RVLSI Project Library
 
 	RChromoVLSI.cpp
 
@@ -29,10 +29,11 @@
 
 
 //------------------------------------------------------------------------------
-// include files for R Project
+// include files for RVLSI Project
 #include <rchromovlsi.h>
 #include <rinstvlsi.h>
 using namespace R;
+using namespace RVLSI;
 using namespace std;
 
 
@@ -44,7 +45,7 @@ using namespace std;
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-RChromoVLSI::RChromoVLSI(RInstVLSI *inst,unsigned int id)
+RChromoVLSI::RChromoVLSI(RInstVLSI *inst,size_t id)
   : RChromo2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,RGeoInfo>(inst,id)
 {
 }

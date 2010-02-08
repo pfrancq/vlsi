@@ -1,6 +1,6 @@
 /*
 
-	R Project Library
+	RVLSI Project Library
 
 	Files.h
 
@@ -27,111 +27,160 @@
 
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #ifndef Files_H
 #define Files_H
 
 
-//------------------------------------------------------------------------------
-// Includes for ANSI C/C++
-#include <iostream>
-#include <string.h>
-#include <sys/stat.h>
-#ifdef _BSD_SOURCE
-#else
-	#include <io.h>
-#endif
-#include <stdio.h>
-#include <fcntl.h>
-#include <math.h>
-
-
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // include files for R Project
-#include <rstring.h>
 #include <rstd.h>
+#include <rstring.h>
+#include <ruri.h>
+
+
+//-----------------------------------------------------------------------------
+// include files for RVLSI Project
 #include <struct.h>
 
 
-//------------------------------------------------------------------------------
-namespace R{
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+namespace RVLSI{
+//-----------------------------------------------------------------------------
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Declaration
 class RDataFile;
 class RProject;
 
 
-//------------------------------------------------------------------------------
-// Constants
-const char cstNothing=0;
-const char cstEDIF2=1;
-const char cstGDSII=2;
-
-
-//------------------------------------------------------------------------------
-// A typical data file
+//-----------------------------------------------------------------------------
+/**
+ * The RDataFile provides a generic data file related to a VLSI project.
+ * @author Pascal Francq
+ * @short Generic VLSI Data File.
+ */
 class RDataFile
 {
 public:
-	RProject *Proj;
-	RString Name;
-	char Type;
 
-	RDataFile(const RString &);
-	int Compare(const RDataFile& file) const
+	/**
+	* Represent the different type of files of a VLSI project.
+	*/
+	enum tDataType
 	{
-		if(Type==file.Type)
-			return(Name.Compare(file.Name));
-		else
-		 return(Type-file.Type);
-	}
-	int Compare(const RString& name) const { return(Name.Compare(name)); }
-	virtual const char* StringType(void) {return(0);}
-	virtual const char* TreeType(void) {return(0);}
-	virtual bool Analyse(void) {return(true);}
-	virtual ~RDataFile(void) {}
+		vdtNothing,              /** No specified type. */
+		vdtEDIF2,                /** EDIF2 type. */
+		vdtGDSII                 /** GDS II type. */
+	};
+
+protected:
+
+	/**
+	 * The project.
+	 */
+	RProject* Project;
+
+	/**
+	 * URI of the file.
+	 */
+	R::RURI URI;
+
+	/**
+	 * Type of the type.
+	 */
+	tDataType Type;
+
+public:
+
+	/**
+	 * Construct a data file.
+	 * @param project        Project.
+	 * @param uri            URI of the file.
+	 */
+	RDataFile(RProject* project,const R::RURI& uri);
+
+	/**
+	 * Compare two data file.
+	 * @param file           File to compare with.
+	 * @return a value compatible with RContainer.
+	 */
+	int Compare(const RDataFile& file) const;
+
+	/**
+	 * Compare a file with a given uri.
+	 * @param uri            URI to compare with.
+	 * @return a value compatible with RContainer.
+	 */
+	int Compare(const R::RURI& uri) const { return(URI.Compare(uri)); }
+
+	/**
+	 * @return the URI of the file.
+	 */
+	inline R::RURI GetURI(void) const {return(URI);}
+
+	/**
+	 * Analyze the file.
+	 * @param log            Log file (may be null).
+	 */
+	virtual void Analyse(R::RTextFile* log)=0;
+
+	/**
+	 * Destructor.
+	 */
+	virtual ~RDataFile(void);
 };
 
 
 
-//------------------------------------------------------------------------------
-// A VLSI project
-class RProject : public RContainer<RDataFile,true,true>, public RStructure
+//-----------------------------------------------------------------------------
+/**
+ * The RProject provides a representation of a VLSI project, i.e. a VLSI
+ * structure and a set of data files.
+ * @author Pascal Francq.
+ * @short VLSI Project.
+ */
+class RProject : private R::RContainer<RDataFile,true,true>, public RStructure
 {
-public:
 	/**
 	* Name of the project.
 	*/
-	RString Name;
-	RString InputName,OutputName;
-
-	RProject(const RString &);
-	RProject(void);
-	inline void InsertFile(RDataFile *file)
-	{
-		InsertPtr(file);
-		file->Proj=this;
-	}
+	R::RURI URI;
 
 	/**
-	* \remarks{Only for Text interface !!!!}
-	*/
-	bool LoadProject(void);
+	 * URI of the pl2d file to generate.
+	 */
+	R::RURI PL2D;
 
 	/**
-	* \remarks{Only for Text interface !!!!}
-	*/
-	bool Analyse(void);
-	virtual RDataFile* CreateFile(const RString&,const RString&) {return(0);};
+	 * URI of the log file.
+	 */
+	R::RURI LogName;
+
+public:
+
+	/**
+	 * Create a project.
+	 * @param uri            URI of the project.
+	 */
+	RProject(const R::RURI& uri);
+
+	/**
+	 * Analyze the project.
+	 */
+	void Analyse(void);
+
+	/**
+	 * Destruct the project.
+	 * @return
+	 */
 	virtual ~RProject(void);
 };
 
 
-}  //-------- End of namespace R -----------------------------------------------
+}  //-------- End of namespace RVLSI ------------------------------------------
 
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #endif
