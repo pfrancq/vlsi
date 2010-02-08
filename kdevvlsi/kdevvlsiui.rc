@@ -6,6 +6,8 @@
 		<Separator/>
 		<Action name="closeFile"/>
 		<Separator/>
+		<Action name="importProject"/>
+		<Separator/>
 		<Action name="applicationQuit"/>
 	</Menu>
 	<Menu name="heuristic_menu"><text>He&amp;uristic</text>

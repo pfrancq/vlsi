@@ -1,5 +1,7 @@
 /*
 
+	RVLSI Project Library
+
 	KGAView.h
 
 	Window to manage a GA instance - Header.
@@ -33,6 +35,7 @@
 // include files for R/VLSI project
 #include <rinstvlsi.h>
 using namespace R;
+using namespace RVLSI;
 using namespace std;
 
 

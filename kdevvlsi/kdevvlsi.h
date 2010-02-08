@@ -1,5 +1,7 @@
 /*
 
+	RVLSI Project Library
+
 	KDevVLSI.h
 
 	Main Window - Header.
@@ -33,6 +35,7 @@
 // include files for R Project
 #include <rvlsiapp.h>
 using namespace R;
+using namespace RVLSI;
 
 
 //-----------------------------------------------------------------------------
@@ -74,6 +77,11 @@ class KDevVLSI : public KXmlGuiWindow, public RVLSIApp
 	 * Open a recent file.
 	 */
 	KRecentFilesAction* aFileOpenRecent;
+
+	/**
+	 * Import a VLSI project.
+	 */
+	KAction* aImport;
 
 	/**
 	 * All available actions once a file is connected.
@@ -224,6 +232,11 @@ private slots:
 	* View some polygons in a window.
 	*/
 	void viewPolygons(void);
+
+	/**
+	 * Import of project composed from other files.
+	 */
+	void importProject(void);
 
 public:
 

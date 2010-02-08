@@ -31,6 +31,6 @@ TARGET_LINK_LIBRARIES(kdevvlsi rvlsi roptimization rcore rcorekde rmath roptimiz
 ########### install files ###############
 install(TARGETS kdevvlsi ${INSTALL_TARGETS_DEFAULT_ARGS})
 install( FILES kdevvlsi.desktop  DESTINATION ${XDG_APPS_INSTALL_DIR} )
-install(FILES kdevvlsi.rc  DESTINATION  ${DATA_INSTALL_DIR}/kdevvlsi )
-install(FILES kdevvlsi.rc  DESTINATION  /usr/share/kde4/apps/kdevvlsi )
+install(FILES kdevvlsiui.rc  DESTINATION  ${DATA_INSTALL_DIR}/kdevvlsi )
+install(FILES kdevvlsiui.rc  DESTINATION  /usr/share/kde4/apps/kdevvlsi )
 kde4_install_icons(${ICON_INSTALL_DIR})

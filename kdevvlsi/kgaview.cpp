@@ -1,5 +1,7 @@
 /*
 
+	RVLSI Project Library
+
 	KGAView.cpp
 
 	Window to manage a GA instance - Implementation.

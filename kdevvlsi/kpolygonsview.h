@@ -1,5 +1,7 @@
 /*
 
+	RVLSI Project Library
+
 	KPolygonsView.h
 
 	View a set of polygons from a file - Header.

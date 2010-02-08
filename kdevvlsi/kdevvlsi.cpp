@@ -1,5 +1,7 @@
 /*
 
+	RVLSI Project Library
+
 	KDevVLSI.cpp
 
 	Main Window - Implementation.
@@ -25,8 +27,9 @@
 
 
 //-----------------------------------------------------------------------------
-// include files for R
+// include files for R/RVLSI Project
 #include <rqt.h>
+#include <files.h>
 
 
 //-----------------------------------------------------------------------------
@@ -99,6 +102,7 @@ void KDevVLSI::initActions(void)
 	aFileOpenRecent = KStandardAction::openRecent(this, SLOT(openRecentFile(const KUrl&)), actionCollection());
 	Actions.insert(Actions.size(),KStandardAction::close(this, SLOT(closeFile()), actionCollection()));
 	KStandardAction::quit(this, SLOT(applicationQuit()), actionCollection());
+	aImport=addAction("&Import VLSI Project...","importProject",SLOT(importProject()),0,0);
 
 	// Menu "Window"
 	KAction* windowCloseAll(new KAction(i18n("&Close All"),this));
@@ -401,6 +405,38 @@ void KDevVLSI::optionsPreferences(void)
 
 	KAppOptions Dlg(this);
 	Dlg.exec(this);
+	statusMsg(i18n("Ready."));
+}
+
+
+//-----------------------------------------------------------------------------
+void KDevVLSI::importProject(void)
+{
+	statusMsg(i18n("Opening file..."));
+//	KUrl url(KFileDialog::getOpenFileName(KUrl("~"),"*.vlsiprj|VLSI Project",Desktop,"Open File..."));
+	KUrl url("/home/pfrancq/Documents/data/vlsi/example.vlsiprj");
+	if(url.isEmpty())
+		QMessageBox::critical(this,"KDevVLSI","File could not be found");
+	else
+	{
+		try
+		{
+			RProject Project(FromQString(url.path()));
+			Project.Analyse();
+		}
+		catch(RException& e)
+		{
+			KMessageBox::error(this,e.GetMsg(),"R Exception");
+		}
+		catch(std::exception& e)
+		{
+			KMessageBox::error(this,e.what(),"std::exception");
+		}
+		catch(...)
+		{
+			KMessageBox::error(this,"Undefined Error");
+		}
+	}
 	statusMsg(i18n("Ready."));
 }
 

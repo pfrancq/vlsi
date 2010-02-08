@@ -1,5 +1,7 @@
 /*
 
+	RVLSI Project Library
+
 	KPolygonsView.cpp
 
 	View a set of polygons from a file - Implementation.
