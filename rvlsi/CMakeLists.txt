@@ -21,6 +21,7 @@ SET(rvlsi_INST_INCLUDES
 	rinstvlsi.h
 	rgavlsi.h
 	rvlsiapp.h
+	rvlsidoc.h
 )
 
 INCLUDE_DIRECTORIES(${rvlsi_INCLUDES})
