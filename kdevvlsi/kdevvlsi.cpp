@@ -6,7 +6,7 @@
 
 	Main Window - Implementation.
 
-	Copyright 2000-2009 by Pascal Francq (pascal@francq.info).
+	Copyright 2000-2010 by Pascal Francq (pascal@francq.info).
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -413,8 +413,8 @@ void KDevVLSI::optionsPreferences(void)
 void KDevVLSI::importProject(void)
 {
 	statusMsg(i18n("Opening file..."));
-//	KUrl url(KFileDialog::getOpenFileName(KUrl("~"),"*.vlsiprj|VLSI Project",Desktop,"Open File..."));
-	KUrl url("/home/pfrancq/Documents/data/vlsi/example.vlsiprj");
+	KUrl url(KFileDialog::getOpenFileName(KUrl("~"),"*.vlsiprj|VLSI Project",Desktop,"Open File..."));
+	//KUrl url("/home/pfrancq/Documents/data/vlsi/example.vlsiprj");
 	if(url.isEmpty())
 		QMessageBox::critical(this,"KDevVLSI","File could not be found");
 	else
