@@ -679,16 +679,13 @@ void RVLSIApp::Init(void)
 	{
 		std::cerr<<"Error: Cannot create debug file "<<DebugFileName<<std::endl;
 	}
-
-	// Init OK
-	HasInitApp=true;
 }
 
 
 //------------------------------------------------------------------------------
 RProblem2D* RVLSIApp::CreateSession(const RString& file)
 {
-	if(!HasInitApp)
+	if(!IsInit())
 		ThrowRException("Application not initialized");
 	if(Session)
 		ThrowRException("A session is already created");
