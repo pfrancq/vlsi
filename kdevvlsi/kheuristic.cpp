@@ -69,7 +69,7 @@ using namespace R;
 
 //-----------------------------------------------------------------------------
 KHeuristic::KHeuristic(RProblem2D* session,const RString& heuristic)
-	: QMdiSubWindow(), Ui_KHeuristic(), RLayout(session,true), Session(session), Random(RRandom::Create(RRandom::Good,12345)),
+	: QMdiSubWindow(), Ui_KHeuristic(), RLayout(session,true), Session(session), Random(RRandom::Good,12345),
 	  Grid(session->GetLimits()), Free(0), PlacementHeuristic(0), NbFree(0), Step(VLSIApp->Step), Heuristic(heuristic)
 {
 	// Set the widget part
@@ -205,7 +205,4 @@ KHeuristic::~KHeuristic(void)
 {
 	if(PlacementHeuristic)
 		delete PlacementHeuristic;
-
-	if(Random)
-		delete Random;
 }

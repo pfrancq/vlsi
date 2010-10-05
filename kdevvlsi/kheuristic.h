@@ -68,7 +68,7 @@ class KHeuristic : public QMdiSubWindow, public Ui_KHeuristic, public RLayout
 	/**
 	* Random number generator.
 	*/
-	RRandom* Random;
+	RRandom Random;
 
 	/**
 	* Grid.
