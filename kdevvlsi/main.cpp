@@ -6,7 +6,7 @@
 
 	Main program - Implementation.
 
-	Copyright 2000-2010 by Pascal Francq (pascal@francq.info).
+	Copyright 2000-2011 by Pascal Francq (pascal@francq.info).
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
     // Information about the application
 	KAboutData aboutData("kdevvlsi",0,ki18n("KDevVLSI"),"1.89",ki18n(description),
-			KAboutData::License_GPL,ki18n("(C) 2000-2010 by Pascal Francq\n"),
+			KAboutData::License_GPL,ki18n("(C) 2000-2011 by Pascal Francq\n"),
 			KLocalizedString(),"http://www.otlet-institute.org", "pascal@francq.info");
 	aboutData.addAuthor(ki18n("Pascal Francq"),ki18n("Project Manager"),"pascal@francq.info");
 
