@@ -6,7 +6,7 @@
 
 	Chromosome for VLSI placement GA - Header
 
-	Copyright 1998-2010 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2011 by Pascal Francq (pascal@francq.info).
 	Copyright 1998-2003 by the Université Libre de Bruxelles (ULB).
 
 	This library is free software; you can redistribute it and/or
