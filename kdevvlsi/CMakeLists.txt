@@ -23,7 +23,6 @@ KDE4_ADD_UI_FILES(KDEVVLSI_SOURCES
 	kpolygonsview.ui
 )
 
-
 KDE4_ADD_EXECUTABLE(kdevvlsi ${KDEVVLSI_SOURCES})
 TARGET_LINK_LIBRARIES(kdevvlsi rvlsi roptimization rcore rcorekde rmath roptimizationkde ${KDE4_KDEUI_LIBS} ${KDE4_KDECORE_LIBS} ${KDE4_KPARTS_LIBS})
 
