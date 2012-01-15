@@ -4,7 +4,7 @@
 
 	Application handling a VLSI Session - Implementing.
 
-	Copyright 2000-2011 by Pascal Francq (pascal@francq.info).
+	Copyright 2000-2012 by Pascal Francq (pascal@francq.info).
 	Copyright 2000-2003 by the Université Libre de Bruxelles (ULB).
 
 	This library is free software; you can redistribute it and/or
