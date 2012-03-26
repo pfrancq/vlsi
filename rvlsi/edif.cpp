@@ -28,19 +28,6 @@
 
 
 //------------------------------------------------------------------------------
-// include files for ANSI C/C++
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#if defined(_BSD_SOURCE) || defined(__GNUC__) || defined(__APPLE_)
-	#include <unistd.h>
-#else
-	#include <io.h>
-#endif
-#include <fcntl.h>
-
-
-//------------------------------------------------------------------------------
 // include files for RVLSI Project
 #include <edif.h>
 using namespace R;
@@ -122,7 +109,7 @@ class REDIFFile::EDIFTree : public RTree<REDIFFile::EDIFTree,REDIFFile::EDIFNode
 public:
 	RContainer<StringId,true,true>& Types;
 
-	EDIFTree(REDIFFile* owner) : RTree<EDIFTree,REDIFFile::EDIFNode,true>(50), Types(owner->Types) {}
+	EDIFTree(REDIFFile* owner) : RTree<EDIFTree,REDIFFile::EDIFNode,true>(), Types(owner->Types) {}
 };
 
 
@@ -221,12 +208,12 @@ void REDIFFile::EDIFNode::InsertNet(REDIFFile* owner)
 	RNet* net(owner->CurrCell->InsertNet(Params));
 	EDIFNode* join(GetNode("joined"));
 	if(!join) return;
-	RCursor<EDIFNode> ptr(join->GetNodes());
+		RNodeCursor<EDIFTree,EDIFNode> ptr(join);
 	for(ptr.Start();!ptr.End();ptr.Next())
 	{
 		if(ptr()->TagName=="portRef") continue;
 		RString PortName(ptr()->Params);
-		RCursor<EDIFNode> Cur(ptr()->GetNodes());
+		RNodeCursor<EDIFTree,EDIFNode> Cur(ptr());
 		Cur.Start();
 		RString InstName;
 		if(!Cur.End())
@@ -271,7 +258,7 @@ void REDIFFile::EDIFNode::Analyse(REDIFFile* owner)
 			break;
 		case StringId::tPort:                // This is a port of the current Cell
 			dir=2;
-			RCursor<EDIFNode> Cur(GetNodes());
+			RNodeCursor<EDIFTree,EDIFNode> Cur(this);
 			Cur.Start();
 			if(!Cur.End())
 			{
@@ -285,7 +272,7 @@ void REDIFFile::EDIFNode::Analyse(REDIFFile* owner)
 	}
 
 	if(!bSub) return;
-	RCursor<EDIFNode> tag(GetNodes());
+	RNodeCursor<EDIFTree,EDIFNode> tag(this);
 	for(tag.Start();!tag.End();tag.Next())
 		tag()->Analyse(owner);
 
@@ -333,7 +320,7 @@ void REDIFFile::Analyse(R::RTextFile*)
 	new EDIFNode(Tree,0,In);
 
 	// Analyze the nodes
-	RCursor<EDIFNode> Nodes(Tree.GetTop()->GetNodes());
+	RNodeCursor<EDIFTree,EDIFNode> Nodes(Tree);
 	for(Nodes.Start();!Nodes.End();Nodes.Next())
 		Nodes()->Analyse(this);
 }

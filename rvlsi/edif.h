@@ -37,6 +37,7 @@
 #include <rstring.h>
 #include <rtree.h>
 #include <rnode.h>
+#include <rnodecursor.h>
 
 
 //-----------------------------------------------------------------------------
