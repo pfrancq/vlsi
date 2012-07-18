@@ -202,7 +202,7 @@ void KDevVLSI::openDocumentFile(const KUrl& url)
 	}
 	catch(RException& e)
 	{
-		KMessageBox::error(this,e.GetMsg(),"R Exception");
+		KMessageBox::error(this,ToQString(e.GetMsg()),"R Exception");
 	}
 	catch(std::exception& e)
 	{
@@ -385,7 +385,7 @@ void KDevVLSI::viewPolygons(void)
 	}
 	catch(RException& e)
 	{
-		KMessageBox::error(this,e.GetMsg(),"R Exception");
+		KMessageBox::error(this,ToQString(e.GetMsg()),"R Exception");
 	}
 	catch(std::exception& e)
 	{
@@ -426,7 +426,7 @@ void KDevVLSI::importProject(void)
 		}
 		catch(RException& e)
 		{
-			KMessageBox::error(this,e.GetMsg(),"R Exception");
+			KMessageBox::error(this,ToQString(e.GetMsg()),"R Exception");
 		}
 		catch(std::exception& e)
 		{

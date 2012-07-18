@@ -30,6 +30,7 @@
 // include files for R/VLSI Project
 #include <rchromovlsi.h>
 #include <rvlsiapp.h>
+#include <rqt.h>
 
 
 //-----------------------------------------------------------------------------
@@ -79,7 +80,7 @@ KGAView::KGAView(void)
 	}
 	catch(RException& e)
 	{
-		KMessageBox::error(this,e.GetMsg());
+		KMessageBox::error(this,ToQString(e.GetMsg()));
 		Instance=0;
 	}
 	catch(exception& e)
@@ -103,7 +104,7 @@ void KGAView::RunGA(void)
 	if(Instance)
 	{
 		try
-		{		
+		{
 			if(VLSIApp->MaxGen>Gen)
 			{
 				if(VLSIApp->StepGen==0)
@@ -120,7 +121,7 @@ void KGAView::RunGA(void)
 		}
 		catch(RException& e)
 		{
-			KMessageBox::error(this,e.GetMsg());
+			KMessageBox::error(this,ToQString(e.GetMsg()));
 		}
 		catch(exception& e)
 		{

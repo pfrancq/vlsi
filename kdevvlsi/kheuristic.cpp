@@ -164,7 +164,7 @@ void KHeuristic::NextStep(void)
 	}
 	catch(RException& e)
     {
-		KMessageBox::error(this,e.GetMsg());
+		KMessageBox::error(this,ToQString(e.GetMsg()));
 		Draw->repaint();
 		Stop=true;
     }
