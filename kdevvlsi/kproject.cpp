@@ -115,7 +115,7 @@ void KProject::createPrj(void)
 
 		// Vertices
 		item3=new QTreeWidgetItem(item2,QStringList()<<"Vertices");
-		RCursor<RPoint> Cur(Objs()->GetDefaultConfig()->GetPolygon());
+		RCursor<RPoint> Cur(Objs()->GetDefaultConfig()->GetPolygon().GetVertices());
 		for(Cur.Start(),item4=0;!Cur.End();Cur.Next())
 		{
 			if(item4)

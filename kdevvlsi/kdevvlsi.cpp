@@ -190,8 +190,8 @@ void KDevVLSI::openDocumentFile(const KUrl& url)
 	{
 		DestroyDoc=true;
 		Doc=CreateSession(FromQString(url.path()));
-		DestroyDoc=false;
 		KProject* ptr(new KProject(Doc,url.path()));
+		DestroyDoc=false;
 		Desktop->addSubWindow(ptr);
 		ptr->adjustSize();
 		ptr->show();
@@ -216,6 +216,7 @@ void KDevVLSI::openDocumentFile(const KUrl& url)
 	{
 		delete Doc;
 		Doc=0;
+		DeleteSession();
 	}
 	statusMsg(i18n("Ready."));
 }
