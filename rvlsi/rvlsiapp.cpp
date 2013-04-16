@@ -429,7 +429,7 @@ void VLSIParser::EndTag(const RString &namespaceURI, const RString &lName, const
 					throw RException(GetURI()()+"("+RString::Number(GetLineNb())+"): Invalid attribute for 'points'");
 
 				// Add the point
-				Polygon->InsertPtr(new RPoint(X,Y));
+				Polygon->InsertVertex(new RPoint(X,Y));
 			}
 
 			// Make computations
@@ -445,7 +445,7 @@ void VLSIParser::EndTag(const RString &namespaceURI, const RString &lName, const
 				else
 				{
 					// It is the circuit <- get only the size
-					if(Polygon->GetNb()!=1)
+					if(Polygon->GetNbVertices()!=1)
 						throw RException(GetURI()()+"("+RString::Number(GetLineNb())+"): Circuit must defined only the size");
 					Problem->SetLimits(RSize((*Polygon)[0]->X,(*Polygon)[0]->Y));
 				}
@@ -459,8 +459,8 @@ void VLSIParser::EndTag(const RString &namespaceURI, const RString &lName, const
 
 		case pin:
 		{
-			if(Polygon->GetNb()!=2)
-				throw RException(GetURI()()+"("+RString::Number(GetLineNb())+"): 'pin' defines "+RString::Number(Polygon->GetNb())+" points rather than two");
+			if(Polygon->GetNbVertices()!=2)
+				throw RException(GetURI()()+"("+RString::Number(GetLineNb())+"): 'pin' defines "+RString::Number(Polygon->GetNbVertices())+" points rather than two");
 			RObj2DPin* pin(new RObj2DPin(Connector,Connector->GetNb(),*Ids()));
 			//Ids.Pop();
 			RRect rect(*(*Polygon)[0],*(*Polygon)[1]);
@@ -727,8 +727,6 @@ void RVLSIApp::WriteLog(const RString& str)
 //------------------------------------------------------------------------------
 void RVLSIApp::Apply(void)
 {
-	Config.Set("PlugIns Config","default");
-	VLSIConfig.Set("lib/vlsi","default");
 	VLSIConfig.Set("Log File",LogFileName);
 	VLSIConfig.Set("Debug File",DebugFileName);
 	VLSIConfig.SetUInt("Population Size",PopSize);

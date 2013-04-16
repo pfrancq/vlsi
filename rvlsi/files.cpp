@@ -170,7 +170,7 @@ void RProject::Analyse(void)
 		for(Polygon.Start();!Polygon.End();Polygon.Next())
 		{
 			RString Tmp("\t\t\t<svg:polygon svg:points=\"");
-			RCursor<RPoint> Cur(*Polygon());
+			RCursor<RPoint> Cur(Polygon()->GetVertices());
 			for(Cur.Start();!Cur.End();)
 			{
 				Tmp+=RString::Number(Cur()->X)+","+RString::Number(Cur()->Y);

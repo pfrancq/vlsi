@@ -643,7 +643,7 @@ void RGDSFile::Analyse(R::RTextFile* log)
 						x=Cur()->GetType3(j*2);
 						y=Cur()->GetType3(j*2+1);
 						j++;
-						Poly->InsertPtr(new RPoint(x,y));
+						Poly->InsertVertex(new RPoint(x,y));
 					}
 				}
 				break;
