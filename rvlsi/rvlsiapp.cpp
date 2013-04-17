@@ -686,9 +686,9 @@ void RVLSIApp::Init(void)
 RProblem2D* RVLSIApp::CreateSession(const RString& file)
 {
 	if(!IsInit())
-		ThrowRException("Application not initialized");
+		mThrowRException("Application not initialized");
 	if(Session)
-		ThrowRException("A session is already created");
+		mThrowRException("A session is already created");
 
 	// Initialize Session
 	Session=new RProblem2D("VLSI Board");

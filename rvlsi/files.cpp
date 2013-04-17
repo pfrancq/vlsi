@@ -54,7 +54,7 @@ RDataFile::RDataFile(RProject* project,const RURI& uri)
 	: Project(project), URI(uri), Type(vdtNothing)
 {
 	if(!Project)
-		ThrowRException("Cannot have a null project");
+		mThrowRException("Cannot have a null project");
 }
 
 
@@ -103,38 +103,38 @@ void RProject::Analyse(void)
 		RString Line(f.GetLine());
 		int pos(Line.Find('='));
 		if(pos==-1)
-			ThrowRIOException(&f,"Each line must have the form : 'file'='type'");
+			mThrowRIOException(&f,"Each line must have the form : 'file'='type'");
 		RString Type(Line.Mid(pos+1));
 		RURI File(Line.Mid(0,pos));
 		if(Type=="PL2D")
 		{
 			if(!PL2D().IsEmpty())
-				ThrowRIOException(&f,"PL2D file already defined");
+				mThrowRIOException(&f,"PL2D file already defined");
 			PL2D=File;
 		}
 		else if(Type=="LOG")
 		{
 			if(!LogName().IsEmpty())
-				ThrowRIOException(&f,"log file already defined");
+				mThrowRIOException(&f,"log file already defined");
 			LogName=File;
 		}
 		else if(Type=="GDSII")
 		{
 			if(!RFile::Exists(File))
-				ThrowRIOException(&f,"File '"+File()+"' does not exist");
+				mThrowRIOException(&f,"File '"+File()+"' does not exist");
 			InsertPtr(new RGDSFile(this,Line.Mid(0,pos)));
 		}
 		else if(Type=="EDIF2")
 		{
 			if(!RFile::Exists(File))
-				ThrowRIOException(&f,"File '"+File()+"' does not exist");
+				mThrowRIOException(&f,"File '"+File()+"' does not exist");
 			InsertPtr(new REDIFFile(this,Line.Mid(0,pos)));
 		}
 		else
-			ThrowRIOException(&f,"Type must be 'PL2D', 'LOG', 'GDSII' or 'EDIF2");
+			mThrowRIOException(&f,"Type must be 'PL2D', 'LOG', 'GDSII' or 'EDIF2");
 	}
 	if(PL2D().IsEmpty())
-		ThrowRIOException(&f,"File does not contain a PL2D file");
+		mThrowRIOException(&f,"File does not contain a PL2D file");
 
 	// Log file
 	RTextFile* Log(0);

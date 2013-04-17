@@ -129,7 +129,7 @@ REDIFFile::EDIFNode::EDIFNode(REDIFFile::EDIFTree& owner,EDIFNode* parent,RTextF
 
 	// First character must be a (
 	if(in.GetChar()!='(')
-		ThrowRIOException(&in,"'(' expected");
+		mThrowRIOException(&in,"'(' expected");
 	in.SkipSpaces();
 
 	// Read the Tag name
@@ -155,7 +155,7 @@ REDIFFile::EDIFNode::EDIFNode(REDIFFile::EDIFTree& owner,EDIFNode* parent,RTextF
 
 	// There must be something
 	if(in.End())
-		ThrowRIOException(&in,"')' or '(' expected");
+		mThrowRIOException(&in,"')' or '(' expected");
 
 	RChar Car(in.GetNextChar());
 
@@ -167,14 +167,14 @@ REDIFFile::EDIFNode::EDIFNode(REDIFFile::EDIFTree& owner,EDIFNode* parent,RTextF
 		return;
 	}
 	if(Car!='(')
-		ThrowRIOException(&in,"')' or '(' expected");
+		mThrowRIOException(&in,"')' or '(' expected");
 
 	// Read the child nodes
 	while((!in.End())&&(in.GetNextChar()!=')'))
 		new EDIFNode(owner,this,in);
 
 	if(in.End()||(in.GetChar()!=')'))
-		ThrowRIOException(&in,"')' expected");
+		mThrowRIOException(&in,"')' expected");
 
 	in.SkipSpaces();
 }
