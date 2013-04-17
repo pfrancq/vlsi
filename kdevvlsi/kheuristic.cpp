@@ -88,7 +88,7 @@ KHeuristic::KHeuristic(RProblem2D* session,const RString& heuristic)
 	else if(Heuristic=="Center")
 		PlacementHeuristic = new RPlacementCenter(Session->GetNbObjs(),VLSIApp->ComputeFreePolygons,VLSIApp->UseFreePolygons,Random,VLSIApp->HeurArea,VLSIApp->HeurDist,VLSIApp->AllOrientations);
 	else
-		ThrowRException("'"+Heuristic+"' is not a valid heuristic type");
+		mThrowRException("'"+Heuristic+"' is not a valid heuristic type");
 	PlacementHeuristic->Init(Session,this,&Grid);
 	Free=PlacementHeuristic->GetFreePolygons();
 	Draw->setPolys(Free);

@@ -183,7 +183,7 @@ void KDevVLSI::openDocumentFile(const KUrl& url)
 
 	// check, if document already open.
 	if(Doc)
-		ThrowRException("Big Problem : No VLSI session should exist");
+		mThrowRException("Big Problem : No VLSI session should exist");
 
 	// Create the document
 	try
