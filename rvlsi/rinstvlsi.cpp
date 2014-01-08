@@ -6,7 +6,7 @@
 
 	Instance for VLSI placement GA - Implementation
 
-	Copyright 1998-2012 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2014 by Pascal Francq (pascal@francq.info).
 	Copyright 1998-2003 by the Université Libre de Bruxelles (ULB).
 
 	This library is free software; you can redistribute it and/or
