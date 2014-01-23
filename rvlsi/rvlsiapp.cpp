@@ -70,7 +70,7 @@ class VLSIParser : public RXMLParser
 	RString AttrValue;
 	RString AttrValue2;
 	bool Pin;
-	RVectorBool Read;
+	RBoolVector Read;
 	RConnection* Connection;
 	RObj2DConnector* Connector;
 	RObj2DConfigConnector* ConnectorConfig;
