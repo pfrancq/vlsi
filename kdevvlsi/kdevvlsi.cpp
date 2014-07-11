@@ -66,16 +66,16 @@ KDevVLSI::KDevVLSI(int argc, char *argv[])
 	: KXmlGuiWindow(0), RVLSIApp("KDevVLSI",argc,argv),
 	  Desktop(new QMdiArea(this)), Status(new QLabel(statusBar())), Doc(0)
 {
-    setAcceptDrops(true);
-    setCentralWidget(Desktop);
-    initActions();
+   setAcceptDrops(true);
+   setCentralWidget(Desktop);
+   initActions();
 	Status->setPixmap(KIconLoader::global()->loadIcon("project-development-close",KIconLoader::Small));
 	statusBar()->insertWidget(0,Status);
 	statusBar()->insertItem(i18n("Ready."),1);
-    statusBar()->show();
-    setupGUI();
-    Init();
-    readOptions();
+   statusBar()->show();
+   setupGUI();
+   Init();
+   readOptions();
 	fileOpened(false);
 }
 
@@ -142,6 +142,7 @@ void KDevVLSI::fileOpened(bool opened)
 {
 	aFileOpen->setEnabled(!opened);
 	aFileOpenRecent->setEnabled(!opened);
+	aImport->setEnabled(!opened);
 	for(int i=0;i<Actions.count();i++)
 		Actions.at(i)->setEnabled(opened);
 }
@@ -195,9 +196,9 @@ void KDevVLSI::openDocumentFile(const KUrl& url)
 		Desktop->addSubWindow(ptr);
 		ptr->adjustSize();
 		ptr->show();
+		aFileOpenRecent->addUrl(url);
 		fileOpened(true);
 		Status->setPixmap(QPixmap(KIconLoader::global()->loadIcon("project-open",KIconLoader::Small)));
-		aFileOpenRecent->addUrl(url);
 		statusMsg(i18n("Connected"));
 	}
 	catch(RException& e)
