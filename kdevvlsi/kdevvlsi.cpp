@@ -115,7 +115,7 @@ void KDevVLSI::initActions(void)
 	actionCollection()->addAction(QLatin1String("window_cascade"),windowCascade);
 	connect(windowCascade,SIGNAL(triggered(bool)),Desktop,SLOT(cascadeSubWindows()));
 
-//	// Menu "Heuristic"
+	// Menu "Heuristic"
 	Actions.insert(Actions.size(),addAction("&Bottom-Left Heuristic","heuristic_bl",SLOT(heuristicBL()),0,"ALT+B"));
 	Actions.insert(Actions.size(),addAction("&Edge Heuristic","heuristic_edge",SLOT(heuristicEdge()),0,"ALT+E"));
 	Actions.insert(Actions.size(),addAction("&Center Heuristic","heuristic_center",SLOT(heuristicCenter()),0,"ALT+C"));
