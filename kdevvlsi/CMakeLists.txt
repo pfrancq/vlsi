@@ -24,7 +24,7 @@ KDE4_ADD_UI_FILES(KDEVVLSI_SOURCES
 )
 
 KDE4_ADD_EXECUTABLE(kdevvlsi ${KDEVVLSI_SOURCES})
-TARGET_LINK_LIBRARIES(kdevvlsi rvlsi roptimization rcore rcorekde rmath roptimizationkde ${KDE4_KDEUI_LIBS} ${KDE4_KDECORE_LIBS} ${KDE4_KPARTS_LIBS})
+TARGET_LINK_LIBRARIES(kdevvlsi rvlsi roptimization rcore rcoreqt rmath roptimizationqt ${KDE4_KDEUI_LIBS} ${KDE4_KDECORE_LIBS} ${KDE4_KPARTS_LIBS})
 
 
 ########### install files ###############
