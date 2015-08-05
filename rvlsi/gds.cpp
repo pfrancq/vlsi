@@ -32,7 +32,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-#if defined(_BSD_SOURCE) || defined(__GNUC__) || defined(__APPLE_)
+#if defined(_BSD_SOURCE) || defined(__GNUC__) || defined(__APPLE__)
 	#include <unistd.h>
 #else
 	#include <io.h>
@@ -594,7 +594,7 @@ void RGDSFile::Analyse(R::RTextFile* log)
 		{
 			RString Desc(Cur()->GetRecDesc());
 			if(Desc.GetLen())
-				log->WriteLog(Desc);
+				log->WriteLog(Desc,true);
 		}
 		switch(Cur()->RecType)
 		{

@@ -720,7 +720,7 @@ void RVLSIApp::DeleteSession(void)
 void RVLSIApp::WriteLog(const RString& str)
 {
 	if(Log)
-		Log->WriteLog(str);
+		Log->WriteLog(str,true);
 }
 
 
@@ -754,7 +754,7 @@ RVLSIApp::~RVLSIApp(void)
 	VLSIConfig.Save();
 
 	if(Log)
-		Log->WriteLog("Session deleted");
+		Log->WriteLog("Session deleted",true);
 	delete Debug;
 	delete Log;
 }
