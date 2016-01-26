@@ -57,7 +57,7 @@ class VLSIParser : public RXMLParser
 {
 	enum tSection {Undefined,Circuit,Masters,Instances,Connections};
 	enum tTag {unknown,main,circuit,masters,master,polygon,terminal,pin,instances,instance,connections,net,connect};
-	enum tAttr {noattr,points,id,layer,masterattr,instanceattr,terminalattr};
+	enum tAttr {noattr,points,id,layer,masterattr,instanceattr,terminalattr,netweight};
 	tSection Section;
 	tTag Tag;
 	tAttr Attr;
@@ -69,6 +69,7 @@ class VLSIParser : public RXMLParser
 	bool ReadPolygon;
 	RString AttrValue;
 	RString AttrValue2;
+	RString AttrValue3;
 	bool Pin;
 	RBoolVector Read;
 	RConnection* Connection;
@@ -156,6 +157,8 @@ VLSIParser::tAttr VLSIParser::GetAttrType(const RString& ns,const RString& name)
 			return(instanceattr);
 		if(name=="terminal")
 			return(terminalattr);
+		if(name=="weight")
+			return(netweight);
 	}
 	throw RException(GetURI()()+"("+RString::Number(GetLineNb())+"): Invalid attribute '"+name+"'");
 }
@@ -215,7 +218,7 @@ void VLSIParser::BeginTag(const RString &namespaceURI, const RString &lName, con
 
 				case pin:
 					Pin=true;
-					Polygon=new RPolygon(2);
+					Polygon=new RPolygon();
 					break;
 
 				case terminal:
@@ -251,7 +254,7 @@ void VLSIParser::BeginTag(const RString &namespaceURI, const RString &lName, con
 
 				case pin:
 					Pin=true;
-					Polygon=new RPolygon(2);
+					Polygon=new RPolygon();
 					break;
 
 				default:
@@ -282,6 +285,9 @@ void VLSIParser::BeginTag(const RString &namespaceURI, const RString &lName, con
 			{
 				case net:
 					Connection=0;
+					AttrValue.Clear();
+					AttrValue2.Clear();
+					AttrValue3.Clear();
 					break;
 
 				case connect:
@@ -311,14 +317,14 @@ void VLSIParser::BeginTagParsed(const RString &namespaceURI, const RString &lNam
 	switch(Tag)
 	{
 		case circuit:
-			Polygon=new RPolygon(4);
+			Polygon=new RPolygon();
 			break;
 
 		case master:
 			Obj=new RObj2D(Templates.GetNb(),*Ids());
 			Ids.Pop();
 			Templates.InsertPtr(Obj);
-			Polygon=new RPolygon(8);
+			Polygon=new RPolygon();
 			break;
 
 		case terminal:
@@ -326,6 +332,8 @@ void VLSIParser::BeginTagParsed(const RString &namespaceURI, const RString &lNam
 			if(Obj)
 			{
 				// Normal object
+				if(!Ids.GetNb())
+					mThrowRException("Object must have at least one connector");
 				Connector=new RObj2DConnector(Obj,Obj->GetNbConnectors(),*Ids());
 				Ids.Pop();
 				ConnectorConfig=new RObj2DConfigConnector(Connector);
@@ -334,9 +342,12 @@ void VLSIParser::BeginTagParsed(const RString &namespaceURI, const RString &lNam
 			else
 			{
 				// Circuit
-				Connector=Problem->InsertConnector(Problem->GetNbConnectors(),*Ids());
-				ConnectorConfig=Problem->GetDefaultConfig()->GetConnector(*Ids());
-				Ids.Pop();
+				if(Ids.GetNb())
+				{
+					Connector=Problem->InsertConnector(Problem->GetNbConnectors(),*Ids());
+					ConnectorConfig=Problem->GetDefaultConfig()->GetConnector(*Ids());
+					Ids.Pop();
+				}
 			}
 			break;
 		}
@@ -521,6 +532,18 @@ void VLSIParser::EndTag(const RString &namespaceURI, const RString &lName, const
 			break;
 		}
 
+		case net:
+			if(!AttrValue3.IsEmpty())
+			{
+				double weight;
+				bool Ok;
+				weight=AttrValue3.ToDouble(Ok);
+				if(!Ok)
+					mThrowRException(GetURI()()+"("+RString::Number(GetLineNb())+"): Wrong weight parameter '"+AttrValue3+"'");
+				Connection->SetWeight(weight);
+			}
+			break;
+
 		default:
 			break;
 	}
@@ -559,6 +582,11 @@ void VLSIParser::AddAttribute(const RString& namespaceURI,const RString & lName,
 				throw RException(GetURI()()+"("+RString::Number(GetLineNb())+"): Invalid attribute '"+lName+"'");
 			break;
 
+		case netweight:
+			if(Tag!=net)
+				throw RException(GetURI()()+"("+RString::Number(GetLineNb())+"): Invalid attribute '"+lName+"'");
+			break;
+
 		case noattr:
 		case layer:
 			// Nothing to do
@@ -585,6 +613,10 @@ void VLSIParser::Value(const RString& value)
 			(*Ids())+=value;
 			break;
 
+		case netweight:
+			AttrValue3+=value;
+			break;
+
 		case noattr:
 		case layer:
 			// Nothing to do
@@ -602,7 +634,7 @@ void VLSIParser::Value(const RString& value)
 
 //------------------------------------------------------------------------------
 RVLSIApp::RVLSIApp(const RString& name,int argc, char *argv[])
-	: RApplication(name,argc,argv), Log(0), Debug(0), Session(0),VLSIConfig()
+	: RApplication(name,argc,argv), Log(0), Debug(0), Session(0),VLSIConfig(false,"default","lib/vlsi")
 {
 	VLSIApp=this;
 }
@@ -625,6 +657,7 @@ void RVLSIApp::CreateConfig(void)
 	VLSIConfig.InsertParam(RPromLinearCriterion::CreateParam("HeurArea"));
 	VLSIConfig.InsertParam(RPromLinearCriterion::CreateParam("SelectDist"));
 	VLSIConfig.InsertParam(RPromLinearCriterion::CreateParam("SelectWeight"));
+	VLSIConfig.InsertParam(new RParamValue("WeightedDistances",false));
 }
 
 
@@ -633,7 +666,6 @@ void RVLSIApp::Init(void)
 {
 	// Parent initialization
 	RApplication::Init();
-	VLSIConfig.SetConfigInfos("lib/vlsi","default");
 
 	// Get the parameters
 	VLSIConfig.Load();
@@ -651,6 +683,7 @@ void RVLSIApp::Init(void)
 	HeurArea=VLSIConfig.FindParam<R::RParamStruct>("HeurArea");
 	SelectDist=VLSIConfig.FindParam<R::RParamStruct>("SelectDist");
 	SelectWeight=VLSIConfig.FindParam<R::RParamStruct>("SelectWeight");
+	WeightedDistances=VLSIConfig.GetBool("WeightedDistances");
 
 	try
 	{
@@ -692,6 +725,7 @@ RProblem2D* RVLSIApp::CreateSession(const RString& file)
 
 	// Initialize Session
 	Session=new RProblem2D("VLSI Board");
+	Session->SetWeightedDistances(WeightedDistances);
 
 	// Read the file
 	VLSIParser File(Session,file);
@@ -737,6 +771,7 @@ void RVLSIApp::Apply(void)
 	VLSIConfig.SetBool("AllOrientations",AllOrientations);
 	VLSIConfig.Set("Heuristic",Heuristic);
 	VLSIConfig.SetUInt("Step Gen",StepGen);
+	VLSIConfig.SetBool("WeightedDistances",WeightedDistances);
 }
 
 

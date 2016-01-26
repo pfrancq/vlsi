@@ -45,8 +45,7 @@ namespace RVLSI{
 //------------------------------------------------------------------------------
 /**
  * The RGDSFile class represents a GDS data file.
- * @author Pascal Francq
- * @short GDS File.
+  * @short GDS File.
  */
 class RGDSFile : public RDataFile
 {

@@ -54,7 +54,6 @@ class RFitnessVLSI;
 //-----------------------------------------------------------------------------
 /**
 * This class represent the fitness for the VLSI GA.
-* @author Pascal Francq
 * @short VLSI Fitness.
 */
 class RFitnessVLSI : public R::RFitness<double,false>

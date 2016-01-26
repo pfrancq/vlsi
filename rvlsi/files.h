@@ -58,8 +58,7 @@ class RProject;
 //-----------------------------------------------------------------------------
 /**
  * The RDataFile provides a generic data file related to a VLSI project.
- * @author Pascal Francq
- * @short Generic VLSI Data File.
+  * @short Generic VLSI Data File.
  */
 class RDataFile
 {
@@ -138,7 +137,6 @@ public:
 /**
  * The RProject provides a representation of a VLSI project, i.e. a VLSI
  * structure and a set of data files.
- * @author Pascal Francq.
  * @short VLSI Project.
  */
 class RProject : private R::RContainer<RDataFile,true,true>, public RStructure

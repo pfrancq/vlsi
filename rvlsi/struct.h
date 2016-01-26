@@ -59,7 +59,6 @@ class RStructure;                 // A VLSI Structure
 /**
  * The RLibrary class provides a representation for a class of libraries of
  * VLSI cells.
- * @author Pascal Francq.
  * @short Library of VLSI Cells.
  */
 class RLibrary
@@ -118,7 +117,6 @@ public:
 //-----------------------------------------------------------------------------
 /**
  * The RPort class provides a representation for a port of a given cell.
- * @author Pascal Francq.
  * @short Cell Port.
  */
 class RPort
@@ -171,7 +169,6 @@ public:
 //-----------------------------------------------------------------------------
 /**
  * The RCell class provides a representation for a VLSI cell.
- * @author Pascal Francq
  * @short VLSI Cell.
  */
 class RCell
@@ -328,7 +325,6 @@ public:
 //-----------------------------------------------------------------------------
 /**
  * The RInstance class provides a representation for an instance of a cell.
- * @author Pascal Francq
  * @short Cell Instance
  */
 class RInstance
@@ -392,8 +388,7 @@ public:
 //-----------------------------------------------------------------------------
 /**
  * The RPortRef provides a representation for a port of a particular instance.
- * @author Pascal Francq
- * @short Instance Port.
+  * @short Instance Port.
  */
 class RPortRef
 {
@@ -429,7 +424,6 @@ public:
 /**
  * the RNet class provides a representation of a net involving different
  * instance ports.
- * @author Pascal Francq
  * @short Net.
  */
 class RNet
@@ -490,7 +484,6 @@ public:
 /**
  * The RStructure class provides a representation for the structure of a VLSI
  * problem.
- * @author Pascal Francq
  * @short VLSI Structure.
  */
 class RStructure

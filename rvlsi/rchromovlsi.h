@@ -51,8 +51,7 @@ namespace RVLSI{
 //-----------------------------------------------------------------------------
 /**
  * The chromosome for the VLSI GA.
- * @author Pascal Francq
- * @short VLSI GA Chromosome.
+  * @short VLSI GA Chromosome.
  */
 class RChromoVLSI : public R::RChromo2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,R::RGeoInfo>
 {

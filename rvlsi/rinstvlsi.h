@@ -51,7 +51,6 @@ namespace RVLSI{
 //------------------------------------------------------------------------------
 /**
 * This class represent "thread-dependent" data for the VLSI GA.
-* @author Pascal Francq
 * @short VSLI GA "thread-dependent" Data.
 */
 class RThreadDataVLSI : public R::RThreadData2D<RInstVLSI,RChromoVLSI>
@@ -69,7 +68,6 @@ public:
 //------------------------------------------------------------------------------
 /**
 * The instance of the VLSI problem.
-* @author Pascal Francq
 * @short VLSI GA Instance.
 */
 class RInstVLSI : public R::RInst2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,R::RGeoInfo>

@@ -47,7 +47,6 @@ namespace RVLSI{
 /**
 * The RVLSIApp class represents a generic application running a session.
 * @short RVLSI Application
-* @author Pascal Francq
 */
 class RVLSIApp : public R::RApplication
 {
@@ -144,6 +143,11 @@ public:
 	* Size of the Population.
 	*/
 	size_t PopSize;
+
+	/**
+	 * Should the distances computed be weighted?.
+	 */
+	bool WeightedDistances;
 
 public:
 
