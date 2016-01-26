@@ -88,6 +88,7 @@ void KAppOptions::exec(KDevVLSI* app)
 	StepGen->setValue(app->StepGen);
 	Heuristic->setCurrentIndex(Heuristic->findText(ToQString(app->Heuristic)));
 	PopSize->setValue(app->PopSize);
+	WeightedDistances->setChecked(app->WeightedDistances);
 
 	if(KDialog::exec())
 	{
@@ -111,6 +112,7 @@ void KAppOptions::exec(KDevVLSI* app)
 		app->StepGen=StepGen->value();
 		app->Heuristic=FromQString(Heuristic->currentText());
 		app->PopSize=PopSize->value();
+		app->WeightedDistances=WeightedDistances->isChecked();
 		app->Apply();
 	}
 	MainTabIdx=MainTab->currentIndex();

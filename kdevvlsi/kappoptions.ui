@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
-    <height>538</height>
+    <width>631</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -212,10 +212,29 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <item>
-        <widget class="QCheckBox" name="AllOrientations">
-         <property name="text">
-          <string>Test &amp;all Orientations</string>
+        <widget class="QGroupBox" name="groupBox_10">
+         <property name="title">
+          <string>Global</string>
          </property>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <item>
+           <widget class="QCheckBox" name="WeightedDistances">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determine if to compute the distances, their weights are taken into account or not. If so, short high weighted connections will be more important than long less weighted connections.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>Weighted distances?</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="AllOrientations">
+            <property name="text">
+             <string>Test &amp;all Orientations?</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -227,14 +246,14 @@
           <item>
            <widget class="QCheckBox" name="ComputeFreePolygons">
             <property name="text">
-             <string>Ca&amp;lculation</string>
+             <string>Compute</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="UseFreePolygons">
             <property name="text">
-             <string>&amp;Use</string>
+             <string>&amp;Use?</string>
             </property>
            </widget>
           </item>

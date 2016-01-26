@@ -167,10 +167,10 @@ void KProject::createPrj(void)
 			if(item2)
 			{
 				item2=new QTreeWidgetItem(item,item2);
-				item2->setText(0,"Net "+QString(Cons()->GetName()));
+				item2->setText(0,"Net "+QString(Cons()->GetName())+" (Weigth="+QString::number(Cons()->GetWeight())+")");
 			}
 			else
-				item2=new QTreeWidgetItem(item,QStringList()<<"Net "+QString(Cons()->GetName()));
+				item2=new QTreeWidgetItem(item,QStringList()<<"Net "+QString(Cons()->GetName()+" (Weigth="+QString::number(Cons()->GetWeight())+")"));
 
 			RCursor<RObj2DConnector> Cur2(Cons()->GetConnectors());
 			for(Cur2.Start(),item3=0;!Cur2.End();Cur2.Next())

@@ -193,7 +193,7 @@ void KHeuristic::SelectObjects(void)
 	bool* Selected;
 	Selected=new bool [Session->GetNbObjs()];
 	memset(Selected,0,Session->GetNbObjs()*sizeof(bool));
-	FillAggregator(Temp,Selected,&Kernel,Random);
+	FillAggregator(Temp,Selected,&Kernel,Random,Session->MustWeightedDistances());
 	Draw->repaint();
 	delete[] Selected;
 	DestroyAggregators();

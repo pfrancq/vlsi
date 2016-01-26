@@ -74,7 +74,6 @@ KDevVLSI::KDevVLSI(int argc, char *argv[])
 	statusBar()->insertItem(i18n("Ready."),1);
    statusBar()->show();
    setupGUI();
-   Init();
    readOptions();
 	fileOpened(false);
 }

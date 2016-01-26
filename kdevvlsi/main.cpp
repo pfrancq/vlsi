@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 
 	// Init
 	KCmdLineArgs::init( argc, argv, &aboutData );
-    KCmdLineOptions options;
+   KCmdLineOptions options;
 	KCmdLineArgs::addCmdLineOptions(options);
 
 	// Run
@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
 	{
 		KApplication app;
 		KDevVLSI* Center=new KDevVLSI(argc,argv);
+		Center->Init();
 		if(app.isSessionRestored())
 		{
 //			RESTORE(Center);
@@ -96,4 +97,4 @@ int main(int argc, char *argv[])
 		cout<<"Unknown problem"<<endl;
 	}
  	return(0);
-}  
+}
