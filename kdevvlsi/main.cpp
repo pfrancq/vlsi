@@ -6,7 +6,8 @@
 
 	Main program - Implementation.
 
-	Copyright 2000-2014 by Pascal Francq (pascal@francq.info).
+	Copyright 2000-2016 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2008 by the Université Libre de Bruxelles (ULB).
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -34,67 +35,38 @@ using namespace std;
 
 
 //-----------------------------------------------------------------------------
-// include files for KDE
-#include <kapplication.h>
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
-#include <KDE/KLocale>
+// include files for Qt
+#include <QMessageBox>
 
 
 //-----------------------------------------------------------------------------
 // include file for current application
-#include <kdevvlsi.h>
-
-
-//-----------------------------------------------------------------------------
-// Description of the application
-static const char *description =
-	"Development Application for VLSI Placement.";
+#include <qvlsiapp.h>
 
 
 //-----------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
-	setlocale(LC_CTYPE,"");
-
-    // Information about the application
-	KAboutData aboutData("kdevvlsi",0,ki18n("KDevVLSI"),"1.89",ki18n(description),
-			KAboutData::License_GPL,ki18n("(C) 2000-2014 by Pascal Francq\n"),
-			KLocalizedString(),"http://www.otlet-institute.org", "pascal@francq.info");
-	aboutData.addAuthor(ki18n("Pascal Francq"),ki18n("Project Manager"),"pascal@francq.info");
-
-	// Init
-	KCmdLineArgs::init( argc, argv, &aboutData );
-   KCmdLineOptions options;
-	KCmdLineArgs::addCmdLineOptions(options);
-
 	// Run
+	QApplication Super(argc,argv);
 	try
 	{
-		KApplication app;
-		KDevVLSI* Center=new KDevVLSI(argc,argv);
-		Center->Init();
-		if(app.isSessionRestored())
-		{
-//			RESTORE(Center);
-		}
-		else
-		{
-			Center->show();
-		}
-		return(app.exec());
+		QVLSIApp App(argc,argv);
+		App.Execute();
 	}
-	catch(RException& e)
+	catch(R::RException& e)
 	{
-		cout<<e.GetMsg()<<endl;
+		QMessageBox::critical(0,QWidget::tr("R Exception"),QWidget::trUtf8(e.GetMsg()),QMessageBox::Ok);
 	}
-	catch(exception& e)
+	catch(std::exception& e)
 	{
-		cout<<e.what()<<endl;
+		QMessageBox::critical(0,QWidget::tr("Standard exception"),QWidget::trUtf8(e.what()),QMessageBox::Ok);
 	}
 	catch(...)
 	{
-		cout<<"Unknown problem"<<endl;
+		QMessageBox::critical(0,QWidget::tr("Unknown exception"),QWidget::trUtf8("Unknown problem"),QMessageBox::Ok);
 	}
  	return(0);
 }
+
+

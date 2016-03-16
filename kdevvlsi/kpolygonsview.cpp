@@ -6,7 +6,8 @@
 
 	View a set of polygons from a file - Implementation.
 
-	Copyright 2000-2014 by Pascal Francq (pascal@francq.info).
+	Copyright 2000-2016 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2008 by the Université Libre de Bruxelles (ULB).
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -57,7 +58,7 @@ KPolygonsView::KPolygonsView(void)
 
 
 //-----------------------------------------------------------------------------
-void KPolygonsView::Load(KUrl& /*url*/)
+void KPolygonsView::Load(QString& /*url*/)
 {
 	// Load the file
 /*	RTextFile f(FromQString(url.path()));

@@ -6,7 +6,8 @@
 
 	Run a heuristic on the problem - Implementation.
 
-	Copyright 2000-2014 by Pascal Francq (pascal@francq.info).
+	Copyright 2000-2016 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2008 by the Université Libre de Bruxelles (ULB).
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -44,9 +45,8 @@ using namespace R;
 
 
 //-----------------------------------------------------------------------------
-// include files for Qt/KDE
-#include <kapplication.h>
-#include <kmessagebox.h>
+// include files for Qt
+#include <QMessageBox>
 
 
 //-----------------------------------------------------------------------------
@@ -163,11 +163,23 @@ void KHeuristic::NextStep(void)
 		}
 	}
 	catch(RException& e)
-    {
-		KMessageBox::error(this,ToQString(e.GetMsg()));
+	{
+		QMessageBox::critical(0,QWidget::tr("R exception"),ToQString(e.GetMsg()),QMessageBox::Ok);
 		Draw->repaint();
 		Stop=true;
-    }
+	}
+	catch(std::exception& e)
+	{
+		QMessageBox::critical(0,QWidget::tr("std::exception"),QWidget::trUtf8(e.what()),QMessageBox::Ok);
+		Draw->repaint();
+		Stop=true;
+	}
+	catch(...)
+	{
+		QMessageBox::critical(0,QWidget::tr("Unknown exception"),QWidget::trUtf8("Unknown problem"),QMessageBox::Ok);
+		Draw->repaint();
+		Stop=true;
+	}
 }
 
 

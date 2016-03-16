@@ -6,7 +6,8 @@
 
 	View of a VLSI project - Implementation.
 
-	Copyright 2000-2014 by Pascal Francq (pascal@francq.info).
+	Copyright 2000-2016 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2008 by the Université Libre de Bruxelles (ULB).
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -44,14 +45,14 @@
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-KProject::KProject(RProblem2D* session,const QString& uri)
+KProject::KProject(RProblem2D* session,const RString& uri)
 	: QMdiSubWindow(), Ui_KProject(), Session(session)
 {
 	QWidget* ptr=new QWidget();
 	setupUi(ptr);
 	setWidget(ptr);
 	setAttribute(Qt::WA_DeleteOnClose);
-	setWindowTitle(uri);
+	setWindowTitle(ToQString(uri));
 	createPrj();
 }
 

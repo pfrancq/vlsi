@@ -6,7 +6,8 @@
 
 	Main Window - Header.
 
-	Copyright 2000-2014 by Pascal Francq (pascal@francq.info).
+	Copyright 2000-2016 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2008 by the Université Libre de Bruxelles (ULB).
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -32,20 +33,14 @@
 
 
 //-----------------------------------------------------------------------------
-// include files for R Project
-#include <rvlsiapp.h>
-using namespace R;
-using namespace RVLSI;
+// include files for Qt
+#include <QMainWindow>
 
 
 //-----------------------------------------------------------------------------
-// include files for Qt/KDE
-#include <QtGui/QMdiArea>
-#include <QtCore/QList>
-#include <QtGui/QLabel>
-#include <kaction.h>
-#include <krecentfilesaction.h>
-#include <kxmlguiwindow.h>
+// include files for current project
+#include <qvlsiapp.h>
+#include <ui_kdevvlsi.h>
 
 
 //-----------------------------------------------------------------------------
@@ -54,95 +49,63 @@ using namespace RVLSI;
  * @author Pascal Francq.
  * @short Main Window.
  */
-class KDevVLSI : public KXmlGuiWindow, public RVLSIApp
+class KDevVLSI : public QMainWindow, Ui_KDevVLSI
 {
 	Q_OBJECT
 
 	/**
-	 * Desktop of the application.
+	 * Application.
 	 */
-	QMdiArea* Desktop;
+	QVLSIApp* App;
 
 	/**
-	 * Label to hold an image representing the status of the file opened.
-	 */
-	QLabel* Status;
-
-	/**
-	 * Connect to the session.
-	 */
-	KAction* aFileOpen;
-
-	/**
-	 * Open a recent file.
-	 */
-	KRecentFilesAction* aFileOpenRecent;
-
-	/**
-	 * Import a VLSI project.
-	 */
-	KAction* aImport;
-
-	/**
-	 * All available actions once a file is connected.
-	 */
-	QList<KAction*> Actions;
-
-	/**
-	 * "Document" representing the problem to analyze.
+	 * "Document" representing the problem to analyse.
 	 */
 	RProblem2D* Doc;
+
+	/**
+	 * Number of recent files to stored.
+	 */
+	enum {MaxRecentFiles=5};
+
+	/**
+	 * Actions for last opened files.
+	 */
+	QAction* recentFiles[MaxRecentFiles];
 
 public:
 
 	/**
 	* Constructor of KDevVLSI.
-	* @param argc            Number of arguments.
-	* @param argv            Values of arguments.
+	* @param app             Application.
 	*/
-	KDevVLSI(int argc, char *argv[]);
+	KDevVLSI(QVLSIApp* app);
 
 private:
 
 	/**
-	 * Create an action for a given menu item.
-	 * @param title          Title of the menu item.
-	 * @param name           Name of the action (as appearing in .rc file).
-	 * @param slot           Corresponding slot.
-	 * @param icon           Icon associated.
-	 * @param key            Shortcut associated.
-	 */
-	KAction* addAction(const char* title,const char* name,const char* slot,const char* icon=0,const char* key=0);
-
-	/**
-	* Initializes the KActions of the application.
-	*/
-	void initActions(void);
-
-	/**
-	* Save general Options like all bar positions and status as well as the
-	* geometry and the recent file list to the configuration file.
-	*/
-	void saveOptions(void);
-
-	/**
-	* Read general Options again and initialize all variables like the recent
-	* file list.
-	*/
-	void readOptions(void);
+	 * Connect the menu entries with the slots.
+    */
+	void connectMenus(void);
 
 	/**
 	 * Call when a file is opened or not. Basically, it enable/disable
 	 * the menu items.
 	 * @param opened      Opened?
 	 */
-	void fileOpened(bool opened);
+	void fileOpened(void);
 
 	/**
 	* Open a specific file.
 	* @param url             URL of the file.
 	*/
-	void openDocumentFile(const KUrl& url);
+	void openDocumentFile(const RString& url);
+
+	/**
+	 * Update the recent file options.
+	 * @param url             URL of the file.
+	 */
+	void updateRecentFileActions(const RString& url);
 
 	/**
 	* Changes the status bar contents for the standard label permanently, used
@@ -161,7 +124,7 @@ private slots:
 	/**
 	* Opens a file from the recent files menu.
 	*/
-	void openRecentFile(const KUrl& url);
+	void openRecentFile(void);
 
 	/**
 	* Close the actual VLSI project.
@@ -238,12 +201,24 @@ private slots:
 	 */
 	void importProject(void);
 
+	/**
+	 * Export the results.
+	 */
+	void exportResults(void);
+
+	/**
+	 * About dialog box.
+	 */
+	void about(void);
+
 public:
 
 	/**
 	* Destructor of KDevVLSI.
 	*/
-	~KDevVLSI(void);
+	virtual ~KDevVLSI(void);
+
+	friend class QVLSIApp;
 };
 
 

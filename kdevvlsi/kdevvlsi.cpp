@@ -6,7 +6,8 @@
 
 	Main Window - Implementation.
 
-	Copyright 2000-2014 by Pascal Francq (pascal@francq.info).
+	Copyright 2000-2016 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2008 by the Université Libre de Bruxelles (ULB).
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -30,18 +31,19 @@
 // include files for R/RVLSI Project
 #include <rqt.h>
 #include <files.h>
+#include <rtextfile.h>
 
 
 //-----------------------------------------------------------------------------
-// include files for Qt/KDE
-#include <kstatusbar.h>
-#include <kactioncollection.h>
-#include <kstandardaction.h>
-#include <KDE/KLocale>
-#include <kapplication.h>
-#include <KDE/KConfigGroup>
-#include <kmessagebox.h>
-#include <kfiledialog.h>
+// include files for R
+#include <qraboutdialog.h>
+#include <rchromovlsi.h>
+
+
+//-----------------------------------------------------------------------------
+// include files for Qt
+#include <QMessageBox>
+#include <QFileDialog>
 
 
 //-----------------------------------------------------------------------------
@@ -62,173 +64,183 @@
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-KDevVLSI::KDevVLSI(int argc, char *argv[])
-	: KXmlGuiWindow(0), RVLSIApp("KDevVLSI",argc,argv),
-	  Desktop(new QMdiArea(this)), Status(new QLabel(statusBar())), Doc(0)
+KDevVLSI::KDevVLSI(QVLSIApp* app)
+	: QMainWindow(0), App(app), Doc(0)
 {
-   setAcceptDrops(true);
-   setCentralWidget(Desktop);
-   initActions();
-	Status->setPixmap(KIconLoader::global()->loadIcon("project-development-close",KIconLoader::Small));
-	statusBar()->insertWidget(0,Status);
-	statusBar()->insertItem(i18n("Ready."),1);
-   statusBar()->show();
-   setupGUI();
-   readOptions();
-	fileOpened(false);
+	setupUi(this);
+	connectMenus();
+	fileOpened();
+	setWindowTitle("KDevVLSI");
 }
 
 
 //-----------------------------------------------------------------------------
-KAction* KDevVLSI::addAction(const char* title,const char* name,const char* slot,const char* icon,const char* key)
+void KDevVLSI::connectMenus(void)
 {
-	KAction* ptr(new KAction(i18n(title),this));
-	if(icon)
-		ptr->setIcon(KIcon(icon));
-	if(key)
-		ptr->setShortcut(QKeySequence(tr(key)));
-	actionCollection()->addAction(QLatin1String(name),ptr);
-	connect(ptr,SIGNAL(triggered(bool)),this,slot);
-	return(ptr);
-}
 
+	// Menu 'File'
+	connect(aOpen,SIGNAL(triggered()),this,SLOT(openFile()));
+	connect(aImport,SIGNAL(triggered()),this,SLOT(importProject()));
+	connect(aExport,SIGNAL(triggered()),this,SLOT(exportResults()));
+	connect(aOptions,SIGNAL(triggered()),this,SLOT(optionsPreferences()));
+	connect(aExit,SIGNAL(triggered()),this,SLOT(applicationQuit()));
 
-//-----------------------------------------------------------------------------
-void KDevVLSI::initActions(void)
-{
-	// Menu "file"
-	aFileOpen= KStandardAction::open(this, SLOT(openFile()), actionCollection());
-	aFileOpenRecent = KStandardAction::openRecent(this, SLOT(openRecentFile(const KUrl&)), actionCollection());
-	Actions.insert(Actions.size(),KStandardAction::close(this, SLOT(closeFile()), actionCollection()));
-	KStandardAction::quit(this, SLOT(applicationQuit()), actionCollection());
-	aImport=addAction("&Import VLSI Project...","importProject",SLOT(importProject()),0,0);
-
-	// Menu "Window"
-	KAction* windowCloseAll(new KAction(i18n("&Close All"),this));
-	actionCollection()->addAction(QLatin1String("window_closeall"),windowCloseAll);
-	connect(windowCloseAll,SIGNAL(triggered(bool)),Desktop,SLOT(closeAllSubWindows()));
-	KAction* windowTile(new KAction(i18n("&Tile"),this));
-	actionCollection()->addAction(QLatin1String("window_tile"),windowTile);
-	connect(windowTile,SIGNAL(triggered(bool)),Desktop,SLOT(tileSubWindows()));
-	KAction* windowCascade(new KAction(i18n("&Cascade"),this));
-	actionCollection()->addAction(QLatin1String("window_cascade"),windowCascade);
-	connect(windowCascade,SIGNAL(triggered(bool)),Desktop,SLOT(cascadeSubWindows()));
+	// Recent files
+	for(int i=0;i<MaxRecentFiles;++i)
+	{
+		recentFiles[i] = new QAction(this);
+		if(App->LastOpenedFiles.GetNb()>i)
+		{
+			recentFiles[i]->setText(ToQString(*App->LastOpenedFiles[i]));
+			recentFiles[i]->setVisible(true);
+			QVariant variant;
+			variant.setValue(App->LastOpenedFiles[i]);
+			recentFiles[i]->setData(variant);
+		}
+		else
+			recentFiles[i]->setVisible(false);
+      connect(recentFiles[i], SIGNAL(triggered()),this, SLOT(openRecentFile()));
+   }
+	//menuFile->addSeparator();
+   for (int i = 0; i < MaxRecentFiles; ++i)
+        menuOpenRecent->addAction(recentFiles[i]);
 
 	// Menu "Heuristic"
-	Actions.insert(Actions.size(),addAction("&Bottom-Left Heuristic","heuristic_bl",SLOT(heuristicBL()),0,"ALT+B"));
-	Actions.insert(Actions.size(),addAction("&Edge Heuristic","heuristic_edge",SLOT(heuristicEdge()),0,"ALT+E"));
-	Actions.insert(Actions.size(),addAction("&Center Heuristic","heuristic_center",SLOT(heuristicCenter()),0,"ALT+C"));
-	Actions.insert(Actions.size(),addAction("&Run Heuristic","heuristic_run",SLOT(heuristicRun()),"run","ALT+R"));
-	Actions.insert(Actions.size(),addAction("&Next step for Heuristic","heuristic_next",SLOT(heuristicNext()),"next","ALT+N"));
-	Actions.insert(Actions.size(),addAction("&Select objects of Heuristic","heuristic_select",SLOT(heuristicSelect()),"queue","ALT+O"));
+	connect(aBottomLeft,SIGNAL(triggered()),this,SLOT(heuristicBL()));
+	connect(aEdge,SIGNAL(triggered()),this,SLOT(heuristicEdge()));
+	connect(aCenter,SIGNAL(triggered()),this,SLOT(heuristicCenter()));
+	connect(aRunHeuristic,SIGNAL(triggered()),this,SLOT(heuristicRun()));
+	connect(aNextStep,SIGNAL(triggered()),this,SLOT(heuristicNext()));
+	connect(aSelectObjects,SIGNAL(triggered()),this,SLOT(heuristicSelect()));
 
 	// Menu "GA"
-	Actions.insert(Actions.size(),addAction("&Initialize","ga_init",SLOT(GAInit()),"reload","ALT+I"));
-	Actions.insert(Actions.size(),addAction("&Start","ga_start",SLOT(GAStart()),"exec","ALT+S"));
-	Actions.insert(Actions.size(),addAction("&Pause","ga_pause",SLOT(GAPause()),"player_pause","ALT+P"));
-	Actions.insert(Actions.size(),addAction("&Stop","ga_stop",SLOT(GAStop()),"stop","ALT+T"));
+	connect(aInitialise,SIGNAL(triggered()),this,SLOT(GAInit()));
+	connect(aStart,SIGNAL(triggered()),this,SLOT(GAStart()));
+	connect(aPause,SIGNAL(triggered()),this,SLOT(GAPause()));
+	connect(aStop,SIGNAL(triggered()),this,SLOT(GAStop()));
 
-	// Menu "Tools"
-	addAction("View &Polygons","tools_view_polygons",SLOT(viewPolygons()),"viewmag",0);
+	// Menu 'Window'
+	connect(aCloseAll,SIGNAL(triggered()),Desktop,SLOT(closeAllSubWindows()));
+	connect(aTile,SIGNAL(triggered()),Desktop,SLOT(tileSubWindows()));
+	connect(aCascade,SIGNAL(triggered()),Desktop,SLOT(cascadeSubWindows()));
 
-	// Menu Settings
-	KStandardAction::preferences(this,SLOT(optionsPreferences()),actionCollection());
+	// Menu "Help"
+	//connect(aViewPolygons,SIGNAL(triggered()),this,SLOT(viewPolygons()));
+	connect(aAbout,SIGNAL(triggered()),this,SLOT(about()));
 }
 
 
 //-----------------------------------------------------------------------------
-void KDevVLSI::fileOpened(bool opened)
+void KDevVLSI::fileOpened(void)
 {
-	aFileOpen->setEnabled(!opened);
-	aFileOpenRecent->setEnabled(!opened);
+	bool opened(Doc!=0);
 	aImport->setEnabled(!opened);
-	for(int i=0;i<Actions.count();i++)
-		Actions.at(i)->setEnabled(opened);
-}
-
-
-//-----------------------------------------------------------------------------
-void KDevVLSI::saveOptions(void)
-{
-	KConfig Config;
-	KConfigGroup General(&Config,"KDevVLSI");
-	KAppOptions::saveOptions();
-	aFileOpenRecent->saveEntries(General);
-}
-
-
-//-----------------------------------------------------------------------------
-void KDevVLSI::readOptions(void)
-{
-	KConfig Config;
-	KConfigGroup General(&Config,"KDevVLSI");
-	KAppOptions::readOptions();
-	aFileOpenRecent->loadEntries(General);
+	aOptions->setEnabled(opened);
+	aBottomLeft->setEnabled(opened);
+	aEdge->setEnabled(opened);
+	aCenter->setEnabled(opened);
+	aRunHeuristic->setEnabled(opened);
+	aNextStep->setEnabled(opened);
+	aSelectObjects->setEnabled(opened);
+	aInitialise->setEnabled(opened);
+	aStart->setEnabled(opened);
+	aPause->setEnabled(opened);
+	aStop->setEnabled(opened);
+	aCloseAll->setEnabled(opened);
+	aTile->setEnabled(opened);
+	aCascade->setEnabled(opened);
+	aViewPolygons->setEnabled(opened);
+	aExport->setEnabled(opened);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::statusMsg(const QString& text)
 {
-	statusBar()->changeItem(text,1);
+	statusBar()->showMessage(text);
 }
 
 
 //-----------------------------------------------------------------------------
-void KDevVLSI::openDocumentFile(const KUrl& url)
+void KDevVLSI::openDocumentFile(const RString& url)
 {
 	bool DestroyDoc(false);
 
-	statusMsg(i18n("Opening file..."));
+	statusMsg(tr("Opening file..."));
 
 	// check, if document already open.
-	if(Doc)
-		mThrowRException("Big Problem : No VLSI session should exist");
+	closeFile();
 
 	// Create the document
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	try
 	{
 		DestroyDoc=true;
-		Doc=CreateSession(FromQString(url.path()));
-		KProject* ptr(new KProject(Doc,url.path()));
+		Doc=App->CreateSession(url);
+		KProject* ptr(new KProject(Doc,url));
 		DestroyDoc=false;
 		Desktop->addSubWindow(ptr);
 		ptr->adjustSize();
 		ptr->show();
-		aFileOpenRecent->addUrl(url);
-		fileOpened(true);
-		Status->setPixmap(QPixmap(KIconLoader::global()->loadIcon("project-open",KIconLoader::Small)));
-		statusMsg(i18n("Connected"));
+		updateRecentFileActions(url);
+		fileOpened();
+		statusMsg(tr("Connected"));
+		QApplication::setOverrideCursor(Qt::ArrowCursor);
 	}
 	catch(RException& e)
 	{
-		KMessageBox::error(this,ToQString(e.GetMsg()),"R Exception");
+		QApplication::setOverrideCursor(Qt::ArrowCursor);
+		QMessageBox::critical(0,QWidget::tr("R exception"),ToQString(e.GetMsg()),QMessageBox::Ok);
 	}
 	catch(std::exception& e)
 	{
-		KMessageBox::error(this,e.what(),"std::exception");
+		QApplication::setOverrideCursor(Qt::ArrowCursor);
+		QMessageBox::critical(0,QWidget::tr("std::exception"),QWidget::trUtf8(e.what()),QMessageBox::Ok);
 	}
 	catch(...)
 	{
-		KMessageBox::error(this,"Undefined Error");
+		QApplication::setOverrideCursor(Qt::ArrowCursor);
+		QMessageBox::critical(0,QWidget::tr("Unknown exception"),QWidget::trUtf8("Unknown problem"),QMessageBox::Ok);
 	}
 	if(DestroyDoc)
 	{
 		delete Doc;
 		Doc=0;
-		DeleteSession();
+		App->DeleteSession();
 	}
-	statusMsg(i18n("Ready."));
+	statusMsg(tr("Ready."));
 }
 
 
 //-----------------------------------------------------------------------------
+void KDevVLSI::updateRecentFileActions(const RString& url)
+{
+	if(App->LastOpenedFiles.IsIn(url))
+		return;
+
+	// Update the list
+	if(App->LastOpenedFiles.GetNb()==MaxRecentFiles)
+		App->LastOpenedFiles.DeletePtrAt(MaxRecentFiles-1);
+	App->LastOpenedFiles.InsertPtrAt(new RString(url),0,false);
+
+	// Update the menu
+	RCursor<RString> Cur(App->LastOpenedFiles);
+	for(Cur.Start();!Cur.End();Cur.Next())
+	{
+		recentFiles[Cur.GetPos()]->setText(ToQString(*Cur()));
+		QVariant variant;
+		variant.setValue(Cur());
+      recentFiles[Cur.GetPos()]->setData(variant);
+      recentFiles[Cur.GetPos()]->setVisible(true);
+	}
+}
+
+//-----------------------------------------------------------------------------
 void KDevVLSI::applicationQuit(void)
 {
-	statusMsg(i18n("Exiting..."));
-	saveOptions();
+	statusMsg(tr("Exiting..."));
 	closeFile();
-	statusMsg(i18n("Ready."));
+	statusMsg(tr("Ready."));
 	close();
 }
 
@@ -236,165 +248,193 @@ void KDevVLSI::applicationQuit(void)
 //-----------------------------------------------------------------------------
 void KDevVLSI::openFile(void)
 {
-	statusMsg(i18n("Opening file..."));
-	KUrl url(KFileDialog::getOpenFileName(KUrl("~"),"*.pl2d|2D Placement files",Desktop,"Open File..."));
+	statusMsg(tr("Opening file..."));
+
+	QString url(QFileDialog::getOpenFileName(this,tr("Open Project"),QDir::homePath(), tr("2D Problem files (*.pl2d)")));
 	if(url.isEmpty())
-		QMessageBox::critical(this,"KDevVLSI","File could not be found");
-	else
 	{
-		openDocumentFile(url);
-		aFileOpenRecent->addUrl(url);
+		statusMsg(tr("Ready."));
+		return;
 	}
-	statusMsg(i18n("Ready."));
+	openDocumentFile(FromQString(url));
+	statusMsg(tr("Ready."));
 }
 
 
 ////-----------------------------------------------------------------------------
-void KDevVLSI::openRecentFile(const KUrl& url)
+void KDevVLSI::openRecentFile(void)
 {
-	statusMsg(i18n("Opening file..."));
-	openDocumentFile(url);
-	statusMsg(i18n("Ready."));
+	statusMsg(tr("Opening file..."));
+   QAction *action = qobject_cast<QAction *>(sender());
+   if(action)
+       openDocumentFile(*action->data().value<RString*>());
+	statusMsg(tr("Ready."));
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::closeFile(void)
 {
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	if(Doc)
 	{
 		Desktop->closeAllSubWindows();
-		DeleteSession();
+		App->DeleteSession();
 		Doc=0;
-		fileOpened(false);
-		statusMsg(i18n("No VLSI !"));
-		Status->setPixmap(KIconLoader::global()->loadIcon("project-development-close",KIconLoader::Small));
+		fileOpened();
+		statusMsg(tr("No VLSI !"));
 	}
+	QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::heuristicBL(void)
 {
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	KHeuristic* ptr(new KHeuristic(Doc,"Bottom-Left"));
 	Desktop->addSubWindow(ptr);
 	ptr->adjustSize();
 	ptr->show();
 	ptr->RunHeuristic();
+	QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::heuristicEdge(void)
 {
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	KHeuristic* ptr(new KHeuristic(Doc,"Edge"));
 	Desktop->addSubWindow(ptr);
 	ptr->adjustSize();
 	ptr->show();
 	ptr->RunHeuristic();
+	QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::heuristicCenter(void)
 {
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	KHeuristic* ptr(new KHeuristic(Doc,"Center"));
 	Desktop->addSubWindow(ptr);
 	ptr->adjustSize();
 	ptr->show();
 	ptr->RunHeuristic();
+	QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::heuristicNext(void)
 {
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	KHeuristic* Win(dynamic_cast<KHeuristic*>(Desktop->activeSubWindow()));
 	if(Win)
 		Win->NextStep();
+	QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::heuristicRun(void)
 {
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	KHeuristic* Win(dynamic_cast<KHeuristic*>(Desktop->activeSubWindow()));
 	if(Win)
 		Win->RunToEnd();
+	QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::heuristicSelect(void)
 {
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	KHeuristic* Win(dynamic_cast<KHeuristic*>(Desktop->activeSubWindow()));
 	if(Win)
 		Win->SelectObjects();
+	QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::GAInit(void)
 {
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	KGAView* ptr(new KGAView());
 	Desktop->addSubWindow(ptr);
 	ptr->adjustSize();
 	ptr->show();
+	QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::GAStart(void)
 {
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	KGAView* Win(dynamic_cast<KGAView*>(Desktop->activeSubWindow()));
 	if(Win)
 		Win->RunGA();
+	QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::GAPause(void)
 {
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	KGAView* Win(dynamic_cast<KGAView*>(Desktop->activeSubWindow()));
 	if(Win)
 		Win->PauseGA();
+	QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::GAStop(void)
 {
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	KGAView* Win(dynamic_cast<KGAView*>(Desktop->activeSubWindow()));
 	if(Win)
 		Win->StopGA();
+	QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::viewPolygons(void)
 {
-	KUrl Url(KFileDialog::getOpenFileName(KUrl("~"),QString::null,Desktop,"Open Polygon File..."));
+	QString Url(QFileDialog::getOpenFileName(this,tr("Open Polygon File"),QDir::homePath(), tr("*.*")));
 	if(Url.isEmpty())
 		return;
 	try
 	{
+		QApplication::setOverrideCursor(Qt::WaitCursor);
 		KPolygonsView* ptr(new KPolygonsView());
 		Desktop->addSubWindow(ptr);
 		ptr->adjustSize();
 		ptr->show();
 		ptr->Load(Url);
+		QApplication::setOverrideCursor(Qt::ArrowCursor);
 	}
 	catch(RException& e)
 	{
-		KMessageBox::error(this,ToQString(e.GetMsg()),"R Exception");
+		QApplication::setOverrideCursor(Qt::ArrowCursor);
+		QMessageBox::critical(0,QWidget::tr("R exception"),ToQString(e.GetMsg()),QMessageBox::Ok);
 	}
 	catch(std::exception& e)
 	{
-		KMessageBox::error(this,e.what(),"std::exception");
+		QApplication::setOverrideCursor(Qt::ArrowCursor);
+		QMessageBox::critical(0,QWidget::tr("std::exception"),QWidget::trUtf8(e.what()),QMessageBox::Ok);
 	}
 	catch(...)
 	{
-		KMessageBox::error(this,"Undefined Error");
+		QApplication::setOverrideCursor(Qt::ArrowCursor);
+		QMessageBox::critical(0,QWidget::tr("Unknown exception"),QWidget::trUtf8("Unknown problem"),QMessageBox::Ok);
 	}
 }
 
@@ -402,48 +442,118 @@ void KDevVLSI::viewPolygons(void)
 //-----------------------------------------------------------------------------
 void KDevVLSI::optionsPreferences(void)
 {
-	statusMsg(i18n("Set the options..."));
+	statusMsg(tr("Set the options..."));
 
 	KAppOptions Dlg(this);
-	Dlg.exec(this);
-	statusMsg(i18n("Ready."));
+	Dlg.exec(App);
+	statusMsg(tr("Ready."));
 }
 
 
 //-----------------------------------------------------------------------------
 void KDevVLSI::importProject(void)
 {
-	statusMsg(i18n("Opening file..."));
-	KUrl url(KFileDialog::getOpenFileName(KUrl("~"),"*.vlsiprj|VLSI Project",Desktop,"Open File..."));
-	//KUrl url("/home/pfrancq/Documents/data/vlsi/example.vlsiprj");
+	statusMsg(tr("Opening file..."));
+	QString url(QFileDialog::getOpenFileName(this,tr("Import"),QDir::homePath(), tr("*.vlsiprj|VLSI Project")));
 	if(url.isEmpty())
-		QMessageBox::critical(this,"KDevVLSI","File could not be found");
-	else
 	{
-		try
-		{
-			RProject Project(FromQString(url.path()));
-			Project.Analyse();
-		}
-		catch(RException& e)
-		{
-			KMessageBox::error(this,ToQString(e.GetMsg()),"R Exception");
-		}
-		catch(std::exception& e)
-		{
-			KMessageBox::error(this,e.what(),"std::exception");
-		}
-		catch(...)
-		{
-			KMessageBox::error(this,"Undefined Error");
-		}
+		statusMsg(tr("Ready."));
+		return;
 	}
-	statusMsg(i18n("Ready."));
+	try
+	{
+		QApplication::setOverrideCursor(Qt::WaitCursor);
+		RProject Project(FromQString(url));
+		Project.Analyse();
+		QApplication::setOverrideCursor(Qt::ArrowCursor);
+	}
+	catch(RException& e)
+	{
+		QApplication::setOverrideCursor(Qt::ArrowCursor);
+		QMessageBox::critical(0,QWidget::tr("R exception"),ToQString(e.GetMsg()),QMessageBox::Ok);
+	}
+	catch(std::exception& e)
+	{
+		QApplication::setOverrideCursor(Qt::ArrowCursor);
+		QMessageBox::critical(0,QWidget::tr("std::exception"),QWidget::trUtf8(e.what()),QMessageBox::Ok);
+	}
+	catch(...)
+	{
+		QApplication::setOverrideCursor(Qt::ArrowCursor);
+		QMessageBox::critical(0,QWidget::tr("Unknown exception"),QWidget::trUtf8("Unknown problem"),QMessageBox::Ok);
+	}
+	statusMsg(tr("Ready."));
+}
+
+
+//-----------------------------------------------------------------------------
+RString Cast(double d)
+{
+	return(RString::Number(static_cast<long>(d)));
+}
+
+
+//-----------------------------------------------------------------------------
+void KDevVLSI::exportResults(void)
+{
+	// Look if the window is a result one
+
+	QMdiSubWindow* Cur(Desktop->currentSubWindow());
+	if(!Cur)
+		return;
+
+	// Find the layout to export
+	RLayout* Layout(0);
+	if(dynamic_cast<KHeuristic*>(Cur))
+		Layout=dynamic_cast<KHeuristic*>(Cur)->PlacementHeuristic->GetLayout();
+	else if(dynamic_cast<KGAView*>(Cur))
+		Layout=dynamic_cast<KGAView*>(Cur)->Instance->GetBestChromosome();
+	if(!Layout)
+		return;
+
+	// Export the file
+	statusMsg(tr("Export current results..."));
+	QString url(QFileDialog::getSaveFileName(this, tr("Export Results"),QDir::homePath()));
+	if(!url.isEmpty())
+	{
+		QApplication::setOverrideCursor(Qt::WaitCursor);
+		RTextFile Out(FromQString(url),"utf8");
+		Out.Open(RIO::Create);
+		Out<<"<?xml version=\"1.0\" encoding=\"UTF-8\"?>"<<endl;
+		Out<<"<!DOCTYPE vlsiResults>"<<endl;
+		Out<<"<vlsiResults xmlns:svg=\"http://www.w3.org/2000/svg\">"<<endl;
+		Out<<"\t<spaceOccupied>"<<endl;
+		RRect Bound(Layout->ComputeBoundary());
+		Out<<"\t\t<svg:polygon svg:points=\""+Cast(Bound.GetWidth())+","+Cast(Bound.GetWidth())+"\"/>"<<endl;
+		Out<<"\t</spaceOccupied>"<<endl;
+		Out<<"\t<instances>"<<endl;
+		RCursor<RGeoInfo> Info(Layout->GetInfos());
+		for(Info.Start();!Info.End();Info.Next())
+			Out<<"\t\t<instance id=\""+RString::Number(Info()->GetObj()->GetId())+"\" svg:points=\""+
+					Cast(Info()->GetPos().X)+","+
+				   Cast(Info()->GetPos().Y)+"\"/>"<<endl;
+		Out<<"\t<instances>"<<endl;
+		Out<<"</vlsiResults>"<<endl;
+	}
+	statusMsg(tr("Ready."));
+	QApplication::setOverrideCursor(Qt::ArrowCursor);
+}
+
+
+//-----------------------------------------------------------------------------
+void KDevVLSI::about(void)
+{
+	QRAboutDialog dlg("KDevVLSI","2.0");
+	dlg.setDescription("Qt-based 2D-GA frontend.");
+	dlg.setCopyright(QWidget::trUtf8("(C) 2001-2008 by the Université Libre de Bruxelles (ULB)<br/>(C) 2010-2016 by the Paul Otlet Institute"));
+	dlg.setURL("http://www.otlet-institute.org/GALILEI_Platform_en.html");
+	dlg.setLicense(QRAboutDialog::License_GPL);
+	dlg.addAuthor(QWidget::trUtf8("Pascal Francq"),QWidget::trUtf8("Maintainer"), "pascal@francq.info");
+	dlg.exec();
 }
 
 
 //-----------------------------------------------------------------------------
 KDevVLSI::~KDevVLSI(void)
 {
-	delete Status;
 }

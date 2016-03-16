@@ -2,9 +2,9 @@
 
 	RVLSI Project Library
 
-	KPolygonsView.h
+	QVLSIApp.cpp
 
-	View a set of polygons from a file - Header.
+	Main Application - Header.
 
 	Copyright 2000-2016 by Pascal Francq (pascal@francq.info).
 	Copyright 1998-2008 by the Université Libre de Bruxelles (ULB).
@@ -28,58 +28,77 @@
 
 
 //-----------------------------------------------------------------------------
-#ifndef KPolygonsView_H
-#define KPolygonsView_H
+#ifndef QVLSIAppH
+#define QVLSIAppH
 
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rlayout.h>
+#include <rvlsiapp.h>
 using namespace R;
+using namespace RVLSI;
 
 
 //-----------------------------------------------------------------------------
-// include files for KDE/Qt
-#include <QtGui/QMdiSubWindow>
+// include files for Qt
+#include <QApplication>
 
 
 //-----------------------------------------------------------------------------
-// include files for current application
-#include <ui_kpolygonsview.h>
+// forward declaration
+class KDevVLSI;
 
 
 //-----------------------------------------------------------------------------
 /**
-* @author Pascal Francq
-*/
-class KPolygonsView : public QMdiSubWindow, public Ui_KPolygonsView
+ * The QVLSIApp class provides the main application.
+ */
+class QVLSIApp :  public RVLSIApp
 {
-	Q_OBJECT
+	/**
+	 * Main Window;
+    */
+	KDevVLSI* Main;
 
 	/**
-	* Layout.
-	*/
-	RLayout* Layout;
+	 * Last opened files.
+	 */
+	RContainer<RString,true,false> LastOpenedFiles;
 
 public:
 
 	/**
-	* Constructor of the window.
-	*/
-	KPolygonsView(void);
+	 * Constructor.
+    * @param argc           Number of argument.
+    * @param argv           Arguments.
+    */
+	QVLSIApp(int argc, char *argv[]);
 
 	/**
-	 * Load a given file.
-	 * @param url             URL of the file.
+	 * Create the configuration parameters.
+    */
+	virtual void CreateConfig(void);
+
+	/**
+	 * Initialise the application.
+    */
+	virtual void Init(void);
+
+	/**
+	  * "Run" the application. In practice, it just show the main widget and
+	  * call QApplication::instance()->exec().
+     */
+	virtual void Run(void);
+
+	/**
+	 * Destructor.
 	 */
-	void Load(QString& url);
+	virtual ~QVLSIApp(void);
 
-	/**
-	* Destruct the window.
-	*/
-	~KPolygonsView(void);
+	friend class KDevVLSI;
 };
 
 
 //-----------------------------------------------------------------------------
 #endif
+

@@ -6,9 +6,10 @@
 
 	Run a heuristic on the problem - Header.
 
-	Copyright 2000-2014 by Pascal Francq (pascal@francq.info).
+	Copyright 2000-2016 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2008 by the Université Libre de Bruxelles (ULB).
 
-	This program is free software; you can redistribute it and/or modify
+ 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
 	the Free Software Foundation; either version 2 of the License, or
 	any later version.
@@ -178,6 +179,8 @@ public:
 	*  Destruct a heuristic view.
 	*/
 	~KHeuristic(void);
+
+	friend class KDevVLSI;
 };
 
 

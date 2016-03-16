@@ -6,7 +6,8 @@
 
 	Window to manage a GA instance - Header.
 
-	Copyright 2000-2014 by Pascal Francq (pascal@francq.info).
+	Copyright 2000-2016 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2008 by the Université Libre de Bruxelles (ULB).
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -133,7 +134,7 @@ public:
 	~KGAView();
 
 	// friend classes
-	friend class KDevVLSIDoc;
+	friend class KDevVLSI;
 };
 
 

@@ -6,7 +6,8 @@
 
 	Window to manage a GA instance - Implementation.
 
-	Copyright 2000-2014 by Pascal Francq (pascal@francq.info).
+	Copyright 2000-2016 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2008 by the Université Libre de Bruxelles (ULB).
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -34,10 +35,9 @@
 
 
 //-----------------------------------------------------------------------------
-// include files for Qt/KDE
+// include files for Qt
+#include <QMessageBox>
 #include <QtGui/QKeyEvent>
-#include <klocale.h>
-#include <kmessagebox.h>
 
 
 //-----------------------------------------------------------------------------
@@ -80,17 +80,17 @@ KGAView::KGAView(void)
 	}
 	catch(RException& e)
 	{
-		KMessageBox::error(this,ToQString(e.GetMsg()));
+		QMessageBox::critical(0,QWidget::tr("R exception"),ToQString(e.GetMsg()),QMessageBox::Ok);
 		Instance=0;
 	}
-	catch(exception& e)
+	catch(std::exception& e)
 	{
-		KMessageBox::error(this,e.what());
+		QMessageBox::critical(0,QWidget::tr("std::exception"),QWidget::trUtf8(e.what()),QMessageBox::Ok);
 		Instance=0;
 	}
 	catch(...)
 	{
-		KMessageBox::error(this,"Unknown Problem");
+		QMessageBox::critical(0,QWidget::tr("Unknown exception"),QWidget::trUtf8("Unknown problem"),QMessageBox::Ok);
 		Instance=0;
 	}
 
@@ -117,19 +117,19 @@ void KGAView::RunGA(void)
 			}
 			Instance->MaxGen=Gen;
 			Instance->Run();
-			KMessageBox::information(this,"Done");
+			QMessageBox::information(0,QWidget::tr("GA View"),QWidget::tr("Done"),QMessageBox::Ok);
 		}
 		catch(RException& e)
 		{
-			KMessageBox::error(this,ToQString(e.GetMsg()));
+			QMessageBox::critical(0,QWidget::tr("R exception"),ToQString(e.GetMsg()),QMessageBox::Ok);
 		}
-		catch(exception& e)
+		catch(std::exception& e)
 		{
-			KMessageBox::error(this,e.what());
+			QMessageBox::critical(0,QWidget::tr("std::exception"),QWidget::trUtf8(e.what()),QMessageBox::Ok);
 		}
 		catch(...)
 		{
-			KMessageBox::error(this,"Unknown Problem");
+			QMessageBox::critical(0,QWidget::tr("Unknown exception"),QWidget::trUtf8("Unknown problem"),QMessageBox::Ok);
 		}
 	}
 }

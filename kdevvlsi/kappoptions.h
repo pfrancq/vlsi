@@ -6,7 +6,8 @@
 
 	Application options - Header.
 
-	Copyright 2000-2014 by Pascal Francq (pascal@francq.info).
+	Copyright 2000-2016 by Pascal Francq (pascal@francq.info).
+	Copyright 1998-2008 by the Université Libre de Bruxelles (ULB).
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -33,15 +34,28 @@
 
 
 //------------------------------------------------------------------------------
+// include files for R
+#include <rqt.h>
+using namespace R;
+
+
+//------------------------------------------------------------------------------
+// include files for Qt
+#include <QDialog>
+
+
+
+//------------------------------------------------------------------------------
 // include files for current project
 #include <ui_kappoptions.h>
+class QVLSIApp;
 
 
 //------------------------------------------------------------------------------
 /**
  * This class manages the options of the applications.
  */
-class KAppOptions : KDialog, Ui_KAppOptions
+class KAppOptions : QDialog, Ui_KAppOptions
 {
 	Q_OBJECT
 
@@ -58,17 +72,7 @@ public:
 	 * pressed, the variables are applied.
 	 * @param app            Application.
 	 */
-	void exec(KDevVLSI* app);
-
-	/**
-	 * Read the options of a configuration file.
-	 */
-	static void readOptions(void);
-
-	/**
-	 * Save the options of a configuration file.
-	 */
-	static void saveOptions(void);
+	void exec(QVLSIApp* app);
 };
 
 
