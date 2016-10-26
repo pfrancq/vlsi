@@ -73,6 +73,11 @@ class KDevVLSI : public QMainWindow, Ui_KDevVLSI
 	 */
 	QAction* recentFiles[MaxRecentFiles];
 
+	/**
+	 * Problem information.
+	 */
+	RString ProblemInfo;
+
 public:
 
 	/**
@@ -172,7 +177,7 @@ private slots:
 	void heuristicSelect(void);
 
 	/**
-	* Initialize the GA.
+	* Initialise the GA.
 	*/
 	void GAInit(void);
 

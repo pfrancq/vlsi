@@ -176,7 +176,7 @@ void KDevVLSI::openDocumentFile(const RString& url)
 	try
 	{
 		DestroyDoc=true;
-		Doc=App->CreateSession(url);
+		Doc=App->CreateSession(url,ProblemInfo,"simogga");
 		KProject* ptr(new KProject(Doc,url));
 		DestroyDoc=false;
 		Desktop->addSubWindow(ptr);
@@ -524,15 +524,15 @@ void KDevVLSI::exportResults(void)
 		Out<<"<vlsiResults xmlns:svg=\"http://www.w3.org/2000/svg\">"<<endl;
 		Out<<"\t<spaceOccupied>"<<endl;
 		RRect Bound(Layout->ComputeBoundary());
-		Out<<"\t\t<svg:polygon svg:points=\""+Cast(Bound.GetWidth())+","+Cast(Bound.GetWidth())+"\"/>"<<endl;
+		Out<<"\t\t<polygon points=\""+Cast(Bound.GetWidth())+","+Cast(Bound.GetWidth())+"\"/>"<<endl;
 		Out<<"\t</spaceOccupied>"<<endl;
 		Out<<"\t<instances>"<<endl;
 		RCursor<RGeoInfo> Info(Layout->GetInfos());
 		for(Info.Start();!Info.End();Info.Next())
-			Out<<"\t\t<instance id=\""+RString::Number(Info()->GetObj()->GetId())+"\" svg:points=\""+
+			Out<<"\t\t<instance id=\""+Info()->GetObj()->GetName()+"\" svg:points=\""+
 					Cast(Info()->GetPos().X)+","+
 				   Cast(Info()->GetPos().Y)+"\"/>"<<endl;
-		Out<<"\t<instances>"<<endl;
+		Out<<"\t</instances>"<<endl;
 		Out<<"</vlsiResults>"<<endl;
 	}
 	statusMsg(tr("Ready."));
