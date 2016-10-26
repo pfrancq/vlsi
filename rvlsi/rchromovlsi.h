@@ -55,6 +55,7 @@ namespace RVLSI{
  */
 class RChromoVLSI : public R::RChromo2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,R::RGeoInfo>
 {
+	using RChromo2D<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI,R::RGeoInfo>::Id;
 public:
 
 	/**
@@ -69,6 +70,8 @@ public:
 	* with the sum of the areas of all the polygons.
 	*/
 	virtual void Evaluate(void);
+
+	friend class R::RInst<RInstVLSI,RChromoVLSI,RFitnessVLSI,RThreadDataVLSI>;
 };
 
 

@@ -178,8 +178,11 @@ public:
 	/**
 	* Create the session.
 	* @param file            File containing the VLSI session.
+	* @param info            XML-based information associated to the problem.
+	* @param tag             Tag representing the information (Null supposes that
+	*                        no information is provided).
 	*/
-	R::RProblem2D* CreateSession(const R::RString& file);
+	R::RProblem2D* CreateSession(const R::RString& file,R::RString& info,const R::RString& tag=R::RString::Null);
 
 	/**
 	 * Get the session.

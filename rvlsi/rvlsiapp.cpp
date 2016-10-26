@@ -76,9 +76,11 @@ class VLSIParser : public RXMLParser
 	RObj2DConnector* Connector;
 	RObj2DConfigConnector* ConnectorConfig;
 	RContainer<RObj2D,true,true> Templates;
+	RString& Info;
+	RString InfoTag;
 
 public:
-	VLSIParser(RProblem2D* problem,const RURI& uri);
+	VLSIParser(RProblem2D* problem,const RURI& uri,RString& info,const RString& tag);
 	tTag GetTagType(const RString& ns,const RString& name);
 	tAttr GetAttrType(const RString& ns,const RString& name);
 	virtual void BeginTag(const RString &namespaceURI, const RString &lName, const RString &name);
@@ -90,8 +92,9 @@ public:
 
 
 //------------------------------------------------------------------------------
-VLSIParser::VLSIParser(RProblem2D* problem,const RURI& uri)
-	: RXMLParser(uri), Problem(problem), Obj(0), Ids(20), Pin(false), Read(10), Templates(50)
+VLSIParser::VLSIParser(RProblem2D* problem,const RURI& uri,RString& info,const RString& tag)
+	: RXMLParser(uri), Problem(problem), Obj(0), Ids(20), Pin(false), Read(10),
+	  Templates(50), Info(info), InfoTag(tag)
 {
 	Section=Undefined;
 	Read.Init(10,false);
@@ -716,10 +719,10 @@ void RVLSIApp::Init(void)
 
 
 //------------------------------------------------------------------------------
-RProblem2D* RVLSIApp::CreateSession(const RString& file)
+RProblem2D* RVLSIApp::CreateSession(const RString& file,R::RString& info,const R::RString& tag)
 {
 	if(!IsInit())
-		mThrowRException("Application not initialized");
+		mThrowRException("Application not initialised");
 	if(Session)
 		mThrowRException("A session is already created");
 
@@ -728,7 +731,7 @@ RProblem2D* RVLSIApp::CreateSession(const RString& file)
 	Session->SetWeightedDistances(WeightedDistances);
 
 	// Read the file
-	VLSIParser File(Session,file);
+	VLSIParser File(Session,file,info,tag);
 	File.Open(RIO::Read);
 
 	// Initialize
