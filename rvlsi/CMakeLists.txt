@@ -1,40 +1,34 @@
-PROJECT(rvlsi)
-INCLUDE_DIRECTORIES(.)
+cmake_minimum_required(VERSION 2.6)
 
-SET(rvlsi_TARGET_SOURCES
-	struct.cpp
-	files.cpp
-	edif.cpp
-	gds.cpp
-	rchromovlsi.cpp
-	rinstvlsi.cpp
-	rgavlsi.cpp	
-	rvlsiapp.cpp
-)
+CONFIGURE_FILE(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+  IMMEDIATE @ONLY)
 
-SET(rvlsi_INST_INCLUDES
-	struct.h
-	files.h
-	edif.h
-	gds.h
-	rchromovlsi.h
-	rinstvlsi.h
-	rgavlsi.h
-	rvlsiapp.h
-	rvlsidoc.h
-)
+ADD_CUSTOM_TARGET(uninstall
+  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
 
-INCLUDE_DIRECTORIES(${rvlsi_INCLUDES})
+IF(CMAKE_COMPILER_IS_GNUCC)
+  MESSAGE(STATUS "Using GNU C Compiler, set -fmessage-length to 0 (Eclipse support)")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
+ENDIF(CMAKE_COMPILER_IS_GNUCC)
+IF(CMAKE_COMPILER_IS_GNUCXX)
+    MESSAGE(STATUS "Using GNU C++ Compiler, set -fmessage-length to 0 (Eclipse support)")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
+ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
-#INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+OPTION(rcmake-verbose "Enable verbose output during cmake construction" OFF)
 
-IF(WIN32)
-    ADD_LIBRARY(rvlsi STATIC ${rvlsi_TARGET_SOURCES})
-    SET_TARGET_PROPERTIES(rvlsi PROPERTIES LINK_FLAGS "/NODEFAULTLIB:MSVCRTD;MSVCRT;LIBCMT;LIBCMTD")
-    TARGET_LINK_LIBRARIES(rvlsi roptimization rmath rcore)
-ELSE(WIN32)
-    ADD_LIBRARY(rvlsi SHARED ${rvlsi_TARGET_SOURCES})
-    #ADD_SOURCE_FILE(rvlsi frontend rvlsi_INCLUDES)
-    #ADD_FRONTEND(rvlsi 2 2 2.0.0 lib "r/rvlsi" rvlsi_INCLUDES)
-    TARGET_LINK_LIBRARIES(rvlsi roptimization rcore rmath dl)
-ENDIF(WIN32)
+IF(UNIX)
+    ADD_DEFINITIONS("-fexceptions")
+    MESSAGE(STATUS "C++ exceptions will be re-enabled (since KDE4 detection disable them)")
+    ADD_DEFINITIONS("-pedantic")
+    ADD_DEFINITIONS("-Wno-long-long")
+    ADD_DEFINITIONS("-DPIC")
+    ADD_DEFINITIONS("-fvisibility=default")
+ELSE(UNIX)
+    ADD_DEFINITIONS("/D_RCORE_DLLAPI_")
+ENDIF(UNIX)
+
+INCLUDE(rfinder.cmake)
+INCLUDE(prj.cmake)
