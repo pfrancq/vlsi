@@ -1,80 +1,33 @@
-PROJECT(kdevvlsi)
-INCLUDE_DIRECTORIES(.)
+cmake_minimum_required(VERSION 2.6)
 
-SET(kdevvlsi_SOURCES
-	main.cpp
-	qvlsiapp.cpp
-	kdevvlsi.cpp
-	kappoptions.cpp
-	kproject.cpp
-	kheuristic.cpp
-	kgaview.cpp
-	kpolygonsview.cpp
-)
+CONFIGURE_FILE(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+  IMMEDIATE @ONLY)
 
-SET(kdevvlsi_FORMS
-	kdevvlsi.ui
-	kappoptions.ui
-	kproject.ui
-	kheuristic.ui
-	kgaview.ui
-	kpolygonsview.ui
-)
+ADD_CUSTOM_TARGET(uninstall
+  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
 
+IF(CMAKE_COMPILER_IS_GNUCC)
+  MESSAGE(STATUS "Using GNU C Compiler, set -fmessage-length to 0 (Eclipse support)")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
+ENDIF(CMAKE_COMPILER_IS_GNUCC)
+IF(CMAKE_COMPILER_IS_GNUCXX)
+    MESSAGE(STATUS "Using GNU C++ Compiler, set -fmessage-length to 0 (Eclipse support)")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
+ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
-SET(kdevvlsi_HEADERS
-	kdevvlsi.h
-	kgaview.h
-	kproject.h
-	kappoptions.h
-	kheuristic.h
-	kpolygonsview.h
-)
+OPTION(rcmake-verbose "Enable verbose output during cmake construction" OFF)
 
+IF(UNIX)
+    ADD_DEFINITIONS("-fexceptions")
+    MESSAGE(STATUS "C++ exceptions will be re-enabled (since KDE4 detection disable them)")
+    ADD_DEFINITIONS("-pedantic")
+    ADD_DEFINITIONS("-Wno-long-long")
+    ADD_DEFINITIONS("-DPIC")
+ELSE(UNIX)
+    ADD_DEFINITIONS("/D_RCORE_DLLAPI_")
+ENDIF(UNIX)
 
-SET(kdevvlsi_RESOURCES
-	kdevvlsi.qrc
-)
-
-
-QT4_WRAP_CPP(kdevvlsi_HEADERS_MOC ${kdevvlsi_HEADERS})
-QT4_WRAP_UI(kdevvlsi_FORMS_HEADERS ${kdevvlsi_FORMS})
-QT4_ADD_RESOURCES(kdevvlsi_RESOURCES_RCC ${kdevvlsi_RESOURCES})
-
-
-INCLUDE(${QT_USE_FILE})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-
-ADD_DEFINITIONS(${QT_DEFINITIONS})
-
-ADD_EXECUTABLE(kdevvlsi
-	${kdevvlsi_SOURCES}
-	${kdevvlsi_HEADERS_MOC}
-	${kdevvlsi_FORMS_HEADERS}
-	${kdevvlsi_RESOURCES_RCC})
-
-IF(WIN32)
-	TARGET_LINK_LIBRARIES(kdevvlsi
-						"C:/Users/Pascal/prj/r/build/rcore/librcore.a"
-						"C:/Users/Pascal/prj/r/build/rcore/librmath.a"
-						"C:/Users/Pascal/prj/r/build/rcore/librvlsi.a"
-						"C:/Users/Pascal/prj/r/build/rcore/librcoreqt.a"
-						"C:/Users/Pascal/prj/r/build/rcore/librprg.a"
-						"C:/Users/Pascal/prj/r/build/rcore/librprgqt.a"
-						"C:/Users/Pascal/prj/r/build/rcore/libroptimization.a"
-						"C:/Users/Pascal/prj/r/build/rcore/libroptimizationqt.a"
-						${QT_LIBRARIES} pthread iconv
-						"C:/Program Files/MySQL/MySQL Connector C 6.1/lib/libmysql.lib"
-						"C:/Program Files/MySQL/MySQL Connector C 6.1/lib/vs11/mysqlclient.lib"
-						C:/curl/lib/libcurl.a C:/curl/lib/libcurldll.a)
-ELSE(WIN32)
-	TARGET_LINK_LIBRARIES(kdevvlsi rcore rcoreqt rprg rprgqt rmath rvlsi roptimization roptimizationqt ${QT_LIBRARIES})
-ENDIF(WIN32)
-
-
-########### install files ###############
-# "install(TARGETS kdevvlsi ${INSTALL_TARGETS_DEFAULT_ARGS})
-#install( FILES kdevvlsi.desktop  DESTINATION ${XDG_APPS_INSTALL_DIR} )
-#install(FILES kdevvlsiui.rc  DESTINATION  ${DATA_INSTALL_DIR}/kdevvlsi )
-#install(FILES kdevvlsiui.rc  DESTINATION  /usr/share/kde4/apps/kdevvlsi )
-#kde4_install_icons(${ICON_INSTALL_DIR})
+INCLUDE(rfinder.cmake)
+INCLUDE(prj.cmake)
