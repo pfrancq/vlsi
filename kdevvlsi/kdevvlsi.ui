@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>KDevVLSI</class>
+ <widget class="QMainWindow" name="KDevVLSI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QMdiArea" name="Desktop"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="menuOpenRecent">
+     <property name="title">
+      <string>Open &amp;Recent...</string>
+     </property>
+    </widget>
+    <addaction name="aOpen"/>
+    <addaction name="menuOpenRecent"/>
+    <addaction name="separator"/>
+    <addaction name="aImport"/>
+    <addaction name="aExport"/>
+    <addaction name="separator"/>
+    <addaction name="aOptions"/>
+    <addaction name="separator"/>
+    <addaction name="aExit"/>
+   </widget>
+   <widget class="QMenu" name="menu_Run">
+    <property name="title">
+     <string>&amp;Heuristics</string>
+    </property>
+    <addaction name="aBottomLeft"/>
+    <addaction name="aEdge"/>
+    <addaction name="aCenter"/>
+    <addaction name="separator"/>
+    <addaction name="aRunHeuristic"/>
+    <addaction name="aNextStep"/>
+    <addaction name="aSelectObjects"/>
+   </widget>
+   <widget class="QMenu" name="menu_Window">
+    <property name="title">
+     <string>&amp;Window</string>
+    </property>
+    <addaction name="aCloseAll"/>
+    <addaction name="separator"/>
+    <addaction name="aTile"/>
+    <addaction name="aCascade"/>
+   </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="aAbout"/>
+   </widget>
+   <widget class="QMenu" name="menu_GA">
+    <property name="title">
+     <string>&amp;GA</string>
+    </property>
+    <addaction name="aInitialise"/>
+    <addaction name="separator"/>
+    <addaction name="aStart"/>
+    <addaction name="aPause"/>
+    <addaction name="aStop"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menu_Run"/>
+   <addaction name="menu_GA"/>
+   <addaction name="menu_Window"/>
+   <addaction name="menu_Help"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="aOpen"/>
+   <addaction name="separator"/>
+   <addaction name="aExit"/>
+  </widget>
+  <action name="aOpen">
+   <property name="icon">
+    <iconset resource="kdevvlsi.qrc">
+     <normaloff>:/icons/document-open.png</normaloff>:/icons/document-open.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Open...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="aImport">
+   <property name="icon">
+    <iconset resource="kdevvlsi.qrc">
+     <normaloff>:/icons/document-import.png</normaloff>:/icons/document-import.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Import...</string>
+   </property>
+  </action>
+  <action name="aExit">
+   <property name="icon">
+    <iconset resource="kdevvlsi.qrc">
+     <normaloff>:/icons/application-exit.png</normaloff>:/icons/application-exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="aCloseAll">
+   <property name="text">
+    <string>Close All</string>
+   </property>
+  </action>
+  <action name="aTile">
+   <property name="text">
+    <string>Tile</string>
+   </property>
+  </action>
+  <action name="aCascade">
+   <property name="text">
+    <string>Cascade</string>
+   </property>
+  </action>
+  <action name="aAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="aBottomLeft">
+   <property name="text">
+    <string>&amp;Bottom-Left Heuristic</string>
+   </property>
+  </action>
+  <action name="aOptions">
+   <property name="icon">
+    <iconset resource="kdevvlsi.qrc">
+     <normaloff>:/icons/configure.png</normaloff>:/icons/configure.png</iconset>
+   </property>
+   <property name="text">
+    <string>Options...</string>
+   </property>
+  </action>
+  <action name="aEdge">
+   <property name="text">
+    <string>&amp;Edge Heuristic</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="aCenter">
+   <property name="text">
+    <string>Center Heuristic</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="aStartGA">
+   <property name="text">
+    <string>Start GA</string>
+   </property>
+  </action>
+  <action name="aInitialiseGA">
+   <property name="text">
+    <string>Initialise GA</string>
+   </property>
+  </action>
+  <action name="aPauseGA">
+   <property name="text">
+    <string>Pause GA</string>
+   </property>
+  </action>
+  <action name="aStopGA">
+   <property name="text">
+    <string>Stop GA</string>
+   </property>
+  </action>
+  <action name="aViewPolygons">
+   <property name="text">
+    <string>View Polygons</string>
+   </property>
+  </action>
+  <action name="aViewPolygons_2">
+   <property name="text">
+    <string>View Polygons</string>
+   </property>
+  </action>
+  <action name="aRunHeuristic">
+   <property name="text">
+    <string>Run</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="aNextStep">
+   <property name="text">
+    <string>Next Step</string>
+   </property>
+  </action>
+  <action name="aSelectObjects">
+   <property name="text">
+    <string>Select Objects</string>
+   </property>
+  </action>
+  <action name="aInitialise">
+   <property name="text">
+    <string>&amp;Initialise</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="aStart">
+   <property name="text">
+    <string>Start</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="aPause">
+   <property name="text">
+    <string>Pause</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="aStop">
+   <property name="text">
+    <string>Stop</string>
+   </property>
+  </action>
+  <action name="aExport">
+   <property name="icon">
+    <iconset resource="kdevvlsi.qrc">
+     <normaloff>:/icons/document-import.png</normaloff>:/icons/document-import.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export Results...</string>
+   </property>
+  </action>
+  <action name="actionCoucou">
+   <property name="text">
+    <string>Coucou</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="kdevvlsi.qrc"/>
+ </resources>
+ <connections/>
+</ui>

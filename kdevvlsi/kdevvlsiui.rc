@@ -1,0 +1,44 @@
+<!DOCTYPE kpartgui>
+<kpartgui name="kdevvlsi" version="0.1">
+<MenuBar>
+	<Menu name="file">
+		<Action name="openFile"/>
+		<Separator/>
+		<Action name="closeFile"/>
+		<Separator/>
+		<Action name="importProject"/>
+		<Separator/>
+		<Action name="applicationQuit"/>
+	</Menu>
+	<Menu name="heuristic_menu"><text>He&amp;uristic</text>
+		<Action name="heuristic_bl"/>
+		<Action name="heuristic_edge"/>
+		<Action name="heuristic_center"/>
+		<Separator/>
+		<Action name="heuristic_next"/>
+		<Separator/>
+		<Action name="heuristic_run"/>
+		<Separator/>
+		<Action name="heuristic_select"/>
+	</Menu>
+	<Menu name="GA_menu"><text>&amp;GA</text>
+		<Action name="ga_init"/>
+		<Separator/>
+		<Action name="ga_start"/>
+		<Action name="ga_pause"/>
+		<Action name="ga_stop"/>
+	</Menu>
+	<Menu name="tools_menu"><text>&amp;Tools</text>
+		<Action name="tools_view_polygons"/>
+	</Menu>
+	<Menu name="window"><text>&amp;Window</text>
+		<Action name="window_closeall"/>
+		<Separator/>
+		<Action name="window_tile" />
+		<Action name="window_cascade"/>
+	</Menu>	
+</MenuBar>
+<ToolBar fullWidth="true" name="mainToolBar">
+	<Action name="applicationQuit"/>
+</ToolBar>
+</kpartgui>
